@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; img-src 'self' data: content: https: http:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="lib/jquery-3.3.1.min.js"></script>
+    <script src="lib/popper.min.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
+    <title>TreeChecker</title>
+</head>
+<body class="app">
+    <div id="login-page" class="container">
+        <br><br>
+        <input id="username" type="text" class="form-control" placeholder="email">Email</input>
+        <input id="password" type="password" class="form-control" placeholder="password">Password</input>
+        <br><br>
+        <button id="send_data" class="btn button">
+            LOG IN
+        </button>
+
+        <!--<div data-role="popup" id="errorpopupdata" class="ui-content">
+            <a id="ok_sent_error" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-c"
+               data-rel="back">
+                Ok
+            </a>
+        </div>
+
+        <div data-role="popup" id="noconnection" class="ui-content">
+            <p>Internet is not available.</p>
+            <a id="ok_error_connection"
+               class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-c" data-rel="back">
+                Ok
+            </a>
+        </div>-->
+    </div>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+    "name": "treechecker",
+    "displayName": "TreeChecker",
+    "version": "1.0.0",
+    "description": "A mobile application to collect data about trees.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Forest D1 Team",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "cordova-android": "^7.1.4",
+        "cordova-browser": "^5.0.4",
+        "cordova-plugin-camera": "^4.0.3",
+        "cordova-plugin-dbcopy": "^2.1.2",
+        "cordova-plugin-spinner-dialog": "^1.3.1",
+        "cordova-plugin-whitelist": "^1.3.3",
+        "cordova-sqlite-storage": "^3.1.0"
+    },
+    "cordova": {
+        "plugins": {
+            "cordova-plugin-whitelist": {},
+            "cordova-plugin-camera": {},
+            "cordova-plugin-spinner-dialog": {},
+            "cordova-plugin-dbcopy": {},
+            "cordova-sqlite-storage": {}
+        },
+        "platforms": [
+            "browser",
+            "android"
+        ]
+    }
+}
