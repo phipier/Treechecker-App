@@ -4,8 +4,14 @@
   "name": "TreeChecker",
   "short_name": "TreeChecker",
   "version": "eu.jrc.treechecker",
-  "description": "A mobile application to collect data about trees.",
+  "description": "A mobile application for the collection of data related to the health of individual trees, including their location, health status, species.",
   "author": "Forest D1 Team",
-  "icons": [],
+  "icons": [
+    {
+      "src": "www/img/ic_canhemon.png",
+      "type": "image/png",
+      "sizes": "undefinedxundefined"
+    }
+  ],
   "start_url": "index.html"
 }

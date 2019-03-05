@@ -2,7 +2,7 @@
     "name": "treechecker",
     "displayName": "TreeChecker",
     "version": "1.0.0",
-    "description": "A mobile application to collect data about trees.",
+    "description": "A mobile application for the collection of data related to the health of individual trees, including their location, health status, species.",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
