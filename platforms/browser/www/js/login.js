@@ -26,8 +26,10 @@ var login = {
                 dataType : 'text',
                 url : 'http://127.0.0.1:8001/api-token-auth/',
                 data : {
-                    email : $("#username").val(),
-                    password : $("#password").val()
+                 //   email : $("#username").val(),
+                 //   password : $("#password").val()
+                    email : 'diego.migliavacca@ext.ec.europa.eu',
+                    password : 'greatbritain'
                 },
                 contentType: 'application/x-www-form-urlencoded',
                 success : function(tk) {

@@ -12,15 +12,31 @@
     <title>TreeChecker</title>
 </head>
 <body>
-<div id="listregions-page" class="container">
-    <div data-role="popup" id="errorpopupdata" class="ui-content">
-        <a id="ok_sent_error" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-c"
-           data-rel="back">
-            Ok
-        </a>
-    </div>
+<nav class="navbar navbar-light" style="background-color:#8BC34A;">
+    <font class="header">Region of interest</font>
+    <button class="navbar-toggler ml-auto" type="button" id="sidebarCollapse" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="overlay"></div>
+<div class="wrapper">
+    <nav id="sidebar">
+        <div id="sliderLinks">
+            <div class="p-4">
+                <a id="update-regions" href="#">Update regions</a>
+            </div>
+        </div>
+    </nav>
 </div>
+
+<div id="listregions-page"></div>
+
+<!-- <div data-role="popup" id="errorpopupdata" class="ui-content">
+    <a id="ok_sent_error" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-c" data-rel="back">Ok</a>
+</div> -->
+
 <script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/db.js"></script>
 <script type="text/javascript" src="js/listRegions.js"></script>
 </body>
 </html>
