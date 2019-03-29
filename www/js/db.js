@@ -7,6 +7,6 @@ function openDb() {
 
 getRegions = function(fn) {
     db.transaction(function(tx) {
-        tx.executeSql('SELECT * FROM geographicalzone, [], fn);
+        tx.executeSql('SELECT * FROM geographicalzone', [], fn);
     });
 };
