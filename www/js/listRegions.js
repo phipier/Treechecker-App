@@ -12,16 +12,24 @@ var listRegions = {
         window.plugins.spinnerDialog.show();
         var token = window.sessionStorage.getItem("token");
 
-        listRegs = function (tx, res) {
-            var html = "";
-            $.each(res, function(key, val) {
-                html += '<div class="card"><img id="img-card" class="card-img-top" src="img/' + val.image_url + '" alt="Image"><div class="card-body"><h5 class="card-title">' + val.name + '</h5><a href="map.html" class="btn button">Go</a></div></div>';
+         db.transaction(function (tx) {
+                var query = 'SELECT * FROM geographicalzone';
+                tx.executeSql(query, [], function (tx, res) {
+                    var html = "";
+                    $.each(res, function(key, val) {
+                        html += '<div class="card"><img id="img-card" class="card-img-top" src="img/' + val.image_url + '" alt="Image"><div class="card-body"><h5 class="card-title">' + val.name + '</h5><a href="map.html" class="btn button">Go</a></div></div>';
+                    });
+                    $("#listregions-page").html(html);
+                    window.plugins.spinnerDialog.hide();
+                },
+                function (tx, error) {
+                    console.log('SELECT error: ' + error.message);
+                });
+            }, function (error) {
+                console.log('transaction error: ' + error.message);
+            }, function () {
+                console.log('transaction ok');
             });
-            $("#listregions-page").html(html);
-            window.plugins.spinnerDialog.hide();
-        }
-        getRegions(listRegs);
-
         /*
             error : function(req, status, error) {
                 window.plugins.spinnerDialog.hide();
@@ -42,7 +50,7 @@ var listRegions = {
             $.ajax({
                 type : 'GET',
                 crossDomain : true,
-                url : 'http://127.0.0.1:8001/api/gzs/',
+                url : URLSERVER + '/api/gzs/',
                 beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
                 success : function(reg) {
                     $.each(reg, function(key, val) {
