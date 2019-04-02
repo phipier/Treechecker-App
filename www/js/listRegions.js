@@ -12,7 +12,7 @@ var listRegions = {
         window.plugins.spinnerDialog.show();
         var token = window.sessionStorage.getItem("token");
 
-        listRegions = function (tx, res) {
+        listRegs = function (tx, res) {
             var html = "";
             $.each(res, function(key, val) {
                 html += '<div class="card"><img id="img-card" class="card-img-top" src="img/' + val.image_url + '" alt="Image"><div class="card-body"><h5 class="card-title">' + val.name + '</h5><a href="map.html" class="btn button">Go</a></div></div>';
@@ -20,7 +20,7 @@ var listRegions = {
             $("#listregions-page").html(html);
             window.plugins.spinnerDialog.hide();
         }
-        getRegions(listRegions);
+        getRegions(listRegs);
 
         /*
             error : function(req, status, error) {
