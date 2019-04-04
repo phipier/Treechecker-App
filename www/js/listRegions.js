@@ -17,8 +17,17 @@ var listRegions = {
                 tx.executeSql(query, [], function (tx, res) {
                     var html = "";
                     for(var x = 0; x < res.rows.length; x++) {
-                        html += '<div class="card"><img id="img-card" class="card-img-top" src="img/' + res.rows.item(x).image_url + '" alt="Image"><div class="card-body"><h5 class="card-title">' + res.rows.item(x).name + '</h5><a href="map.html" class="btn button">Go</a></div></div>';
-                    }
+                        html += '<div class="card"><img id="img-card" class="card-img-top" src="img/' 
+                        + res.rows.item(x).image_url 
+                        + '" alt="Image"><div class="card-body"><h5 class="card-title">' 
+                        + res.rows.item(x).name
+                        + '</h5><a id="lr'+res.rows.item(x).id+'" href="aoi.html" class="btn button">Go</a></div></div>';
+                    }                    
+                    $("span[id$=lr]").click( function(e) {
+                        e.preventDefault(); 
+                        window.sessionStorage.setItem("id_region", e.id);
+                        window.location = 'listAOI.html';
+                        return false; } );
                     $("#listregions-page").html(html);
                     window.plugins.spinnerDialog.hide();
                 },
@@ -36,38 +45,13 @@ var listRegions = {
             $('.overlay').toggleClass('active');
         });
 
-        $('#update-regions').on('click', function() {
+        $('#update').on('click', function() {
             window.plugins.spinnerDialog.show();
-            $.ajax({
-                type : 'GET',
-                crossDomain : true,
-                url : URLSERVER + '/api/gzs/',
-                beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
-                success : function(reg) {
-                    $.each(reg, function(key, val) {
-                        db.transaction(function(tx) {
-                            var sqlstr = "REPLACE INTO geographicalzone("
-                            + "id, name, layer_name, wms_url, proj, image_url, x_min, x_max, y_min, y_max) "
-                            + "VALUES("+val.key+",'"+val.name+"','layer_name','wms_url','proj'"
-                            + ",'"+val.image_url+"',"+val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+")";
-                            
-                            tx.executeSql(sqlstr);                            
-                        }, function(error) {
-                             console.log('Transaction ERROR: ' + error.message);
-                           }, function() {
-                             console.log('Populated database OK');
-                           });
-                    });
-                    window.plugins.spinnerDialog.hide();
-                },
-                error : function(req, status, error) {
-                    window.plugins.spinnerDialog.hide();
-                    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length <= 0){
-                        $("#errorpopupdata").prepend("<p>Error - No connection to the DB.</p>");
-                    }
-                    $("#errorpopupdata").popup("open", {transition:"fade",positionTo:"window"});
-                }
-            })
+            update();            
+        });
+        $('#sync').on('click', function() {
+            window.plugins.spinnerDialog.show();            
+            synchronize();
         });
     },
 
