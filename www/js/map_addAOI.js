@@ -30,3 +30,8 @@ function loadMap() {
     });
     areaSelect.addTo(map);
 };
+
+function addAOI() {
+    downloadTiles();
+
+}

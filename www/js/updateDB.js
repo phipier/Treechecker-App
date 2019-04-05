@@ -47,25 +47,28 @@ function update_crowndiameter() {}
 function update_treespecies() {}
 
 function sync_AOIandOBS() {
-// AOI
-   // LOCAL actions
-   // Delete in local DB all AOI marked as "deleted" in server DB (+ delete from server DB)
-   // insert records from ServerDB where local id does not exists
+    // AOI
 
-   // SERVER actions
-   // Delete in server DB all AOI marked as "deleted" in local DB (+ delete from local DB)
-   // insert records from localDB where local id does not exists 
+        // SERVER actions
+        // mark as "deleted" in server DB all AOI marked as "deleted" in local DB (+ delete from local DB)
+        // insert records from localDB where local id does not exists 
 
-// Survey observations
-   // LOCAL actions
-   // delete OBS in local DB marked as "deleted" in server DB (+ delete from server DB) 
-   // replace (update) all records in local DB from server DB where id_local = id_server AND (server DB update date > locate DB update date)
-   // insert records from ServerDB where local id does not exists
+        // LOCAL actions
+        // Delete in local DB all AOI marked as "deleted" in server DB
+        // insert records from ServerDB where local id does not exists
+
+    // Survey observations
+
+        // SERVER actions
+        // mark as "deleted" in server DB all OBS marked as "deleted" in local DB (+ delete from local DB)
+        // replace (update) OBS to server DB where id_local = id_server AND (server DB update date < locate DB update date) AND NOT deleted
+        // insert records from ServerDB where local id does not exists
+
+        // LOCAL actions
+        // delete OBS in local DB marked as "deleted" in server DB
+        // replace (update) all records in local DB from server DB where id_local = id_server AND (server DB update date > locate DB update date) and NOT deleted
+        // insert records from ServerDB where local id does not exists
    
-   // SERVER actions
-   // delete in server DB all OBS marked as "deleted" in local DB (+ delete from local DB)
-   // replace (update) OBS to server DB where id_local = id_server AND (server DB update date < locate DB update date)
-   // insert records from ServerDB where local id does not exists
 }
 
 function sync_Images() {}

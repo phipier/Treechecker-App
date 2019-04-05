@@ -2,11 +2,13 @@ function downloadTiles(bbox) {
     var fetchQueue = getTileDownloadURLs(bbox);
     
     for(var i=0, len=fetchQueue.length; i<len; ++i) {
-        
+        console.log("i: " + i + " layername: " + fetchQueue[i].layerName)
+        console.log("URL: " + fetchQueue[i].url);
+
         // download tile
 
         // save it to FS
-            //createPath
+            //createPath(fs, path, callback)
 
     }
 }   
