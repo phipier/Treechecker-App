@@ -25,3 +25,7 @@ Thumbs.db
 *.class
 
 *.log
+
+# Android files
+/platforms/android
+/platforms/browser
