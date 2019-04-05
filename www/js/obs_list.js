@@ -29,7 +29,7 @@ var listObs = {
                 $("span[id$=la]").click( function(e) {
                     e.preventDefault(); 
                     window.sessionStorage.setItem("id_obs", e.id);
-                    window.location = 'map_obs.html';
+                    window.location = 'obs_map.html';
                     return false; } ); 
             }
         );

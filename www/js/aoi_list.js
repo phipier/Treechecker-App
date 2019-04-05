@@ -8,13 +8,13 @@ var listAOI = {
         var id_region = window.sessionStorage.getItem("id_region");
 
         db.transaction(function (tx) {
-                var query = 'SELECT * FROM aoi where id_region = '+id_region+';';
+                var query = 'SELECT * FROM aoi where geographical_zone_id = '+id_region+';';
                 tx.executeSql(query, [], function (tx, res) {
                     var html = "";
                     for(var x = 0; x < res.rows.length; x++) {
                         html += '<div class="card"><div class="card-body"><h5 class="card-title">' 
                         + res.rows.item(x).name
-                        + '</h5><a id="la'+res.rows.item(x).id+'" class="btn button">Go</a></div></div>';
+                        + '</h5><a id="la'+res.rows.item(x).id+'" class="btn button">See data</a></div></div>';
                     }                    
                     $("#listaoi-page").html(html);
                     window.plugins.spinnerDialog.hide();
@@ -29,7 +29,7 @@ var listAOI = {
                 $("span[id$=la]").click( function(e) {
                     e.preventDefault(); 
                     window.sessionStorage.setItem("id_aoi", e.id);
-                    window.location = 'map.html';
+                    window.location = 'listObs.html';
                     return false; } ); 
             }
         );

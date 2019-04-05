@@ -26,7 +26,7 @@ var listRegions = {
                     $("span[id$=lr]").click( function(e) {
                         e.preventDefault(); 
                         window.sessionStorage.setItem("id_region", e.id);
-                        window.location = 'listAOI.html';
+                        window.location = 'aoi_list.html';
                         return false; } );
                     $("#listregions-page").html(html);
                     window.plugins.spinnerDialog.hide();
