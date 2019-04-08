@@ -20,13 +20,36 @@
 </nav>
 <div class="overlay"></div>
 
-<div id="listaoi-page"></div>
+<div id="AOI-form">
+    
+<!-- fields :
 
-<a id="addAOI" href="aoi_form.html" class="btn button">add AOI</a>
+    AOI name 
+    Bbox + button to select area on the map
+    WMS layers to download
+    Others
+
+-->
+
+    <form>
+        <div class="form-group">
+            <label for="InputAOIname">Name</label>
+            <input type="name" class="form-control" id="InputAOIname" aria-describedby="emailHelp" placeholder="Enter AOI name">            
+        </div>
+        <div class="form-group">
+            <label for="InputAOIname">bbox</label>
+            <input type="bbox" class="form-control" id="InputAOIname" placeholder="Enter bbox or select on map">
+            <small id="bboxhelp" class="form-text text-muted">boundaries in WSG84, format is xmin:xmax:ymin:ymax</small>
+            <a href="#" class="btn button">select area</a>
+        </div>
+        <!-- button id="aoisavebtn" type="submit" class="btn btn-primary">save my AOI</button -->
+        <a id="aoisave" href="#" class="btn button">save my AOI</a>
+    </form>
+</div>
 
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/db.js"></script>
 <script type="text/javascript" src="js/urls.js"></script>
-<script type="text/javascript" src="js/aoi_list.js"></script>
+<script type="text/javascript" src="js/obs_form.js"></script>
 </body>
 </html>

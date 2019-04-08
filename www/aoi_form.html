@@ -29,10 +29,6 @@
     WMS layers to download
     Others
 
-    Button "save" -> 
-        - save fields to DB 
-        - Tile download (loading bar)
-
 -->
 
     <form>
@@ -41,19 +37,26 @@
             <input type="name" class="form-control" id="InputAOIname" aria-describedby="emailHelp" placeholder="Enter AOI name">            
         </div>
         <div class="form-group">
-            <label for="InputAOIname">bbox</label>
-            <input type="bbox" class="form-control" id="InputAOIname" placeholder="Enter bbox or select on map">
-            <small id="bboxhelp" class="form-text text-muted">boundaries in WSG84, format is xmin:xmax:ymin:ymax</small>
-            <a href="#" class="btn button">select area</a>
+            <a id="selectarea" href="#" class="btn button">select area</a><br>
+            <label for="Inputxmin">xmin</label>
+            <input type="bbox" class="form-control" id="Inputxmin" placeholder="Enter xmin">
+            <label for="Inputxmax">xmax</label>
+            <input type="bbox" class="form-control" id="Inputxmax" placeholder="Enter xmax">
+            <label for="Inputymin">ymin</label>
+            <input type="bbox" class="form-control" id="Inputymin" placeholder="Enter ymin">
+            <label for="Inputymax">ymax</label>
+            <input type="bbox" class="form-control" id="Inputymax" placeholder="Enter ymax">
+            <!--small id="bboxhelp" class="form-text text-muted">boundaries in WSG84, format is xmin:xmax:ymin:ymax</small-->
         </div>
         <!-- button id="aoisavebtn" type="submit" class="btn btn-primary">save my AOI</button -->
-        <a id="aoisave" href="#" class="btn button">save my AOI</a>
+        <a id="saveaoi" href="#" class="btn button">save my AOI</a>
     </form>
 </div>
 
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/db.js"></script>
 <script type="text/javascript" src="js/urls.js"></script>
-<script type="text/javascript" src="js/listAOI.js"></script>
+<script type="text/javascript" src="js/tiles_download.js"></script>
+<script type="text/javascript" src="js/aoi_form.js"></script>
 </body>
 </html>

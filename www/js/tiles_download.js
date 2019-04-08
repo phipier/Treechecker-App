@@ -7,7 +7,7 @@ function downloadTiles(bbox) {
 
         // download tile
 
-        // save it to FS
+        // save it to Android FS
             //createPath(fs, path, callback)
 
     }
@@ -71,13 +71,13 @@ const getTileBbox = (x, y, zoom) => {
 
 function getTileDownloadURLs(bbox) {
     var minZoom = 0;
-    var maxZoom = 17;
+    var maxZoom = 19;
     var fetchQueue = [];
     for(var zoom = minZoom; zoom <= maxZoom; ++zoom) {        
-        var xMin = lon2tile(bbox._southWest.lng, zoom);
-        var xMax = lon2tile(bbox._northEast.lng, zoom);
-        var yMin = lat2tile(bbox._northEast.lat, zoom);
-        var yMax = lat2tile(bbox._southWest.lat, zoom);
+        var xMin = lon2tile(bbox.xmin, zoom);
+        var xMax = lon2tile(bbox.xmax, zoom);
+        var yMin = lat2tile(bbox.ymin, zoom);
+        var yMax = lat2tile(bbox.ymax, zoom);
     
         for(var x=xMin; x <= xMax; ++x) {
             for(var y=yMin; y <= yMax; ++y) {
@@ -208,24 +208,3 @@ function getTileDownloadURLs(bbox) {
 }
 */
 
-
-function uploadAOI(token, gzId, name, bbox, dispatch) {
-    try {
-    const url = `${URL_GZS}${gzId}${URL_AOI_SUFFIX}`;
-    let response = await instance.post(url, {
-        name: name,
-        x_min: bbox._southWest.lng,
-        y_min: bbox._southWest.lat,
-        x_max: bbox._northEast.lng,
-        y_max: bbox._northEast.lat,
-    });
-
-    if( response.status === 200 ){
-        dispatch({ type: ADD_NEW_AOI, payload: {aoi: response.data} });
-    } else {
-        Toast.show(message, Toast.LONG, Toast.CENTER, style);
-    }
-    } catch(e) {
-    Toast.show(message, Toast.LONG, Toast.CENTER, style);
-    }
-}

@@ -26,7 +26,7 @@ var login = {
                 type : 'POST',
                 crossDomain : true,
                 dataType : 'text',
-                url : URLSERVER + '/api-token-auth/',
+                url : SERVERURL + '/api-token-auth/',
                 data : {
                     //email : $("#username").val(),
                     //password : $("#password").val()
@@ -38,7 +38,7 @@ var login = {
 					console.log("TRCK success");
                     window.plugins.spinnerDialog.hide();
                     window.sessionStorage.setItem("token", $.parseJSON(tk).token);
-                    window.location = 'listRegions.html';
+                    window.location = 'region_list.html';
                 },
                 error : function(req, status, error) {
                     if (status == "error") {

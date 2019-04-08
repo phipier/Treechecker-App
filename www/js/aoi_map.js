@@ -1,5 +1,7 @@
 document.addEventListener('deviceready', loadMap, false);
 
+var areaSelect;
+
 function loadMap() {
     var map = L.map('mapid').setView([39.701, -7.69], 10);
 
@@ -22,16 +24,23 @@ function loadMap() {
         maxZoom: 21
     }).addTo(map);
 
-    var areaSelect = L.areaSelect({width:200, height:200});
+    areaSelect = L.areaSelect({width:200, height:200});
     areaSelect.on("change", function() {
-        var bounds = this.getBounds();
-        console.log(bounds);
-      //  $("#bbox_result").text(bounds.getSouthWest().lat + ", " + bounds.getSouthWest().lng + ", " + bounds.getNorthEast().lat + ", " + bounds.getNorthEast().lng);
+        var bounds = this.getBounds();        
     });
     areaSelect.addTo(map);
 };
 
-function addAOI() {
-    downloadTiles();
+$("#savearea").click( function(e) {
+    e.preventDefault();     
+    var bounds = areaSelect.getBounds();
+    console.log("selected bounds: " + bounds);      
 
-}
+    window.sessionStorage.setItem("bbox_xmin", bounds.getSouthWest().lng); 
+    window.sessionStorage.setItem("bbox_xmax", bounds.getNorthEast().lng); 
+    window.sessionStorage.setItem("bbox_ymin", bounds.getSouthWest().lat); 
+    window.sessionStorage.setItem("bbox_ymax", bounds.getNorthEast().lat);        
+
+    window.location = 'aoi_form.html';   
+    return false; 
+} );

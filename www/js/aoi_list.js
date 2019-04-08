@@ -29,7 +29,7 @@ var listAOI = {
                 $("span[id$=la]").click( function(e) {
                     e.preventDefault(); 
                     window.sessionStorage.setItem("id_aoi", e.id);
-                    window.location = 'listObs.html';
+                    window.location = 'obs_list.html';
                     return false; } ); 
             }
         );
@@ -42,3 +42,15 @@ var listAOI = {
 };
 
 listAOI.initialize();
+
+$("#addAOI").click( function(e) {
+    e.preventDefault();     
+    window.sessionStorage.setItem("id_aoi", "");
+    window.sessionStorage.setItem("aoiname", "");
+    window.sessionStorage.setItem("bbox_xmin", ""); 
+    window.sessionStorage.setItem("bbox_xmax", ""); 
+    window.sessionStorage.setItem("bbox_ymin", ""); 
+    window.sessionStorage.setItem("bbox_ymax", "");
+    window.location = 'aoi_form.html';    
+    return false; 
+} );

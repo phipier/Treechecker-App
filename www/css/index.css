@@ -156,7 +156,7 @@ html, #mapid, #login-page {
 
 #map-wrapper {
     width: 100%;
-    height: 500px;
+    height: 100%;
     position: relative;
     border: 1px solid black;
 }
@@ -168,7 +168,8 @@ html, #mapid, #login-page {
 }
 
 #button-wrapper {
+    z-index: 1000;  
     position: absolute;
-    bottom: 10px;
+    bottom: 20px;
     width: 100%;    
 }
