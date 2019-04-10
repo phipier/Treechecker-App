@@ -2,18 +2,25 @@ function downloadTiles(bbox) {
     var fetchQueue = getTileDownloadURLs(bbox);
     
     for(var i=0, len=fetchQueue.length; i<len; ++i) {
+
+        var data = fetchQueue[i];
+
         console.log("i: " + i
-                    + " layername: " + fetchQueue[i].layerName
-                    + " x: " + fetchQueue[i].x
-                    + " y: " + fetchQueue[i].y
-                    + " zoom: " + fetchQueue[i].z)
+                    + " layername: " + data.layerName
+                    + " x: " +      data.x
+                    + " y: " +      data.y
+                    + " zoom: " +   data.z)
 
         console.log("URL: " + fetchQueue[i].url);
 
         // download tile
+        
+        var url = data.url;
+        //var dirPath = `${ExternalDirectoryPath}/tiles/${data.layerName}/${data.z}/${data.x}/`;
+        //var filePath = `${dirPath}${data.y}.png`;
 
         // save it to Android FS
-            //createPath(fs, path, callback)
+        createPath(fs, dirPath, callback)
 
     }
 }   
@@ -22,6 +29,7 @@ function downloadTiles(bbox) {
 function createPath(fs, path, callback) {
     var dirs = path.split("/").reverse();
     var root = fs.root;
+    
 
     var createDir = function(dir) {
         if (dir.trim()!="") {
@@ -48,12 +56,55 @@ function createPath(fs, path, callback) {
     createDir(dirs.pop());
 }
 
-const lon2tile = (lon, zoom) => {
-    return (Math.floor((lon+180)/360*Math.pow(2,zoom)));
+
+
+/*
+// Xy returns the Spherical Mercator (x, y) in meters
+func Xy(lngLat LngLat) (x, y float64) {
+	lng := lngLat.Lng * (math.Pi / 180.0)
+	lat := lngLat.Lat * (math.Pi / 180.0)
+	x = 6378137.0 * lng
+	y = 6378137.0 * math.Log(math.Tan((math.Pi*0.25)+(0.5*lat)))
+	return x, y
+}
+
+// Ul returns the upper left (lon, lat) of a tile
+func Ul(tile TileID) LngLat {
+	n := math.Pow(2.0, float64(tile.Z))
+	lonDeg := float64(tile.X)/n*360.0 - 180.0
+	latRad := math.Atan(math.Sinh(math.Pi * (1 - 2*float64(tile.Y)/n)))
+	latDeg := (180.0 / math.Pi) * latRad
+	return LngLat{lonDeg, latDeg}
+}
+
+// XyBounds returns the Spherical Mercator bounding box of a tile
+func XyBounds(tile TileID) Bbox {
+	left, top := Xy(Ul(tile))
+	nextTile := TileID{tile.X + 1, tile.Y + 1, tile.Z}
+	right, bottom := Xy(Ul(nextTile))
+	return Bbox{left, bottom, right, top}
+}
+*/
+
+// Tile get the tile containing a longitude and latitude.
+/*
+function Tile(lng, lat, zoom) {
+	lat = lat * (Math.Pi / 180.0);
+	n = Math.pow(2.0, zoom);
+	tileX = Math.floor((lng + 180.0) / 360.0 * n);
+	tileY = Math.floor((1.0 - Math.log(Math.tan(lat)+(1.0/Math.cos(lat)))/Math.PI) / 2.0 * n);
+	return {tileX, tileY, zoom};
+}*/
+
+const lon2tile = (lng, zoom) => {
+    n = Math.pow(2.0, zoom);
+    return Math.floor((lng + 180.0) / 360.0 * n);
 }
 
 const lat2tile = (lat, zoom) => {
-    return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom)));
+    lat = lat * (Math.PI / 180.0);
+    n = Math.pow(2.0, zoom);
+    return Math.floor((1.0 - Math.log(Math.tan(lat)+(1.0/Math.cos(lat)))/Math.PI) / 2 * n);
 }
 
 const tile2long = (x, zoom) => {

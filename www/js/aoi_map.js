@@ -5,23 +5,26 @@ var areaSelect;
 function loadMap() {
     var map = L.map('mapid').setView([39.701, -7.69], 10);
 
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
-        attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-        maxZoom: 21
+    var osm = LayerDefinitions.osm;
+    L.tileLayer(        osm.url, {
+        attribution:    osm.attribution,
+        maxZoom:        osm.maxZoom
     }).addTo(map);
 
-    L.tileLayer.wms('http://cidportal.jrc.ec.europa.eu/jeodpp/services/ows/wms/canhemon/portugal?', {
-        layers: 'WV3_20161222',
-        transparent: true,
-        format: 'image/png',
-        maxZoom: 21
+    var ortholayer = LayerDefinitions.jrcOrthophotosWMS;
+    L.tileLayer.wms(    ortholayer.url, {
+        layers:         ortholayer.layers,
+        transparent:    ortholayer.transparent,
+        format:         ortholayer.format,
+        maxZoom:        ortholayer.maxZoom
     }).addTo(map);
 
-    L.tileLayer.wms('http://cidportal.jrc.ec.europa.eu/jeodpp/services/ows/wms/canhemon/portugal?', {
-        layers: 'branco_maxent',
-        transparent: true,
-        format: 'image/png',
-        maxZoom: 21
+    var pointlayer = LayerDefinitions.jrcGeometriesWMS;
+    L.tileLayer.wms(    pointlayer.url, {
+        layers:         pointlayer.layers,
+        transparent:    pointlayer.transparent,
+        format:         pointlayer.format,
+        maxZoom:        pointlayer.maxZoom
     }).addTo(map);
 
     areaSelect = L.areaSelect({width:200, height:200});
@@ -38,8 +41,8 @@ $("#savearea").click( function(e) {
 
     window.sessionStorage.setItem("bbox_xmin", bounds.getSouthWest().lng); 
     window.sessionStorage.setItem("bbox_xmax", bounds.getNorthEast().lng); 
-    window.sessionStorage.setItem("bbox_ymin", bounds.getSouthWest().lat); 
-    window.sessionStorage.setItem("bbox_ymax", bounds.getNorthEast().lat);        
+    window.sessionStorage.setItem("bbox_ymin", bounds.getNorthEast().lat); 
+    window.sessionStorage.setItem("bbox_ymax", bounds.getSouthWest().lat);        
 
     window.location = 'aoi_form.html';   
     return false; 

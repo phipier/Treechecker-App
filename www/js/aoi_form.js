@@ -4,6 +4,10 @@ var aoiform = {
     },
 
     onDeviceReady: function() {
+                     
+        window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
+        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
         if (id_aoi != "") { 
@@ -39,7 +43,7 @@ $("#saveaoi").click( function(e) {
                  xmax : Number($("#Inputxmax").val()),
                  ymin : Number($("#Inputymin").val()),
                  ymax : Number($("#Inputymax").val()) }
-
+    
     // check bbox value (not too large) ?
 
     // insert into table AOI (local DB)
@@ -60,3 +64,10 @@ $("#selectarea").click( function(e) {
     window.location = 'aoi_map.html';   
     return false; 
 } );
+
+function gotFS(fileSystem) {
+    console.log("got filesystem");
+    // save the file system for later access
+    console.log(fileSystem.root.fullPath);
+    window.rootFS = fileSystem.root;
+}

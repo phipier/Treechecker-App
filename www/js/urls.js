@@ -19,8 +19,8 @@ const LayerDefinitions = {
             format: 'image/png',
             transparent: 'true',
             version: '1.1.0',
-            height: 512,
-            width: 512,
+            height: 256,
+            width: 256,
             crs: 'EPSG:4326',
     },
     jrcGeometriesWMS : {
@@ -29,8 +29,8 @@ const LayerDefinitions = {
             format: 'image/png',
             transparent: 'true',
             version: '1.1.0',
-            height: 512,
-            width: 512,
+            height: 256,
+            width: 256,
             crs: 'EPSG:4326',
     },
     downloadables: ['jrcOrthophotosWMS','jrcGeometriesWMS']
