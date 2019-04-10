@@ -2,7 +2,12 @@ function downloadTiles(bbox) {
     var fetchQueue = getTileDownloadURLs(bbox);
     
     for(var i=0, len=fetchQueue.length; i<len; ++i) {
-        console.log("i: " + i + " layername: " + fetchQueue[i].layerName)
+        console.log("i: " + i
+                    + " layername: " + fetchQueue[i].layerName
+                    + " x: " + fetchQueue[i].x
+                    + " y: " + fetchQueue[i].y
+                    + " zoom: " + fetchQueue[i].z)
+
         console.log("URL: " + fetchQueue[i].url);
 
         // download tile
@@ -70,7 +75,7 @@ const getTileBbox = (x, y, zoom) => {
 };
 
 function getTileDownloadURLs(bbox) {
-    var minZoom = 0;
+    var minZoom = 2;
     var maxZoom = 19;
     var fetchQueue = [];
     for(var zoom = minZoom; zoom <= maxZoom; ++zoom) {        

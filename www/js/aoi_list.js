@@ -44,13 +44,13 @@ var listAOI = {
 listAOI.initialize();
 
 $("#addAOI").click( function(e) {
-    e.preventDefault();     
+    e.preventDefault();
     window.sessionStorage.setItem("id_aoi", "");
     window.sessionStorage.setItem("aoiname", "");
-    window.sessionStorage.setItem("bbox_xmin", ""); 
-    window.sessionStorage.setItem("bbox_xmax", ""); 
-    window.sessionStorage.setItem("bbox_ymin", ""); 
-    window.sessionStorage.setItem("bbox_ymax", "");
-    window.location = 'aoi_form.html';    
-    return false; 
+    window.sessionStorage.setItem("bbox_xmin", "39.826");
+    window.sessionStorage.setItem("bbox_xmax", "39.839");
+    window.sessionStorage.setItem("bbox_ymin", "-7.713");
+    window.sessionStorage.setItem("bbox_ymax", "-7.696");
+    window.location = 'aoi_form.html';
+    return false;
 } );

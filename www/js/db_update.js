@@ -118,3 +118,48 @@ function runSQL(query) {
 }
 
 
+/*
+let response = await instance.get(`${URL_GZS}${currentGzId}${URL_AOI_SUFFIX}`);
+
+for (let aoi of response.data) {
+
+  let newObsList = {};
+
+  if (allAoisList[currentGzId][aoi.key]) {
+    let storedAoiObs = allAoisList[currentGzId][aoi.key].obs;
+
+    for (let o of aoi.obs) {
+      if(storedAoiObs[o.key] && storedAoiObs[o.key].toSync){
+        newObsList[o.key] = storedAoiObs[o.key];
+      }else{
+          newObsList[o.key] = o;
+      }
+    }
+    allAoisList[currentGzId][aoi.key].obs = newObsList;
+  } else {
+    let obsList = {};
+    for(let o of aoi.obs){
+      let imgList = {};
+      for(let i of o.images){
+        imgList[i.key] = i;
+
+        try {
+          let respObsImage = await RNFS.downloadFile({
+            fromUrl: `${URL_STATIC}${i.url}`,
+            toFile: `${RNFS.ExternalDirectoryPath}/pictures${i.url}`
+          });
+        } catch(e) {
+          console.debug('error rnfs download image obs', e);
+        }
+
+      }
+      o.images = imgList;
+      o.toSync = false;
+      obsList[o.key] = o;
+    }
+
+    aoi.obs = obsList;
+    allAoisList[currentGzId][aoi.key] = aoi;
+  }
+}
+*/
