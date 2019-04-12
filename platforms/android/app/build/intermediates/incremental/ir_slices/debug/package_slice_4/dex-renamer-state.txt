@@ -1,0 +1,4 @@
+#Fri Apr 12 12:26:41 CEST 2019
+base.0=/home/accent/code/tree_cord/treechecker-app/platforms/android/app/build/intermediates/transforms/dexMerger/debug/4
+path.0=classes.dex
+renamed.0=classes.dex

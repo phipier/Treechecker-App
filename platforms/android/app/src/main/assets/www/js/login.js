@@ -1,4 +1,5 @@
 var login = {
+
     // Login Page Constructor
     initialize: function() {
         this.bindEvents();
@@ -17,6 +18,7 @@ var login = {
     // deviceready Event Handler
     onDeviceReady: function() {
         $('#send_data').click(function(event) {
+			console.log("TRCK send data");
             window.plugins.spinnerDialog.show();
             $('#errorpopupdata').children("p").remove();
             $(this).attr('disabled', 'disabled');
@@ -24,21 +26,26 @@ var login = {
                 type : 'POST',
                 crossDomain : true,
                 dataType : 'text',
-                url : 'http://127.0.0.1:8001/api-token-auth/',
+                url : SERVERURL + '/api-token-auth/',
                 data : {
-                    email : $("#username").val(),
-                    password : $("#password").val()
+                    //email : $("#username").val(),
+                    //password : $("#password").val()
+                    email : 'pier@test.com',
+                    password : 'trEEchecker789'
                 },
                 contentType: 'application/x-www-form-urlencoded',
                 success : function(tk) {
+					console.log("TRCK success");
                     window.plugins.spinnerDialog.hide();
                     window.sessionStorage.setItem("token", $.parseJSON(tk).token);
-                    window.location = 'listRegions.html';
+                    window.location = 'region_list.html';
                 },
                 error : function(req, status, error) {
                     if (status == "error") {
+						console.log("TRCK error");
                         login.onErrorNotFound();
                     } else {
+						console.log("TRCK else");
                         setTimeout(function(){login.onError();}, 500);
                     }
                 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; img-src 'self' data: content: https: http:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="lib/jquery-3.3.1.min.js"></script>
+    <script src="lib/popper.min.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
+    <title>TreeChecker</title>
+</head>
+<body>
+<nav class="navbar navbar-light" style="background-color:#8BC34A;">
+    <font class="header">Area of interest</font>
+    <button class="navbar-toggler ml-auto" type="button" id="sidebarCollapse" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="overlay"></div>
+
+<div id="listaoi-page"></div>
+
+<a id="addAOI" href="aoi_form.html" class="btn button">add AOI</a>
+
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/db.js"></script>
+<script type="text/javascript" src="js/urls.js"></script>
+<script type="text/javascript" src="js/aoi_list.js"></script>
+</body>
+</html>

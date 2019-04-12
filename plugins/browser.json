@@ -21,6 +21,9 @@
     },
     "cordova-sqlite-storage": {
       "PACKAGE_NAME": "eu.jrc.treechecker"
+    },
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "eu.jrc.treechecker"
     }
   },
   "dependent_plugins": {}
