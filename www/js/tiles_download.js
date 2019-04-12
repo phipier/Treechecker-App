@@ -18,7 +18,7 @@ function downloadTiles(bbox) {
 
         var makeRequest = function(data) {
             // download tile
-            var url = data.url;
+            var url = data.url;hi
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
             xhr.responseType = 'blob';
