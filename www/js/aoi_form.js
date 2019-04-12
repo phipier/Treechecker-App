@@ -4,9 +4,6 @@ var aoiform = {
     },
 
     onDeviceReady: function() {
-                     
-        window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
-        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
 
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
@@ -65,9 +62,3 @@ $("#selectarea").click( function(e) {
     return false; 
 } );
 
-function gotFS(fileSystem) {
-    console.log("got filesystem");
-    // save the file system for later access
-    console.log(fileSystem.root.fullPath);
-    window.rootFS = fileSystem.root;
-}

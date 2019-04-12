@@ -1,7 +1,8 @@
 function downloadTiles(bbox) {  
     var fetchQueue = getTileDownloadURLs(bbox);
     
-    for(var i=0, len=fetchQueue.length; i<len; ++i) {
+    //for(var i=0, len=fetchQueue.length; i<len; ++i) {
+    for(var i=0, len=5; i<len; ++i) {
 
         var data = fetchQueue[i];
 
@@ -13,47 +14,121 @@ function downloadTiles(bbox) {
 
         console.log("URL: " + fetchQueue[i].url);
 
-        // download tile
-        
-        var url = data.url;
-        //var dirPath = `${ExternalDirectoryPath}/tiles/${data.layerName}/${data.z}/${data.x}/`;
-        //var filePath = `${dirPath}${data.y}.png`;
+        //deleteFile(dirEntry, "downloadedTile_"+data.z+"_"+data.x+"_"+data.y+".png");
 
-        // save it to Android FS
-        createPath(fs, dirPath, callback)
-
+        var makeRequest = function(data) {
+            // download tile
+            var url = data.url;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'blob';
+            xhr.onload = function() {
+                if (this.status == 200) {                
+                    var blob = new Blob([this.response], { type: 'image/png' });
+                    window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
+                        var dirPath = `tiles/${data.layerName}/${data.z}/${data.x}`;
+                        var filePath = `${data.y}.png`;
+                        createPath(dirEntry, dirPath, function(dirTileEntry) {
+                            saveFile(dirTileEntry, blob, filePath);
+                        })                        
+                    }, function (filerror) {console.log("Failed request FS: " + filerror)});                
+                }
+            };
+            xhr.send();
+        };
+        makeRequest(data);
     }
 }   
 
+function deleteFile(dirEntry, fileName) {
+    dirEntry.getFile(fileName, {create:false}, function(fileEntry) {
+        console.log(fileEntry.fullPath);
+        fileEntry.remove(function(){
+            console.log("file deleted successfully");
+        },function(error){
+            console.log("Failed deleting file" + error);
+            // Error deleting the file
+        },function(){
+            console.log("file doesn't exist");
+            // The file doesn't exist
+        });
+    });
+}
+
+function saveFile(dirEntry, fileData, fileName) {
+    dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
+        writeFile(fileEntry, fileData);
+    }, function (filerror) {console.log("Failed save to file: " + filerror)});
+}
+
+function writeFile(fileEntry, dataObj, isAppend) {
+
+    // Create a FileWriter object for our FileEntry (log.txt).
+    fileEntry.createWriter(function (fileWriter) {
+
+        fileWriter.onwriteend = function() {
+            console.log("Successful file write...");
+            if (dataObj.type == "image/png") {
+                readBinaryFile(fileEntry);
+            }
+            else {
+                readFile(fileEntry);
+            }
+        };
+
+        fileWriter.onerror = function(e) {
+            console.log("Failed file write: " + e.toString());
+        };
+
+        fileWriter.write(dataObj);
+    });
+}
+
+function readBinaryFile(fileEntry) {
+
+    fileEntry.file(function (file) {
+        var reader = new FileReader();
+
+        reader.onloadend = function() {
+
+            console.log("Successful file write: " + this.result);
+            console.log(fileEntry.fullPath + ": " + this.result);
+
+            //var blob = new Blob([new Uint8Array(this.result)], { type: "image/png" });
+            //displayImage(blob);
+        };
+        reader.readAsArrayBuffer(file);
+
+    }, function (filerror) {console.log("Failed save to file: " + filerror)});
+}
+
 // builds directory path
-function createPath(fs, path, callback) {
+function createPath(dirEntry, path, finalCB) {
     var dirs = path.split("/").reverse();
-    var root = fs.root;
-    
+    var dirE = dirEntry;    
 
     var createDir = function(dir) {
         if (dir.trim()!="") {
-            root.getDirectory(dir, {
+            dirE.getDirectory(dir, {
                 create: true,
                 exclusive: false
             }, success, function(dir) {
                 error("failed to create dir " + dir);
             });
-        } else {
-            callback();
-        }
+        } 
     };
 
     var success = function(entry) {
-        root = entry;
+        dirE = entry;
         if (dirs.length > 0) {
             createDir(dirs.pop());
-        } else {
-            callback();
+        } else{
+            finalCB(dirE);
         }
     };
 
     createDir(dirs.pop());
+    return dirE;
 }
 
 
@@ -158,109 +233,3 @@ function getTileDownloadURLs(bbox) {
     }
     return fetchQueue;
 };
-
-/*
-    for(var i=0, len=fetchQueue.length; i<len; ++i) {
-    try {
-        var data = fetchQueue[i];
-        var url = data.url;
-        var dirPath = `${RNFS.ExternalDirectoryPath}/tiles/${data.layerName}/${data.z}/${data.x}/`;
-        var filePath = `${dirPath}${data.y}.png`;
-
-    //window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, (fileSystem) => {console.log(fileSystem.name);}, (evt) => {console.log(evt.target.error.code);});
-    const dirPath = cordova.file.dataDirectory + `/tiles/${data.layerName}/${data.z}/${data.x}/`;
-
-    window.resolveLocalFileSystemURI(dirPath, (directoryEntry) => {console.log(directoryEntry);}, (directoryEntry) => {console.log(directoryEntry);});
-
-    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
-        function gotFS(fileSystem) {
-            window.FS = fileSystem;
-
-            var printDirPath = function(entry){
-            console.log("Dir path - " + entry.fullPath);
-            }
-
-            createDirectory("dhaval/android/apps", printDirPath);
-
-        console.log('file system open: ' + fs.name);
-        fs.root.getFile('bot.png', { create: true, exclusive: false }, function (fileEntry) {
-        console.log('fileEntry is file? ' + fileEntry.isFile.toString());
-        var oReq = new XMLHttpRequest();
-        // Make sure you add the domain name to the Content-Security-Policy <meta> element.
-        oReq.open("GET", "http://cordova.apache.org/static/img/cordova_bot.png", true);
-        // Define how you want the XHR data to come back
-        oReq.responseType = "blob";
-        oReq.onload = function (oEvent) {
-            var blob = oReq.response; // Note: not oReq.responseText
-            if (blob) {
-                // Create a URL based on the blob, and set an <img> tag's src to it.
-                var url = window.URL.createObjectURL(blob);
-                document.getElementById('bot-img').src = url;
-                // Or read the data with a FileReader
-                var reader = new FileReader();
-                reader.addEventListener("loadend", function() {
-                    // reader.result contains the contents of blob as text
-                });
-                reader.readAsText(blob);
-            } else console.error('we didnt get an XHR response!');
-        };
-        oReq.send(null);
-        }, function (err) { console.error('error getting file! ' + err); });
-    }, 
-    function (err) { console.error('error getting persistent fs! ' + err); });
-
-    
-        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
-    }
-
-    function fail() {
-        console.log("failed to get filesystem");
-    }
-
-
-
-
-        if(!exists) {
-        await RNFS.mkdir(dirPath)
-        }
-        try {
-        var fileTransfer = new FileTransfer();
-
-        fileTransfer.onprogress = function(progressEvent) {
-            if (progressEvent.lengthComputable) {
-            loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
-            } else {
-            loadingStatus.increment();
-            }
-        };
-
-        fileTransfer.download(
-            url,
-            filePath,
-            function(entry) {
-            console.log("download complete: " + entry.fullPath);
-            },
-            function(error) {
-            console.log("download error source " + error.source);
-            console.log("download error target " + error.target);
-            console.log("upload error code" + error.code);
-            },
-            false,
-            {
-            headers: {
-                "Authorization": "Basic dGVzdHVzZXJuYW1lOnRlc3RwYXNzd29yZA=="
-            }
-            }
-        );
-        } catch(error) {
-        console.log(url + " KO1 " + error)
-        }
-    } catch (error) {
-        console.log("--------- ERR: " + error);        
-    }
-    }
-    finishDownload(aoiName, bbox, navigation, token, currentGzId, dispatch);    
-};
-}
-*/
-
