@@ -1,11 +1,23 @@
-function downloadTiles(bbox) {  
+var tile_num;
+var cur_tile_num;
+var tilePC;    
+
+function downloadTiles(bbox, id_AOI) {  
     var fetchQueue = getTileDownloadURLs(bbox);
+
+    var deleteFile_flag = false;
+
+    // if tiles exist for this AOI id then delete them (folder)    
+     
+    tile_num = fetchQueue.length;
+    tilePC = 100/tile_num;
+    cur_tile_num = 0;
     
-    //for(var i=0, len=fetchQueue.length; i<len; ++i) {
-    for(var i=0, len=5; i<len; ++i) {
+    for(var i=0, len=fetchQueue.length; i<len; ++i) {
+    //for(var i=0, len=5; i<len; ++i) {
 
         var data = fetchQueue[i];
-
+        
         console.log("i: " + i
                     + " layername: " + data.layerName
                     + " x: " +      data.x
@@ -14,56 +26,91 @@ function downloadTiles(bbox) {
 
         console.log("URL: " + fetchQueue[i].url);
 
-        //deleteFile(dirEntry, "downloadedTile_"+data.z+"_"+data.x+"_"+data.y+".png");
+        var dirPath = `files/tiles/${id_AOI}/${data.layerName}/${data.z}/${data.x}`;
+        var filePath = `${data.y}.png`;
+        var fileName = dirPath+"/"+filePath;
 
-        var makeRequest = function(data) {
-            // download tile
-            var url = data.url;hi
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true);
-            xhr.responseType = 'blob';
-            xhr.onload = function() {
-                if (this.status == 200) {                
-                    var blob = new Blob([this.response], { type: 'image/png' });
-                    window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
-                        var dirPath = `tiles/${data.layerName}/${data.z}/${data.x}`;
-                        var filePath = `${data.y}.png`;
-                        createPath(dirEntry, dirPath, function(dirTileEntry) {
-                            saveFile(dirTileEntry, blob, filePath);
-                        })                        
-                    }, function (filerror) {console.log("Failed request FS: " + filerror)});                
-                }
+        //if (!fileExists(fileName)) {         
+    
+            var makeRequest = function(dataURL, dirPath, filePath) {
+                // download tile
+                var url = dataURL;
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.responseType = 'blob';
+                xhr.onload = function() {
+                    if (this.status == 200) {      
+                        var blob = new Blob([this.response], { type: 'image/png' });
+                        window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
+                                                            
+                            console.log("dirpath: "+dirPath);
+
+                            createPath(dirEntry, dirPath, function(dirTileEntry) {
+                                saveFile(dirTileEntry, blob, filePath);
+                                update_download();
+                            })
+
+                        }, function (filerror) {console.log("Failed request FS: " + filerror)});                
+                    }
+                };
+                xhr.send();
             };
-            xhr.send();
-        };
-        makeRequest(data);
-    }
-}   
+            makeRequest(data.url, dirPath, filePath);
+        //};
+    
+    };
+};
 
-function deleteFile(dirEntry, fileName) {
-    dirEntry.getFile(fileName, {create:false}, function(fileEntry) {
-        console.log(fileEntry.fullPath);
-        fileEntry.remove(function(){
-            console.log("file deleted successfully");
-        },function(error){
-            console.log("Failed deleting file" + error);
-            // Error deleting the file
-        },function(){
-            console.log("file doesn't exist");
-            // The file doesn't exist
+function update_download() {
+    cur_tile_num++;
+    var cur_tilePC = tilePC*cur_tile_num;
+    $('.progress-bar').css('width', cur_tilePC+'%').attr('aria-valuenow', cur_tilePC);
+}
+
+function fileExists(fileName) {
+    window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {        
+        console.log("exists? "+fileName);
+        dirEntry.getFile(fileName, {create:false}, function(fileEntry) {
+            console.log("file exists "+fileEntry.fullPath);
+        }, function(fileEntry) {
+            console.log("file doesn't exist "+fileEntry.fullPath);
         });
-    });
+    }, function (fileError) {console.log("Failed request FS: " + fileError)});
+}
+
+function deleteFile(fileName) {
+
+    window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
+        
+        console.log("deleting "+fileName);
+
+        dirEntry.getFile(fileName, {create:false}, function(fileEntry) {
+            
+            fileEntry.remove(function(){
+                console.log("file deleted successfully "+fileName);
+            },function(error){
+                console.log("Failed deleting file" + error);
+                // Error deleting the file
+            },function(){
+                console.log("file doesn't exist "+fileName);
+                // The file doesn't exist
+            });
+        });
+
+    }, function (filerror) {console.log("Failed request FS: " + filerror)});
+
 }
 
 function saveFile(dirEntry, fileData, fileName) {
     dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
-        writeFile(fileEntry, fileData);
-    }, function (filerror) {console.log("Failed save to file: " + filerror)});
+        writeFile(fileEntry, fileData);        
+    }, function (fileError) {
+        console.log("Failed save to file: " + fileError);       
+    });
 }
 
 function writeFile(fileEntry, dataObj, isAppend) {
-
-    // Create a FileWriter object for our FileEntry (log.txt).
+    
     fileEntry.createWriter(function (fileWriter) {
 
         fileWriter.onwriteend = function() {
@@ -112,9 +159,7 @@ function createPath(dirEntry, path, finalCB) {
             dirE.getDirectory(dir, {
                 create: true,
                 exclusive: false
-            }, success, function(dir) {
-                error("failed to create dir " + dir);
-            });
+            }, success, failed);
         } 
     };
 
@@ -127,8 +172,12 @@ function createPath(dirEntry, path, finalCB) {
         }
     };
 
-    createDir(dirs.pop());
-    return dirE;
+    var failed = function(dir) {
+        error("failed to create dir " + dir);
+        return false;     
+    };
+
+    createDir(dirs.pop());    
 }
 
 

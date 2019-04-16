@@ -20,6 +20,7 @@ var aoiform = {
             $("#Inputxmax").val(window.sessionStorage.getItem("bbox_xmax"));
             $("#Inputymin").val(window.sessionStorage.getItem("bbox_ymin")); 
             $("#Inputymax").val(window.sessionStorage.getItem("bbox_ymax"));
+            $("#InputforceRedld").val(window.sessionStorage.getItem("forceRedld"));
         }
         
         //window.sessionStorage.setItem("fromAOIMap", "false");
@@ -34,23 +35,28 @@ aoiform.initialize();
 
 $("#saveaoi").click( function(e) {
     e.preventDefault();
+
     var id_aoi = window.sessionStorage.getItem("id_aoi");
+
     var aoiname = $("#InputAOIname").val();
     var bbox = { xmin : Number($("#Inputxmin").val()),
                  xmax : Number($("#Inputxmax").val()),
                  ymin : Number($("#Inputymin").val()),
                  ymax : Number($("#Inputymax").val()) }
+    //var forceRedld = $("#InputforceRedld").val();
     
     // check bbox value (not too large) ?
+
+    // insert AOI into server DB 
 
     // insert into table AOI (local DB)
     // replace ?
 
         //if (id_aoi == "") {sqlstr = "insert ..."}
         //else    {sqlstr = "update ... "}
-            
+    
     // download tiles
-    downloadTiles(bbox)
+    downloadTiles(bbox, "id_AOI")
     
     return false; 
 } );
