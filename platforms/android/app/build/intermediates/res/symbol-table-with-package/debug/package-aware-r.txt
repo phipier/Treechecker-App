@@ -1,8 +1,0 @@
-eu.jrc.treechecker
-drawable screen
-mipmap icon
-string activity_name
-string app_name
-string launcher_name
-xml camera_provider_paths
-xml config
