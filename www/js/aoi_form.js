@@ -77,10 +77,12 @@ function add_AOI(aoiname, bbox) {
             + '", "y_min":"' + bbox.ymin 
             + '", "y_max":"' + bbox.ymax + '"}';
 
+    var urlaoi = SERVERURL + "/api/gzs/"+ id_region +"/aois/";
+
     $.ajax({
         async: true,
         crossDomain: true,
-        url: SERVERURL + "/api/gzs/"+ id_region +"/aois/",
+        url: urlaoi,
         method: "POST",
         headers: {
           "Authorization": "JWT " + token,
@@ -95,7 +97,7 @@ function add_AOI(aoiname, bbox) {
                     "REPLACE INTO aoi(id, name, x_min, x_max, y_min, y_max, geographical_zone_id) "
                     + "VALUES("+val.key+",'"+val.name+ "',"
                     +           val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+ ","
-                    +           aoi_data.id_region+")";
+                    +           id_region+")";
 
                 tx.executeSql(sqlstr);
 
@@ -111,8 +113,7 @@ function add_AOI(aoiname, bbox) {
             window.plugins.spinnerDialog.hide();
         },
         error : function(req, status, error) {
-            window.plugins.spinnerDialog.hide();
-            console.log("no connection to DB");
+            console.log("error in request: "+req.responseText);
         }
     });
 }
