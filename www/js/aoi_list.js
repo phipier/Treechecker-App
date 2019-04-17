@@ -11,12 +11,38 @@ var listAOI = {
                 var query = 'SELECT * FROM aoi where geographical_zone_id = '+id_region+';';
                 tx.executeSql(query, [], function (tx, res) {
                     var html = "";
+
                     for(var x = 0; x < res.rows.length; x++) {
+                        var id_aoi = res.rows.item(x).id;
                         html += '<div class="card"><div class="card-body"><h5 class="card-title">' 
-                        + res.rows.item(x).name
-                        + '</h5><a id="la'+res.rows.item(x).id+'" class="btn button">See data</a></div></div>';
+                        + res.rows.item(x).name + '</h5>'
+                        + '<a id="data_idaoi_'+id_aoi+'" class="btn button">see survey data</a></div></div>'
+                        + '<a id="edit_idaoi_'+id_aoi+'" class="btn button">edit aoi</a></div></div>'
+                        + '<a id="dele_idaoi_'+id_aoi+'" class="btn button">delete aoi</a></div></div>';
                     }                    
                     $("#listaoi-page").html(html);
+                    $("[id^=data_idaoi_]").click(function(e) {
+                        e.preventDefault(); 
+                        var id_aoi = this.id.substring(11);
+                        window.sessionStorage.setItem("id_aoi", id_aoi);                    
+                        window.location = 'obs_list.html';
+                        return false; 
+                    });
+                    $("[id^=edit_idaoi_]").click(function(e) {
+                        e.preventDefault(); 
+                        var id_aoi = this.id.substring(11);
+                        window.sessionStorage.setItem("id_aoi", id_aoi);                    
+                        window.location = 'aoi_form.html';
+                        return false; 
+                    }); 
+                    $("[id^=dele_idaoi_]").click(function(e) {
+                        e.preventDefault(); 
+                        var id_aoi = this.id.substring(11);
+                        window.sessionStorage.setItem("id_aoi", id_aoi);   
+                        delete_aoi(id_aoi);                 
+                        window.location = 'aoi_list.html';
+                        return false; 
+                    });  
                     window.plugins.spinnerDialog.hide();
                 },
                 function (tx, error) {
@@ -25,12 +51,7 @@ var listAOI = {
             }, function (error) {
                 console.log('transaction AOI error: ' + error.message);
             }, function () {
-                console.log('transaction AOI ok');
-                $("span[id$=la]").click( function(e) {
-                    e.preventDefault(); 
-                    window.sessionStorage.setItem("id_aoi", e.id);
-                    window.location = 'obs_list.html';
-                    return false; } ); 
+                console.log('transaction AOI ok');                
             }
         );
     },
@@ -60,3 +81,5 @@ $("#addAOI").click( function(e) {
     window.location = 'aoi_form.html';
     return false;
 } );
+
+function delete_aoi(id_aoi) {}

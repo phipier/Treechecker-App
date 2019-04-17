@@ -8,8 +8,8 @@ var aoiform = {
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
         if (id_aoi != "") { 
-            // editing an existing AOI
-            // ?? window.sessionStorage.getItem("fromAOIMap") == "false";
+            // select from local DB ...
+            // editing an existing AOI            
             //bbox_xmin = DBvalue; 
             //bbox_xmax = DBvalue; 
             //bbox_ymin = DBvalue; 
@@ -22,10 +22,8 @@ var aoiform = {
             $("#Inputymax").val(window.sessionStorage.getItem("bbox_ymax"));
             $("#InputforceRedld").val(window.sessionStorage.getItem("forceRedld"));
         }
-        
-        //window.sessionStorage.setItem("fromAOIMap", "false");
+        window.plugins.spinnerDialog.hide();        
     },
-
     // Update DOM on a Received Event
     receivedEvent: function(id) {
     }
