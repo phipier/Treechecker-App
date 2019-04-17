@@ -18,14 +18,15 @@ function loadMap() {
         mymap.setView([json.latitude, json.longitude], 17);
 
         addMapEvents();
+
         addMapControls();
         
         initLayers();
         
         addOfflineLayers();
-                
+            
         addMarkers(json.obs);
-
+        
     });
 };
 

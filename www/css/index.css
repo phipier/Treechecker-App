@@ -173,3 +173,7 @@ html, #mapid, #login-page {
     bottom: 20px;
     width: 100%;    
 }
+
+.progress-bar {
+    background-color: green !important;
+}
