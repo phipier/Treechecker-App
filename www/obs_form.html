@@ -20,30 +20,64 @@
 </nav>
 <div class="overlay"></div>
 
-<div id="AOI-form">
-    
-<!-- fields :
-
-    AOI name 
-    Bbox + button to select area on the map
-    WMS layers to download
-    Others
-
--->
-
+<div id="OBS-form">
     <form>
         <div class="form-group">
             <label for="InputAOIname">Name</label>
-            <input type="name" class="form-control" id="InputAOIname" aria-describedby="emailHelp" placeholder="Enter AOI name">            
+            <input type="text" class="form-control" id="InputOBSname" aria-describedby="emailHelp" placeholder="Enter name" required>
+            <div class="invalid-feedback">
+                Please provide a name for this observation.
+            </div>
+            <input type="text" class="form-control" id="InputOBScomment" aria-describedby="emailHelp" placeholder="Enter comment" required>
+            <div class="invalid-feedback">
+                Please provide a comment for this observation.
+            </div>
+        </div>
+        <div class="form-group"></div>
+            <label>Select species:</label>
+            <select class="custom-select" id="inputSelectSpecies">
+                <option selected>select species</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+            <label>Select crown diameter:</label>
+            <select class="custom-select" id="inputSelectCrown">
+                <option selected>select crown diameter</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+            <label>Select tree status:</label>
+            <select class="custom-select" id="inputSelectStatus">
+                <option selected>select canopy status</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
         </div>
         <div class="form-group">
-            <label for="InputAOIname">bbox</label>
-            <input type="bbox" class="form-control" id="InputAOIname" placeholder="Enter bbox or select on map">
-            <small id="bboxhelp" class="form-text text-muted">boundaries in WSG84, format is xmin:xmax:ymin:ymax</small>
-            <a href="#" class="btn button">select area</a>
+            <div>
+                <a id="selectposition" href="#" class="btn button">select position</a><br>
+            </div>
+            <label for="Inputlatitude">latitude</label>
+            <input type="number" class="form-control" id="Inputlatitude" placeholder="Enter latitude">
+            <div class="invalid-feedback">
+                Please provide a latitude for the position of this observation.
+            </div>
+            <label for="Inputlongitude">longitude</label>
+            <input type="number" class="form-control" id="Inputlongitude" placeholder="Enter longitude">
+            <div class="invalid-feedback">
+                Please provide a longitude for the position of this observation.
+            </div>
         </div>
-        <!-- button id="aoisavebtn" type="submit" class="btn btn-primary">save my AOI</button -->
-        <a id="aoisave" href="#" class="btn button">save my AOI</a>
+        <div class="form-group">
+            <label for="Inputcompass">compass</label>
+            <input type="number" class="form-control" id="Inputcompass" placeholder="Enter compass value">            
+        </div>
+        <!-- button id="btn_saveobs" type="submit" class="btn btn-primary">save my AOI</button -->
+        <a id="saveobs" href="#" class="btn button">save my observation</a>
+        <br><br>
     </form>
 </div>
 
@@ -53,3 +87,4 @@
 <script type="text/javascript" src="js/obs_form.js"></script>
 </body>
 </html>
+

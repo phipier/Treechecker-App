@@ -1,9 +1,9 @@
 
 function update() {
     update_regions();
-    update_canopystatus();
+    update_treespecies();
     update_crowndiameter();
-    update_treespecies();   
+    update_canopystatus();       
 }
 
 function synchronize() {
@@ -43,9 +43,108 @@ function update_regions() {
     });
 }
 
-function update_canopystatus() {}
-function update_crowndiameter() {}
-function update_treespecies() {}
+/*
+Get tree species
+URL	/api/species/
+Method	GET
+Requires authentication:	true
+Params:	
+Response:	[ { "key": 1, "name": "specie1" }, ... ]
+
+Get crown diameters
+URL	/api/crowns/
+Method	GET
+Requires authentication:	true
+Params:	
+Response:	[ { "key": 1, "name": "0.1" }, ... ]
+
+Get canopy statuses
+URL	/api/canopies/
+Method	GET
+Requires authentication:	true
+Params:	
+Response:	[ { "key": 1, "name": "status1" }, ... ]
+*/
+
+/*
+INSERT INTO api_treespecie(name) VALUES('specie1'), ('specie2'), ('specie3');
+INSERT INTO api_crowndiameter(name) VALUES('0.1'),('0.35'),('0.60'),('0.85'),
+INSERT INTO api_canopystatus(name) VALUES('status1'),('status2'),('status3'),('status4'),('status5');
+*/
+
+function update_treespecies() {
+  var token = window.sessionStorage.getItem("token");
+  $.ajax({
+    type : 'GET',
+    crossDomain : true,
+    url : SERVERURL + '/api/species/',
+    beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
+    success : function(reg) {
+      $.each(reg, function(key, val) {
+          db.transaction(function(tx) {                    
+              var sqlstr = "REPLACE INTO treespecies(id, name) VALUES("+val.key+",'"+val.name+"')";
+              tx.executeSql(sqlstr);                            
+          }, function(error) {
+              console.log('Transaction ERROR: ' + error.message);
+          }, function() {
+              console.log('Populated table species OK');
+          });
+      });
+    },
+    error : function(req, status, error) {
+        console.log("no connection to DB");
+    }
+  });
+}
+
+function update_crowndiameter() {
+  var token = window.sessionStorage.getItem("token");
+  $.ajax({
+    type : 'GET',
+    crossDomain : true,
+    url : SERVERURL + '/api/crowns/',
+    beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
+    success : function(reg) {
+      $.each(reg, function(key, val) {
+          db.transaction(function(tx) {                    
+              var sqlstr = "REPLACE INTO crowndiameter(id, name) VALUES("+val.key+",'"+val.name+"')";
+              tx.executeSql(sqlstr);                            
+          }, function(error) {
+              console.log('Transaction ERROR: ' + error.message);
+          }, function() {
+              console.log('Populated table crowndiameter OK');
+          });
+      });
+    },
+    error : function(req, status, error) {
+        console.log("no connection to DB");
+    }
+  });
+}
+
+function update_canopystatus() {var token = window.sessionStorage.getItem("token");
+$.ajax({
+  type : 'GET',
+  crossDomain : true,
+  url : SERVERURL + '/api/canopies/',
+  beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
+  success : function(reg) {
+    $.each(reg, function(key, val) {
+        db.transaction(function(tx) {                    
+            var sqlstr = "REPLACE INTO canopystatus(id, name) VALUES("+val.key+",'"+val.name+"')";
+            tx.executeSql(sqlstr);                            
+        }, function(error) {
+            console.log('Transaction ERROR: ' + error.message);
+        }, function() {
+            console.log('Populated table canopystatus OK');
+        });
+    });
+  },
+  error : function(req, status, error) {
+      console.log("no connection to DB");
+  }
+});}
+
 
 function sync_AOIandObservations() {
     // AOI
@@ -73,97 +172,17 @@ function sync_AOIandObservations() {
    
 }
 
+/*
+obs_data =  '{"name" :"'            + $("#InputOBSname").text; 
++ '", "tree_specie":"'      + $("#InputSelectSpecies").children("option:selected").val()
++ '", "crown_diameter":"'   + $("#InputSelectCrown").children("option:selected").val()
++ '", "canopy_status":"'    + $("#InputSelectStatus").children("option:selected").val()
++ '", "comment":"'          + $("#InputOBScomment").text
++ '", "latitude":"'         + Number($("#Inputlatitude").text) 
++ '", "longitude":"'        + Number($("#Inputlongitude").text) 
++ '", "compass":"'        + Number($("#Inputcompass").text) 
++ '", "y_max":"' + bbox.ymax + '"}';
+*/
+
 function sync_Images() {}
 
-
-function createTables() {
-    var sqlstr;
-    //checkIftableexists("geographicalzone");    
-    sqlstr = "CREATE TABLE geographicalzone (id integer primary key, name varchar(255) not null, layer_name varchar(255) not null, wms_url varchar(255) not null, proj varchar(255) not null, image_url varchar(255) not null, x_min double precision not null, x_max double precision not null, y_min double precision not null, y_max double precision not null);"
-    runSQL(sqlstr);
-    //checkIftableexists("aoi");
-    sqlstr = "CREATE TABLE aoi (id integer primary key, name varchar(100) not null, x_min double precision not null, x_max double precision not null, y_min double precision not null, y_max double precision not null, is_deleted varchar(5) not null DEFAULT 'false', geographical_zone_id integer not null, owner_id integer);"
-    runSQL(sqlstr);
-    sqlstr = "CREATE TABLE obs (id integer primary key, aoi_id integer, name varchar(100) not null, tree_specie_id integer, crown_diameter_id integer, canopy_status_id integer, comment varchar(250) not null, longitude double precision not null, latitude double precision not null, compass integer, is_deleted varchar(5) not null DEFAULT 'false');"
-    runSQL(sqlstr);
-
-    var res = runSQL(sqlstr);
-}
-
-function checkIftableexists(tablename) {
-    db.transaction(function (tx) {
-        var query = "SELECT name FROM sqlite_master WHERE type='table' AND name='{"+tablename+"}';";
-        tx.executeSql(query, [], function (tx, res) {   
-            return res;
-        },
-        function (tx, error) {
-            console.log('SELECT error: ' + error.message);
-        });
-    }, function (error) {
-        console.log('transaction error: ' + error.message);
-    }, function () {
-        console.log('transaction ok');
-    });
-}
-
-function runSQL(query) {
-    db.transaction(function (tx) {       
-        tx.executeSql(query, [], function (tx, res) {            
-            return res;
-        },
-        function (tx, error) {
-            console.log('SELECT error: ' + error.message);
-        });
-    }, function (error) {
-        console.log('transaction error: ' + error.message);
-    }, function () {
-        console.log('transaction ok');
-    });
-}
-
-
-/*
-let response = await instance.get(`${URL_GZS}${currentGzId}${URL_AOI_SUFFIX}`);
-
-for (let aoi of response.data) {
-
-  let newObsList = {};
-
-  if (allAoisList[currentGzId][aoi.key]) {
-    let storedAoiObs = allAoisList[currentGzId][aoi.key].obs;
-
-    for (let o of aoi.obs) {
-      if(storedAoiObs[o.key] && storedAoiObs[o.key].toSync){
-        newObsList[o.key] = storedAoiObs[o.key];
-      }else{
-          newObsList[o.key] = o;
-      }
-    }
-    allAoisList[currentGzId][aoi.key].obs = newObsList;
-  } else {
-    let obsList = {};
-    for(let o of aoi.obs){
-      let imgList = {};
-      for(let i of o.images){
-        imgList[i.key] = i;
-
-        try {
-          let respObsImage = await RNFS.downloadFile({
-            fromUrl: `${URL_STATIC}${i.url}`,
-            toFile: `${RNFS.ExternalDirectoryPath}/pictures${i.url}`
-          });
-        } catch(e) {
-          console.debug('error rnfs download image obs', e);
-        }
-
-      }
-      o.images = imgList;
-      o.toSync = false;
-      obsList[o.key] = o;
-    }
-
-    aoi.obs = obsList;
-    allAoisList[currentGzId][aoi.key] = aoi;
-  }
-}
-*/

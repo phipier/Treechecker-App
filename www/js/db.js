@@ -11,10 +11,18 @@ function createtables() {
     var sqlstr;
     //checkIftableexists("geographicalzone");    
     sqlstr = "CREATE TABLE geographicalzone (id integer primary key, name varchar(255) not null, layer_name varchar(255) not null, wms_url varchar(255) not null, proj varchar(255) not null, image_url varchar(255) not null, x_min double precision not null, x_max double precision not null, y_min double precision not null, y_max double precision not null);"
-    var res = runSQL(sqlstr);
+    runSQL(sqlstr);
     //checkIftableexists("aoi");
     sqlstr = "CREATE TABLE aoi (id integer primary key, name varchar(100) not null, x_min double precision not null, x_max double precision not null, y_min double precision not null, y_max double precision not null, creation_date date not null DEFAULT (datetime('now','localtime')), is_deleted varchar(5) not null DEFAULT 'false', geographical_zone_id integer not null, owner_id integer);"
-    var res = runSQL(sqlstr);
+    runSQL(sqlstr);
+    sqlstr = "CREATE TABLE obs (id integer primary key, aoi_id integer, name varchar(100) not null, tree_specie_id integer, crown_diameter_id integer, canopy_status_id integer, comment varchar(250) not null, longitude double precision not null, latitude double precision not null, compass integer, is_deleted varchar(5) not null DEFAULT 'false');"
+    runSQL(sqlstr);
+    sqlstr = "CREATE TABLE treespecies (id integer primary key, name varchar(100) not null);"
+    runSQL(sqlstr);
+    sqlstr = "CREATE TABLE crowndiameter (id integer primary key, name varchar(100) not null);"
+    runSQL(sqlstr);
+    sqlstr = "CREATE TABLE canopystatus (id integer primary key, name varchar(100) not null);"
+    runSQL(sqlstr);
 }
 
 function checkIftableexists(tablename) {
