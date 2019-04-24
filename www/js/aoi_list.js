@@ -16,8 +16,8 @@ var listAOI = {
                         var id_aoi = res.rows.item(x).id;
                         html += '<div class="card"><div class="card-body"><h5 class="card-title">' 
                         + res.rows.item(x).name + '</h5>'
-                        + '<a id="data_idaoi_'+id_aoi+'" class="btn button">see survey data</a></div></div>'
-                        + '<a id="edit_idaoi_'+id_aoi+'" class="btn button">edit aoi</a></div></div>'
+                        + '<a id="data_idaoi_'+id_aoi+'" class="btn button">see survey data</a>'
+                        + '<a id="edit_idaoi_'+id_aoi+'" class="btn button">edit aoi</a>'
                         + '<a id="dele_idaoi_'+id_aoi+'" class="btn button">delete aoi</a></div></div>';
                     }                    
                     $("#listaoi-page").html(html);

@@ -28,6 +28,7 @@
             <div class="invalid-feedback">
                 Please provide a name for this observation.
             </div>
+            <label for="InputOBScomment">Comment</label>
             <input type="text" class="form-control" id="InputOBScomment" aria-describedby="emailHelp" placeholder="Enter comment" required>
             <div class="invalid-feedback">
                 Please provide a comment for this observation.
@@ -35,21 +36,21 @@
         </div>
         <div class="form-group"></div>
             <label>Select species:</label>
-            <select class="custom-select" id="inputSelectSpecies">
+            <select class="custom-select" id="InputSelectSpecies">
                 <option selected>select species</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
                 <option value="3">Three</option>
             </select>
             <label>Select crown diameter:</label>
-            <select class="custom-select" id="inputSelectCrown">
+            <select class="custom-select" id="InputSelectCrown">
                 <option selected>select crown diameter</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
                 <option value="3">Three</option>
             </select>
             <label>Select tree status:</label>
-            <select class="custom-select" id="inputSelectStatus">
+            <select class="custom-select" id="InputSelectStatus">
                 <option selected>select canopy status</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
@@ -61,12 +62,12 @@
                 <a id="selectposition" href="#" class="btn button">select position</a><br>
             </div>
             <label for="Inputlatitude">latitude</label>
-            <input type="number" class="form-control" id="Inputlatitude" placeholder="Enter latitude">
+            <input type="number" class="form-control" id="Inputlatitude" placeholder="Enter latitude" required>
             <div class="invalid-feedback">
                 Please provide a latitude for the position of this observation.
             </div>
             <label for="Inputlongitude">longitude</label>
-            <input type="number" class="form-control" id="Inputlongitude" placeholder="Enter longitude">
+            <input type="number" class="form-control" id="Inputlongitude" placeholder="Enter longitude" required>
             <div class="invalid-feedback">
                 Please provide a longitude for the position of this observation.
             </div>

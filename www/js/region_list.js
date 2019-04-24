@@ -51,10 +51,10 @@ var listRegions = {
             window.plugins.spinnerDialog.show();
             update();            
         });
-        $('#sync').on('click', function() {
+        /*$('#sync').on('click', function() {
             window.plugins.spinnerDialog.show();            
             synchronize();
-        });
+        });*/
     },
 
     // Update DOM on a Received Event

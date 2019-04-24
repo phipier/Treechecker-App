@@ -3,8 +3,6 @@ var aoiform = {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
     },
 
-
-
     onDeviceReady: function() {
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
@@ -47,30 +45,29 @@ $("#saveobs").click( function(e) {
     $("select.country").change(function(){
         var selectedCountry = $(this).children("option:selected").val();
     });
-   
 
-    var obsname = $("#InputOBSname").text;
-    var latitude = $("#Inputlatitude").text;
-    var longitude = $("#Inputlongitude").text;
-                
+    var obsname   = $("#InputOBSname").text;
+    var latitude  = Number($("#Inputlatitude").text);
+    var longitude = Number($("#Inputlongitude").text);
 
-    /*
-  Params:	{ "name": "obsTest", "tree_specie": 2, "crown_diameter": 2, "canopy_status": 5, "comment": "This is a test from postman", 
-  "latitude": 1.72789, "longitude": 45.123456, "compass": 30.45 }
+    var id_aoi = window.sessionStorage.getItem("id_aoi");
 
-  Response:	{ "key": 5, "name": "obsTest", "tree_specie": { "key": 2, "name": "specie2" }, 
-  "crown_diameter": { "key": 2, "name": "0.2" }, "canopy_status": { "key": 5, "name": "status5" }, 
-  "comment": "This is a test from Postman", "position": { "longitude": 45.123456, "latitude": 1.72789 }, "images": [ ] }
-*/
+    var obs_data =  '{"name" :"'    + $("#InputOBSname").text
+    + '", "id_aoi":"'               + id_aoi
+    + '", "id_tree_species":"'      + $("#InputSelectSpecies").children("option:selected").val()
+    + '", "id_crown_diameter":"'    + $("#InputSelectCrown").children("option:selected").val()
+    + '", "id_canopy_status":"'     + $("#InputSelectStatus").children("option:selected").val()
+    + '", "comment":"'              + $("#InputOBScomment").text
+    + '", "latitude":"'             + Number($("#Inputlatitude").text) 
+    + '", "longitude":"'            + Number($("#Inputlongitude").text) 
+    + '", "compass":"'              + Number($("#Inputcompass").text) 
+    + '", "y_max":"'                + bbox.ymax + '"}';
 
-    add_OBS(aoiname, bbox);
+    var obs = JSON.parse(obs_data);
 
-        //if (id_aoi == "") {sqlstr = "insert ..."}
-        //else    {sqlstr = "update ... "}
-        
+    // if online then send also data to server?  add_OBS as success callback
     
-    // download tiles
-    downloadTiles(bbox)
+    insert_OBS(obs);
     
     return false; 
 });
@@ -83,22 +80,15 @@ $("#selectposition").click( function(e) {
 } );
 
 function init_dropdowns() {
-/*
-sqlstr = "CREATE TABLE treespecie (id integer primary key, name varchar(100) not null);"
-    runSQL(sqlstr);
-    sqlstr = "CREATE TABLE crowndiameter (id integer primary key, name varchar(100) not null);"
-    runSQL(sqlstr);
-    sqlstr = "CREATE TABLE canopystatus (id integer primary key, name varchar(100) not null);"
-    runSQL(sqlstr);
-*/
 
-/*
- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">sp1</a>
-                <a class="dropdown-item" href="#">sp2</a>
-                <a class="dropdown-item" href="#">sp3</a>
-                </div>
-*/
+        /*
+        sqlstr = "CREATE TABLE treespecies (id integer primary key, name varchar(100) not null);"
+            runSQL(sqlstr);
+            sqlstr = "CREATE TABLE crowndiameter (id integer primary key, name varchar(100) not null);"
+            runSQL(sqlstr);
+            sqlstr = "CREATE TABLE canopystatus (id integer primary key, name varchar(100) not null);"
+            runSQL(sqlstr);
+        */
 
     db.transaction(function (tx) {
         var query = 'SELECT * FROM treespecies;';
@@ -116,8 +106,34 @@ sqlstr = "CREATE TABLE treespecie (id integer primary key, name varchar(100) not
         });
 
         // crowns
+        var query = 'SELECT * FROM crowndiameter;';
+        tx.executeSql(query, [], function (tx, res) {
+            var html = "";
+            for(var x = 0; x < res.rows.length; x++) {
+                $('#inputSelectCrown').append($('<option>', { 
+                    value: res.rows.item(x).id,
+                    text : res.rows.item(x).name 
+                }));
+            }
+        },
+        function (tx, error) {
+            console.log('SELECT crowndiameter error: ' + error.message);
+        });
 
         // status
+        var query = 'SELECT * FROM canopystatus;';
+        tx.executeSql(query, [], function (tx, res) {
+            var html = "";
+            for(var x = 0; x < res.rows.length; x++) {
+                $('#inputSelectStatus').append($('<option>', { 
+                    value: res.rows.item(x).id,
+                    text : res.rows.item(x).name 
+                }));
+            }
+        },
+        function (tx, error) {
+            console.log('SELECT canopystatus error: ' + error.message);
+        });
 
 
     }, function (error) {
@@ -127,40 +143,5 @@ sqlstr = "CREATE TABLE treespecie (id integer primary key, name varchar(100) not
     }
     );
 };
-
-
-function add_OBS(obs_data) {
-    var id_region = window.sessionStorage.getItem("id_region");
-   
-    obs_data =  '{"name" :"'            + $("#InputOBSname").text; 
-            + '", "tree_specie":"'      + $("#InputSelectSpecies").children("option:selected").val()
-            + '", "crown_diameter":"'   + $("#InputSelectCrown").children("option:selected").val()
-            + '", "canopy_status":"'    + $("#InputSelectStatus").children("option:selected").val()
-            + '", "comment":"'          + $("#InputOBScomment").text
-            + '", "latitude":"'         + Number($("#Inputlatitude").text) 
-            + '", "longitude":"'        + Number($("#Inputlongitude").text) 
-            + '", "compass":"'        + Number($("#Inputcompass").text) 
-            + '", "y_max":"' + bbox.ymax + '"}';
-
-    db.transaction(function(tx) {
-        var sqlstr = 
-            "REPLACE INTO obs(id, name, x_min, x_max, y_min, y_max, geographical_zone_id) "
-            + "VALUES("+val.key+",'"+val.name+ "',"
-            +           val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+ ","
-            +           id_region+")";
-
-        tx.executeSql(sqlstr);
-
-    }, function(error) {
-        console.log('Transaction ERROR: ' + error.message);
-    }, function() {
-        console.log('Populated database OK');
-            
-        // download tiles
-        downloadTiles(bbox, val.key)
-        
-    });
-            
-}
 
 

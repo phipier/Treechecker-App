@@ -2,7 +2,7 @@ var tile_num;
 var cur_tile_num;
 var tilePC;    
 
-function downloadTiles(bbox, id_AOI) {  
+function downloadTiles(id_AOI, bbox) {  
     init_progress();
 
     var fetchQueue = getTileDownloadURLs(bbox);

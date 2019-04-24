@@ -82,7 +82,7 @@ function update_treespecies() {
     success : function(reg) {
       $.each(reg, function(key, val) {
           db.transaction(function(tx) {                    
-              var sqlstr = "REPLACE INTO treespecies(id, name) VALUES("+val.key+",'"+val.name+"')";
+              var sqlstr = "INSERT INTO treespecies(id, name) VALUES("+val.key+",'"+val.name+"')";
               tx.executeSql(sqlstr);                            
           }, function(error) {
               console.log('Transaction ERROR: ' + error.message);
@@ -107,7 +107,7 @@ function update_crowndiameter() {
     success : function(reg) {
       $.each(reg, function(key, val) {
           db.transaction(function(tx) {                    
-              var sqlstr = "REPLACE INTO crowndiameter(id, name) VALUES("+val.key+",'"+val.name+"')";
+              var sqlstr = "INSERT INTO crowndiameter(id, name) VALUES("+val.key+",'"+val.name+"')";
               tx.executeSql(sqlstr);                            
           }, function(error) {
               console.log('Transaction ERROR: ' + error.message);
@@ -131,7 +131,7 @@ $.ajax({
   success : function(reg) {
     $.each(reg, function(key, val) {
         db.transaction(function(tx) {                    
-            var sqlstr = "REPLACE INTO canopystatus(id, name) VALUES("+val.key+",'"+val.name+"')";
+            var sqlstr = "INSERT INTO canopystatus(id, name) VALUES("+val.key+",'"+val.name+"')";
             tx.executeSql(sqlstr);                            
         }, function(error) {
             console.log('Transaction ERROR: ' + error.message);
@@ -171,6 +171,17 @@ function sync_AOIandObservations() {
         // insert records from ServerDB where local id does not exists
    
 }
+
+// observations 
+    
+/*
+  Params:	{ "name": "obsTest", "tree_specie": 2, "crown_diameter": 2, "canopy_status": 5, "comment": "This is a test from postman", 
+  "latitude": 1.72789, "longitude": 45.123456, "compass": 30.45 }
+
+  Response:	{ "key": 5, "name": "obsTest", "tree_specie": { "key": 2, "name": "specie2" }, 
+  "crown_diameter": { "key": 2, "name": "0.2" }, "canopy_status": { "key": 5, "name": "status5" }, 
+  "comment": "This is a test from Postman", "position": { "longitude": 45.123456, "latitude": 1.72789 }, "images": [ ] }
+*/
 
 /*
 obs_data =  '{"name" :"'            + $("#InputOBSname").text; 
