@@ -18,17 +18,26 @@ function loadMap() {
         mymap.setView([json.latitude, json.longitude], 17);
 
         addMapEvents();
-
-        addMapControls();
-        
-        initLayers();
-        
-        addOfflineLayers();
-            
-        addMarkers(json.obs);
-        
+        addMapControls();        
+        initLayers();        
+        addOfflineLayers();            
+        addMarkers(json.obs);        
     });
 };
+
+var marker;
+function onMapClick(e) {
+    marker = new L.marker(e.latlng, {draggable:'true'});
+    marker.on('dragend', function(event){
+      var marker = event.target;
+      var position = marker.getLatLng();
+      marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
+      map.panTo(new L.LatLng(position.lat, position.lng))
+    });
+    map.addLayer(marker);
+};
+
+map.on('click', onMapClick);
 
 function initLayers() {
     var osm = new L.TileLayer(LayerDefinitions.osm.url, {maxZoom: 25, attribution: LayerDefinitions.osm.attribution});
@@ -38,12 +47,11 @@ function initLayers() {
 
 function addOfflineLayers(baseURL) {
 
-    for(let layerName of LayerDefinitions.downloadables) {  
-
+    for(let layerName of LayerDefinitions.downloadables) {
         console.log("Adding " + layerName);
-        var layer = new L.TileLayer(`${baseURL}/tiles/${layerName}/{z}/{x}/{y}.png`, {maxZoom: 25});      
-        mymap.addLayer(layer);  
-        
+        var layer = new L.TileLayer( cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layerName + "/{z}/{x}/{y}.png", 
+                                {maxZoom: 25});      
+        mymap.addLayer(layer);        
         if(controlLayers)
             controlLayers.addOverlay(layer, layerName);
         else
@@ -104,27 +112,23 @@ function addMarkers(data) {
 }
       
 function buildSurveyDataPopup(data) {
-
     var container = L.DomUtil.create('div');
     container.innerHTML = `<h2>${data.name}</h2><p><b>Specie:</b>${data.tree_specie.name}</p><p><b>Diameter:</b>${data.crown_diameter.name}</p>`;
     var btn = L.DomUtil.create('i', 'fa fa-info-circle fa-2x centered', container);
     L.DomEvent.on(btn, 'click', () => {
         viewElement(data.key)
     });
-    return container;
-  
+    return container;  
 }
   
-$("#savearea").click( function(e) {
+$("#savelocation").click(function(e) {
     e.preventDefault();     
-    var bounds = areaSelect.getBounds();
-    console.log("selected bounds: " + bounds);      
+   
+    window.sessionStorage.setItem("obs_latitude", marker.getLatLng().lat); 
+    window.sessionStorage.setItem("obs_longitude", bounds.getLatLng().lng); 
+    
+    console.log("selected location: lat " + marker.getLatLng().lat + " lng " + marker.getLatLng().lng); 
 
-    window.sessionStorage.setItem("bbox_xmin", bounds.getSouthWest().lng); 
-    window.sessionStorage.setItem("bbox_xmax", bounds.getNorthEast().lng); 
-    window.sessionStorage.setItem("bbox_ymin", bounds.getNorthEast().lat); 
-    window.sessionStorage.setItem("bbox_ymax", bounds.getSouthWest().lat);        
-
-    window.location = 'aoi_form.html';   
+    window.location = 'obs_form.html';   
     return false; 
 } );

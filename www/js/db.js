@@ -53,24 +53,18 @@ function runSQL(query) {
     });
 }
 
-function insert_OBS(obs_data) {
-    db.transaction(function(tx) {
-        var sqlstr = 
-            "INSERT INTO obs(obs.name, obs.id_aoi, obs.id_tree_species, obs.id_crown_diameter, "
-            + "obs.id_canopy_status, comment, longitude, latitude, compass, is_deleted) "
-            + "VALUES(" + obs.name + "," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
-            + obs.id_canopy_status + "," + comment + "," + longitude + "," + latitude + "," + compass + ")";
+/*
+    var obs.data =  '{"name" :"'    + $("#InputOBSname").text
+                + '", "id_aoi":"'               + id_aoi
+                + '", "id_tree_species":"'      + $("#InputSelectSpecies").children("option:selected").val()
+                + '", "id_crown_diameter":"'    + $("#InputSelectCrown").children("option:selected").val()
+                + '", "id_canopy_status":"'     + $("#InputSelectStatus").children("option:selected").val()
+                + '", "comment":"'              + $("#InputOBScomment").text
+                + '", "latitude":"'             + Number($("#Inputlatitude").text) 
+                + '", "longitude":"'            + Number($("#Inputlongitude").text) 
+                + '", "compass":"'              + Number($("#Inputcompass").text) + '"}';
+*/
 
-        tx.executeSql(sqlstr);
-
-    }, function(error) {
-        console.log('Transaction ERROR: ' + error.message);
-    }, function() {
-        console.log('Populated database OK');            
-        // download tiles
-        downloadTiles(bbox, val.key)        
-    });            
-}
 
 function insert_AOI(val, id_region) {
     db.transaction(function(tx) {
@@ -85,10 +79,8 @@ function insert_AOI(val, id_region) {
     }, function(error) {
         console.log('Transaction ERROR: ' + error.message);
     }, function() {
-        console.log('Populated database OK');
-            
+        console.log('Populated database OK');                  
         // download tiles
-        downloadTiles(bbox, val.key)
-        
+        downloadTiles(bbox, val.key)        
     });
 }

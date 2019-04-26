@@ -7,28 +7,24 @@ var aoiform = {
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
         var id_obs = window.sessionStorage.getItem("id_obs");
-
+        
         init_dropdowns();
         
         if (id_obs != "") { 
             // editing an existing observation           
-            //bbox_xmin = DBvalue; 
-            //bbox_xmax = DBvalue; 
-            //bbox_ymin = DBvalue; 
-            //bbox_ymax = DBvalue;
-        } else {                   
-            bbox_xmin = window.sessionStorage.getItem("bbox_xmin"); 
-            bbox_xmax = window.sessionStorage.getItem("bbox_xmax"); 
-            bbox_ymin = window.sessionStorage.getItem("bbox_ymin"); 
-            bbox_ymax = window.sessionStorage.getItem("bbox_ymax");
-        }
-        $("#InputAOIname").text(window.sessionStorage.getItem("aoiname"));
-        $("#Inputxmin").text(bbox_xmin); 
-        $("#Inputxmax").text(bbox_xmax); 
-        $("#Inputymin").text(bbox_ymin);
-        $("#Inputymax").text(bbox_ymax);
-
-        //window.sessionStorage.setItem("fromAOIMap", "false");
+            //latitude = DBvalue; 
+            //longitude = DBvalue;            
+        } else {
+            obs = getWSitems();      
+        }       
+        $("#InputOBSname").text(obs.name);
+        $("#InputOBScomment").text(obs.comment);
+        $("#InputSelectSpecies").val(obs.id_tree_species);
+        $("#InputSelectSpecies").val(obs.id_crown_diameter);
+        $("#InputSelectSpecies").val(obs.id_canopy_status);
+        $("#Inputlatitude").text(obs.latitude);
+        $("#Inputlongitude").text(obs.longitude);
+        $("#Inputcompass").text(obs.compass);
     },
 
     // Update DOM on a Received Event
@@ -46,56 +42,74 @@ $("#saveobs").click( function(e) {
         var selectedCountry = $(this).children("option:selected").val();
     });
 
-    var obsname   = $("#InputOBSname").text;
-    var latitude  = Number($("#Inputlatitude").text);
-    var longitude = Number($("#Inputlongitude").text);
-
     var id_aoi = window.sessionStorage.getItem("id_aoi");
+    setWSitems();
+    // if online then send also data to server?  insert_OBS as success callback    
+    insert_OBS(getWSitems());
 
-    var obs_data =  '{"name" :"'    + $("#InputOBSname").text
-    + '", "id_aoi":"'               + id_aoi
-    + '", "id_tree_species":"'      + $("#InputSelectSpecies").children("option:selected").val()
-    + '", "id_crown_diameter":"'    + $("#InputSelectCrown").children("option:selected").val()
-    + '", "id_canopy_status":"'     + $("#InputSelectStatus").children("option:selected").val()
-    + '", "comment":"'              + $("#InputOBScomment").text
-    + '", "latitude":"'             + Number($("#Inputlatitude").text) 
-    + '", "longitude":"'            + Number($("#Inputlongitude").text) 
-    + '", "compass":"'              + Number($("#Inputcompass").text) 
-    + '", "y_max":"'                + bbox.ymax + '"}';
-
-    var obs = JSON.parse(obs_data);
-
-    // if online then send also data to server?  add_OBS as success callback
-    
-    insert_OBS(obs);
-    
     return false; 
 });
 
+function insert_OBS(obs) {
+    db.transaction(function(tx) {
+        var sqlstr = 
+            "INSERT INTO obs(name, id_aoi, id_tree_species, id_crown_diameter, "
+            + "id_canopy_status, comment, longitude, latitude, compass, is_deleted) "
+            + "VALUES(" + obs.name + "," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
+            + obs.id_canopy_status + "," +obs.comment + "," + obs.longitude + "," + obs.latitude + "," + obs.compass + ")";
+
+        tx.executeSql(sqlstr);
+
+    }, function(error) {
+        console.log('Transaction OBS ERROR: ' + error.message);
+    }, function() {
+        console.log('Populated table OBS OK');            
+        // download tiles         
+        window.sessionStorage.setItem("id_obs","");
+        window.location("obs_list.html")         
+    });            
+}
+
 $("#selectposition").click( function(e) {
     e.preventDefault();     
-    window.sessionStorage.setItem("aoiname",$("#InputAOIname").text);
+    setWSitems();
     window.location = 'obs_map.html';    
     return false; 
 } );
 
-function init_dropdowns() {
+function setWSitems() {
+    window.sessionStorage.setItem("obs_name",               $("#InputOBSname").text);
+    window.sessionStorage.setItem("obs_comment",            $("#InputOBScomment").text);
+    window.sessionStorage.setItem("obs_id_tree_species",    $("#InputSelectSpecies").children("option:selected").val());
+    window.sessionStorage.setItem("obs_id_crown_diameter",  $("#InputSelectCrown").children("option:selected").val());
+    window.sessionStorage.setItem("obs_id_canopy_status",   $("#InputSelectStatus").children("option:selected").val());
+    window.sessionStorage.setItem("obs_latitude",           $("#Inputlatitude").text);
+    window.sessionStorage.setItem("obs_longitude",          $("#Inputlongitude").text);
+    window.sessionStorage.setItem("obs_compass",            $("#Inputcompass").text);
+}
 
-        /*
-        sqlstr = "CREATE TABLE treespecies (id integer primary key, name varchar(100) not null);"
-            runSQL(sqlstr);
-            sqlstr = "CREATE TABLE crowndiameter (id integer primary key, name varchar(100) not null);"
-            runSQL(sqlstr);
-            sqlstr = "CREATE TABLE canopystatus (id integer primary key, name varchar(100) not null);"
-            runSQL(sqlstr);
-        */
+function getWSitems() {
+    var obs = {id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:''};
+    obs.name =              window.sessionStorage.getItem("obs_name");       
+    obs.comment =           window.sessionStorage.getItem("obs_comment");
+    obs.id_tree_species =   window.sessionStorage.getItem("obs_id_tree_species");
+    obs.id_crown_diameter = window.sessionStorage.getItem("obs_id_crown_diameter");          
+    obs.id_canopy_status =  window.sessionStorage.getItem("obs_id_canopy_status");          
+    obs.latitude =          window.sessionStorage.getItem("obs_latitude");
+    obs.longitude =         window.sessionStorage.getItem("obs_longitude");          
+    obs.compass =           window.sessionStorage.getItem("obs_compass");
+    obs.id_aoi =            window.sessionStorage.getItem("id_aoi");
+    return obs;
+}
+
+function init_dropdowns() {
 
     db.transaction(function (tx) {
         var query = 'SELECT * FROM treespecies;';
         tx.executeSql(query, [], function (tx, res) {
             var html = "";
             for(var x = 0; x < res.rows.length; x++) {
-                $('#inputSelectSpecies').append($('<option>', { 
+                $('#InputSelectSpecies').append($('<option>', { 
                     value: res.rows.item(x).id,
                     text : res.rows.item(x).name 
                 }));
@@ -110,7 +124,7 @@ function init_dropdowns() {
         tx.executeSql(query, [], function (tx, res) {
             var html = "";
             for(var x = 0; x < res.rows.length; x++) {
-                $('#inputSelectCrown').append($('<option>', { 
+                $('#InputSelectCrown').append($('<option>', { 
                     value: res.rows.item(x).id,
                     text : res.rows.item(x).name 
                 }));
@@ -125,7 +139,7 @@ function init_dropdowns() {
         tx.executeSql(query, [], function (tx, res) {
             var html = "";
             for(var x = 0; x < res.rows.length; x++) {
-                $('#inputSelectStatus').append($('<option>', { 
+                $('#InputSelectStatus').append($('<option>', { 
                     value: res.rows.item(x).id,
                     text : res.rows.item(x).name 
                 }));

@@ -21,14 +21,14 @@ var listObs = {
                     $("#listobs-page").html(html);
                     $("[id^=edit_idobs_]").click(function(e) {
                         e.preventDefault(); 
-                        var id_aoi = this.id.substring(11);
+                        var id_obs = this.id.substring(11);
                         window.sessionStorage.setItem("id_obs", id_obs);                    
                         window.location = 'obs_form.html';
                         return false; 
                     });
                     $("[id^=dele_idobs_]").click(function(e) {
                         e.preventDefault(); 
-                        var id_aoi = this.id.substring(11);
+                        var id_obs = this.id.substring(11);
                         window.sessionStorage.setItem("id_obs", id_obs); 
                         delete_obs(id_obs);                   
                         window.location = 'obs_list.html';
@@ -56,17 +56,10 @@ var listObs = {
 $("#addOBS").click( function(e) {
     e.preventDefault();
     window.sessionStorage.setItem("id_obs", "");
-    window.sessionStorage.setItem("obsname", "");
+    window.sessionStorage.setItem("obsname", "myobstest");
 
     window.sessionStorage.setItem("latitude", "39.784352364601");
     window.sessionStorage.setItem("longitude", "-7.6377547801287");
-
-    /*
-    window.sessionStorage.setItem("bbox_xmin", "39.826");
-    window.sessionStorage.setItem("bbox_xmax", "39.839");
-    window.sessionStorage.setItem("bbox_ymin", "-7.713");
-    window.sessionStorage.setItem("bbox_ymax", "-7.696");
-    */
 
     window.location = 'obs_form.html';
     return false;

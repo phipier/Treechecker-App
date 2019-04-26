@@ -48,12 +48,6 @@ $("#saveaoi").click( function(e) {
     // insert AOI into server DB 
     add_AOI(aoiname, bbox);    
 
-    // insert into table AOI (local DB)
-    // replace ?
-
-        //if (id_aoi == "") {sqlstr = "insert ..."}
-        //else    {sqlstr = "update ... "}
-
     downloadTiles(id_aoi, bbox)
 
     return false; 
