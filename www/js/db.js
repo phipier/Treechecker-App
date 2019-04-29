@@ -65,22 +65,3 @@ function runSQL(query) {
                 + '", "compass":"'              + Number($("#Inputcompass").text) + '"}';
 */
 
-
-function insert_AOI(val, id_region) {
-    db.transaction(function(tx) {
-        var sqlstr = 
-            "INSERT INTO aoi(id, name, x_min, x_max, y_min, y_max, geographical_zone_id) "
-            + "VALUES("+val.key+",'"+val.name+ "',"
-            +           val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+ ","
-            +           id_region+")";
-
-        tx.executeSql(sqlstr);
-
-    }, function(error) {
-        console.log('Transaction ERROR: ' + error.message);
-    }, function() {
-        console.log('Populated database OK');                  
-        // download tiles
-        downloadTiles(bbox, val.key)        
-    });
-}

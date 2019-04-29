@@ -7,15 +7,16 @@ var aoiform = {
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
         var id_obs = window.sessionStorage.getItem("id_obs");
-        
+        var obs;
+
         init_dropdowns();
         
         if (id_obs != "") { 
             // editing an existing observation           
-            //latitude = DBvalue; 
-            //longitude = DBvalue;            
+            //latitude = DBvalue;
+            //longitude = DBvalue;      
         } else {
-            obs = getWSitems();      
+            obs = getWSitems();
         }       
         $("#InputOBSname").text(obs.name);
         $("#InputOBScomment").text(obs.comment);
@@ -29,6 +30,7 @@ var aoiform = {
 
     // Update DOM on a Received Event
     receivedEvent: function(id) {
+
     }
 };
 

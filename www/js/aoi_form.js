@@ -48,8 +48,6 @@ $("#saveaoi").click( function(e) {
     // insert AOI into server DB 
     add_AOI(aoiname, bbox);    
 
-    downloadTiles(id_aoi, bbox)
-
     return false; 
 
 } );
@@ -87,6 +85,8 @@ function add_AOI(aoiname, bbox) {
         data: aoi_data,
         success : function(val) {              
             insert_AOI(val, id_region); 
+            // download tiles
+            downloadTiles(val.key, bbox);   
             window.plugins.spinnerDialog.hide();
         },
         error : function(req, status, error) {
@@ -94,4 +94,23 @@ function add_AOI(aoiname, bbox) {
         }
     });
 }
+
+function insert_AOI(val, id_region) {
+    db.transaction(function(tx) {
+        var sqlstr = 
+            "INSERT INTO aoi(id, name, x_min, x_max, y_min, y_max, geographical_zone_id) "
+            + "VALUES("+val.key+",'"+val.name+ "',"
+            +           val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+ ","
+            +           id_region+")";
+
+        tx.executeSql(sqlstr);
+
+    }, function(error) {
+        console.log('Transaction ERROR: ' + error.message);
+    }, function() {
+        console.log('Populated database OK');                  
+        
+    });
+}
+
 

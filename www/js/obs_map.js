@@ -1,12 +1,16 @@
 document.addEventListener('deviceready', loadMap, false);
 
 var areaSelect;
+var marker;
+var mymap;
+var geojsonLayer;
+var overlays;
 
 function loadMap() {
-    var mymap = L.map('mapid');
-    var controlLayers = null;
-    var geojsonLayer = null;
-    var overlays = {};
+    mymap = L.map('mapid');
+    controlLayers = null;
+    geojsonLayer = null;
+    overlays = {};
 
     mymap.on('load', (e) => {
         
@@ -17,27 +21,23 @@ function loadMap() {
 
         mymap.setView([json.latitude, json.longitude], 17);
 
-        addMapEvents();
-        addMapControls();        
+        //addMapControls();        
         initLayers();        
         addOfflineLayers();            
-        addMarkers(json.obs);        
+        //addMarkers(json.obs);        
     });
-};
 
-var marker;
-function onMapClick(e) {
-    marker = new L.marker(e.latlng, {draggable:'true'});
-    marker.on('dragend', function(event){
-      var marker = event.target;
-      var position = marker.getLatLng();
-      marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
-      map.panTo(new L.LatLng(position.lat, position.lng))
+    mymap.on('click', (e) => {
+        marker = new L.marker(e.latlng, {draggable:'true'});
+        marker.on('dragend', function(event){
+          var marker = event.target;
+          var position = marker.getLatLng();
+          marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
+          map.panTo(new L.LatLng(position.lat, position.lng))
+        });
+        map.addLayer(marker);
     });
-    map.addLayer(marker);
-};
-
-map.on('click', onMapClick);
+}
 
 function initLayers() {
     var osm = new L.TileLayer(LayerDefinitions.osm.url, {maxZoom: 25, attribution: LayerDefinitions.osm.attribution});
@@ -57,16 +57,6 @@ function addOfflineLayers(baseURL) {
         else
             overlays[layerName] = layer;
     }
-}
-
-function addMapEvents() {
-    mymap.on('contextmenu', (e) => {  
-      sendDataToReact({  
-        action: 'addObservation',
-        latitude: e.latlng.lat,
-        longitude: e.latlng.lng  
-      });  
-    }); 
 }
 
 function addMarkers(data) {
