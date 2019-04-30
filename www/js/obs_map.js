@@ -12,20 +12,21 @@ function loadMap() {
     geojsonLayer = null;
     overlays = {};
 
-    mymap.on('load', (e) => {
-        
-        //var corner1 = L.latLng(json.bbox[0], json.bbox[1]);
-        //var corner2 = L.latLng(json.bbox[2], json.bbox[3]);
-        //var bounds = L.latLngBounds(corner1, corner2);
-        //mymap.fitBounds(bounds);
+    //mymap.on('load', (e) => {
+    bbox = window.sessionStorage.getItem("bbox");
 
-        mymap.setView([json.latitude, json.longitude], 17);
+    var corner1 = L.latLng(json.bbox[0], json.bbox[1]);
+    var corner2 = L.latLng(json.bbox[2], json.bbox[3]);
+    var bounds = L.latLngBounds(corner1, corner2);
+    mymap.fitBounds(bounds);
 
-        //addMapControls();        
-        initLayers();        
-        addOfflineLayers();            
+    //mymap.setView([json.latitude, json.longitude], 17);
+
+    //addMapControls();        
+    initLayers();           
+    addOfflineLayers();            
         //addMarkers(json.obs);        
-    });
+    //});
 
     mymap.on('click', (e) => {
         marker = new L.marker(e.latlng, {draggable:'true'});

@@ -53,6 +53,11 @@ function runSQL(query) {
     });
 }
 
+
+
+
+
+
 /*
     var obs.data =  '{"name" :"'    + $("#InputOBSname").text
                 + '", "id_aoi":"'               + id_aoi

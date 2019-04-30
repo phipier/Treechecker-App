@@ -86,8 +86,7 @@ function add_AOI(aoiname, bbox) {
         success : function(val) {              
             insert_AOI(val, id_region); 
             // download tiles
-            downloadTiles(val.key, bbox);   
-            window.plugins.spinnerDialog.hide();
+            downloadTiles(val.key, val.bbox);   
         },
         error : function(req, status, error) {
             console.log("error in request: "+req.responseText);

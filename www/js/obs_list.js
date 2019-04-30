@@ -8,6 +8,7 @@ var listObs = {
         var id_aoi = window.sessionStorage.getItem("id_aoi");
 
         db.transaction(function (tx) {
+
                 var query = 'SELECT * FROM obs where id_aoi = '+id_aoi+';';
                 tx.executeSql(query, [], function (tx, res) {
                     var html = "";
@@ -39,6 +40,18 @@ var listObs = {
                 function (tx, error) {
                     console.log('SELECT observation error: ' + error.message);
                 });
+                                
+                var query = 'SELECT * FROM aoi where id = '+id_aoi+';';
+                tx.executeSql(query, [], function (tx, res) {     
+                    window.sessionStorage.setItem("bbox_xmin", res.rows.item(0).x_min);
+                    window.sessionStorage.setItem("bbox_xmin", res.rows.item(0).x_max);
+                    window.sessionStorage.setItem("bbox_ymin", res.rows.item(0).y_min);
+                    window.sessionStorage.setItem("bbox_ymax", res.rows.item(0).y_max);
+                },
+                function (tx, error) {
+                    console.log('SELECT AOI error: ' + error.message);
+                });
+                
             }, function (error) {
                 console.log('transaction observation error: ' + error.message);
             }, function () {

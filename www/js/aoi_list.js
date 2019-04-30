@@ -16,7 +16,8 @@ var listAOI = {
                         var id_aoi = res.rows.item(x).id;
                         html += '<div class="card"><div class="card-body"><h5 class="card-title">' 
                         + res.rows.item(x).name + '</h5>'
-                        + '<a id="data_idaoi_'+id_aoi+'" class="btn button">see survey data</a>'
+                        + '<a id="data_idaoi_'+id               
+                        _aoi+'" class="btn button">see survey data</a>'
                         + '<a id="edit_idaoi_'+id_aoi+'" class="btn button">edit aoi</a>'
                         + '<a id="dele_idaoi_'+id_aoi+'" class="btn button">delete aoi</a></div></div>';
                     }                    
@@ -82,4 +83,14 @@ $("#addAOI").click( function(e) {
     return false;
 } );
 
-function delete_aoi(id_aoi) {}
+function delete_aoi(id_aoi) {
+    db.transaction(function(tx) {
+        var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
+        tx.executeSql(sqlstr);
+    }, function(error) {
+        console.log('Transaction delete aoi ERROR: ' + error.message);
+    }, function() {
+        console.log('deleted AOI table OK');
+    });
+}
+    
