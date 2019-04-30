@@ -131,11 +131,18 @@ html, #mapid, #login-page {
     background:#e9fce9;
     color:#000;
     transition:all 0.3s;
-    font-size:18px;
 }
 
 #sidebar.active {
     margin-left:50%;
+}
+
+.listItem {
+    font-size:20px;
+    padding:10px;
+    height:75px;
+    border-bottom:1px #000 solid;
+    background-color:#C8E6C9;
 }
 
 .overlay {
