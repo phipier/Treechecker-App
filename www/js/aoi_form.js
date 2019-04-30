@@ -86,7 +86,7 @@ function add_AOI(aoiname, bbox) {
         success : function(val) {              
             insert_AOI(val, id_region); 
             // download tiles
-            downloadTiles(val.key, val.bbox);   
+            downloadTiles(val.key, bbox);   
         },
         error : function(req, status, error) {
             console.log("error in request: "+req.responseText);
@@ -107,8 +107,7 @@ function insert_AOI(val, id_region) {
     }, function(error) {
         console.log('Transaction ERROR: ' + error.message);
     }, function() {
-        console.log('Populated database OK');                  
-        
+        console.log('Populated database OK'); 
     });
 }
 
