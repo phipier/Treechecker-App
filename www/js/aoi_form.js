@@ -7,12 +7,12 @@ var aoiform = {
 
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
-        if (id_aoi != "") { 
+        if (id_aoi !== null && id_aoi != "") { 
             // select from local DB ...
             // editing an existing AOI            
             //bbox_xmin = DBvalue; 
             //bbox_xmax = DBvalue; 
-            //bbox_ymin = DBvalue; 
+            //bbox_ymin = DBvalue;
             //bbox_ymax = DBvalue;
         } else {                   
             $("#InputAOIname").val(window.sessionStorage.getItem("aoiname"));
