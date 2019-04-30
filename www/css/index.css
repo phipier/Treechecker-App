@@ -87,6 +87,7 @@ h1 {
     font-weight:bold;
     position:absolute;
     left:50%;
+    transform:translateX(-50%);
 }
 
 .button {
@@ -130,11 +131,18 @@ html, #mapid, #login-page {
     background:#e9fce9;
     color:#000;
     transition:all 0.3s;
-    font-size:18px;
 }
 
 #sidebar.active {
     margin-left:50%;
+}
+
+.listItem {
+    font-size:20px;
+    padding:10px;
+    height:75px;
+    border-bottom:1px #000 solid;
+    background-color:#C8E6C9;
 }
 
 .overlay {
@@ -155,25 +163,25 @@ html, #mapid, #login-page {
 }
 
 #map-wrapper {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    border: 1px solid black;
+    width:100%;
+    height:100%;
+    position:relative;
+    border:1px solid black;
 }
 
 #mapid {
-    width: 100%;
-    height: 100%;
-    background-color: green;
+    width:100%;
+    height:100%;
+    background-color:green;
 }
 
 #button-wrapper {
-    z-index: 1000;  
-    position: absolute;
-    bottom: 20px;
-    width: 100%;    
+    z-index:1000;
+    position:absolute;
+    bottom:20px;
+    width:100%;
 }
 
 .progress-bar {
-    background-color: green !important;
+    background-color:green !important;
 }
