@@ -12,7 +12,7 @@ var aoiform = {
             // editing an existing AOI            
             //bbox_xmin = DBvalue; 
             //bbox_xmax = DBvalue; 
-            //bbox_ymin = DBvalue; 
+            //bbox_ymin = DBvalue;
             //bbox_ymax = DBvalue;
         } else {                   
             $("#InputAOIname").val(window.sessionStorage.getItem("aoiname"));
