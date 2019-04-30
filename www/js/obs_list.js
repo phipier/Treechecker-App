@@ -42,9 +42,9 @@ var listObs = {
                 });
                                 
                 var query = 'SELECT * FROM aoi where id = '+id_aoi+';';
-                tx.executeSql(query, [], function (tx, res) {     
+                tx.executeSql(query, [], function (tx, res) {
                     window.sessionStorage.setItem("bbox_xmin", res.rows.item(0).x_min);
-                    window.sessionStorage.setItem("bbox_xmin", res.rows.item(0).x_max);
+                    window.sessionStorage.setItem("bbox_xmax", res.rows.item(0).x_max);
                     window.sessionStorage.setItem("bbox_ymin", res.rows.item(0).y_min);
                     window.sessionStorage.setItem("bbox_ymax", res.rows.item(0).y_max);
                 },

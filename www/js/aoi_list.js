@@ -40,7 +40,7 @@ var listAOI = {
                         var id_aoi = this.id.substring(11);
                         window.sessionStorage.setItem("id_aoi", id_aoi);   
                         delete_aoi(id_aoi);                 
-                        window.location = 'aoi_list.html';
+                        
                         return false; 
                     });  
                     window.plugins.spinnerDialog.hide();
@@ -90,6 +90,7 @@ function delete_aoi(id_aoi) {
         console.log('Transaction delete aoi ERROR: ' + error.message);
     }, function() {
         console.log('deleted AOI table OK');
+        window.location = 'aoi_list.html';
     });
 }
     

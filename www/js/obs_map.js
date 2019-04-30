@@ -1,6 +1,5 @@
 document.addEventListener('deviceready', loadMap, false);
 
-var areaSelect;
 var marker;
 var mymap;
 var geojsonLayer;
@@ -15,16 +14,16 @@ function loadMap() {
     //mymap.on('load', (e) => {
     bbox = window.sessionStorage.getItem("bbox");
 
-    var corner1 = L.latLng(json.bbox[0], json.bbox[1]);
-    var corner2 = L.latLng(json.bbox[2], json.bbox[3]);
+    var corner1 = L.latLng(Number(window.sessionStorage.getItem("bbox_ymin")), Number(window.sessionStorage.getItem("bbox_xmin")));
+    var corner2 = L.latLng(Number(window.sessionStorage.getItem("bbox_ymax")), Number(window.sessionStorage.getItem("bbox_xmax")));
     var bounds = L.latLngBounds(corner1, corner2);
     mymap.fitBounds(bounds);
 
     //mymap.setView([json.latitude, json.longitude], 17);
 
-    //addMapControls();        
-    initLayers();           
-    addOfflineLayers();            
+    addMapControls();
+    initLayers();
+    addOfflineLayers();        
         //addMarkers(json.obs);        
     //});
 
@@ -36,18 +35,18 @@ function loadMap() {
           marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
           map.panTo(new L.LatLng(position.lat, position.lng))
         });
-        map.addLayer(marker);
+        mymap.addLayer(marker);
     });
 }
 
 function initLayers() {
-    var osm = new L.TileLayer(LayerDefinitions.osm.url, {maxZoom: 25, attribution: LayerDefinitions.osm.attribution});
+    var osm = new L.TileLayer(LayerDefinitions.osm.url, {maxZoom: 20, maxNativeZoom: 19, attribution: LayerDefinitions.osm.attribution});
     mymap.addLayer(osm);
     controlLayers.addBaseLayer(osm, LayerDefinitions.osm.layerName);
 }
 
 function addOfflineLayers(baseURL) {
-
+    var id_AOI = window.sessionStorage.getItem("id_aoi");
     for(let layerName of LayerDefinitions.downloadables) {
         console.log("Adding " + layerName);
         var layer = new L.TileLayer( cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layerName + "/{z}/{x}/{y}.png", 
@@ -58,6 +57,14 @@ function addOfflineLayers(baseURL) {
         else
             overlays[layerName] = layer;
     }
+}
+
+function addMapControls() {
+    controlLayers = new L.control.layers({}, overlays, {sortLayers: true, hideSingleBase: true});
+    controlLayers.addTo(mymap);  
+    //L.control.locate().addTo(mymap);  
+    //var comp = new L.Control.Compass({autoActive: true});
+    //mymap.addControl(comp);  
 }
 
 function addMarkers(data) {
