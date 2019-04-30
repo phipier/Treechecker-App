@@ -18,6 +18,7 @@ function loadMap() {
     var corner2 = L.latLng(Number(window.sessionStorage.getItem("bbox_ymax")), Number(window.sessionStorage.getItem("bbox_xmax")));
     var bounds = L.latLngBounds(corner1, corner2);
     mymap.fitBounds(bounds);
+    
 
     //mymap.setView([json.latitude, json.longitude], 17);
 
