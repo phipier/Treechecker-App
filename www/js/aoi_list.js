@@ -83,7 +83,7 @@ $("#addAOI").click( function(e) {
 } );
 
 function delete_aoi(id_aoi) {
-    db.transaction(function(tx) {
+    db.transaction(function(tx) {        
         var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
         tx.executeSql(sqlstr);
     }, function(error) {

@@ -6,22 +6,18 @@ var geojsonLayer;
 var overlays;
 
 var customControl =  L.Control.extend({
-
     options: {
       position: 'topleft'
-    },
-  
+    },      
     onAdd: function (map) {
-      var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-  
+      var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');  
+      L.DomEvent.disableClickPropagation(container);
       container.style.backgroundColor = 'white';     
       container.style.backgroundImage = "url(https://t1.gstatic.com/images?q=tbn:ANd9GcR6FCUMW5bPn8C4PbKak2BJQQsmC-K9-mbYBeFZm1ZM2w2GRy40Ew)";
       container.style.backgroundSize = "30px 30px";
       container.style.width = '30px';
-      container.style.height = '30px';
-  
+      container.style.height = '30px';  
       container.onclick = function(){
-        console.log('buttonClicked');
         centerMapOnCurrentPosition();
       }  
       return container;
@@ -48,9 +44,9 @@ function loadMap() {
     //addMarkers(json.obs); 
 
     mymap.on('click', (e) => {
-
         if (marker == null) { 
             marker = new L.marker(e.latlng, {draggable:'true'});
+            marker.setOpacity(0.7);
             marker.on('dragend', function(event){
                 var marker = event.target;
                 var position = marker.getLatLng();
@@ -66,29 +62,15 @@ function loadMap() {
 }
 
 function centerMapOnCurrentPosition() {
-
     var onSuccess = function(position) {
-        alert('Latitude: '          + position.coords.latitude          + '\n' +
-              'Longitude: '         + position.coords.longitude         + '\n' +
-              'Altitude: '          + position.coords.altitude          + '\n' +
-              'Accuracy: '          + position.coords.accuracy          + '\n' +
-              'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-              'Heading: '           + position.coords.heading           + '\n' +
-              'Speed: '             + position.coords.speed             + '\n' +
-              'Timestamp: '         + position.timestamp                + '\n');
-
         mymap.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
-
     };
-
-    // onError Callback receives a PositionError object
-    //
     function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
+        //alert('code: '    + error.code    + '\n' +
+        //      'message: ' + error.message + '\n');
+        alert('Please make sure that GPS geolocation is on');
     }
-
-    navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true});
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 1500, enableHighAccuracy: true});
 }
 
 function initLayers() {
@@ -112,12 +94,23 @@ function addOfflineLayers(baseURL) {
 
 function addMapControls() {
     controlLayers = new L.control.layers({}, overlays, {sortLayers: true, hideSingleBase: true});
-    controlLayers.addTo(mymap);  
-    //L.control.locate().addTo(mymap);  
-    //var comp = new L.Control.Compass({autoActive: true});
-    //mymap.addControl(comp);  
+    controlLayers.addTo(mymap);
     mymap.addControl(new customControl());
 }
+
+  
+$("#savelocation").click(function(e) {
+    e.preventDefault();   
+    window.sessionStorage.setItem("obs_latitude", marker.getLatLng().lat); 
+    window.sessionStorage.setItem("obs_longitude", marker.getLatLng().lng);
+    console.log("selected location: lat " + marker.getLatLng().lat + " lng " + marker.getLatLng().lng);
+    window.location = 'obs_form.html';   
+    return false; 
+} );
+
+
+
+/* Could be useful to show all observations on same map for a given AOI 
 
 function addMarkers(data) {
 
@@ -154,12 +147,11 @@ function addMarkers(data) {
         onEachFeature: function (feature, layer) {
             layer.bindPopup(feature.properties.popup);
         }
-    });
-    
+    });    
     geojsonLayer.addTo(mymap);
     controlLayers.addOverlay(geojsonLayer, 'Own data');
 }
-      
+
 function buildSurveyDataPopup(data) {
     var container = L.DomUtil.create('div');
     container.innerHTML = `<h2>${data.name}</h2><p><b>Specie:</b>${data.tree_specie.name}</p><p><b>Diameter:</b>${data.crown_diameter.name}</p>`;
@@ -169,15 +161,4 @@ function buildSurveyDataPopup(data) {
     });
     return container;  
 }
-  
-$("#savelocation").click(function(e) {
-    e.preventDefault();     
-   
-    window.sessionStorage.setItem("obs_latitude", marker.getLatLng().lat); 
-    window.sessionStorage.setItem("obs_longitude", bounds.getLatLng().lng); 
-    
-    console.log("selected location: lat " + marker.getLatLng().lat + " lng " + marker.getLatLng().lng); 
-
-    window.location = 'obs_form.html';   
-    return false; 
-} );
+*/

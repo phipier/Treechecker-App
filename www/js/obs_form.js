@@ -16,16 +16,17 @@ var aoiform = {
             //latitude = DBvalue;
             //longitude = DBvalue;      
         } else {
-            obs = getWSitems();
+            //obs = getWSitems();
         }       
-        $("#InputOBSname").text(obs.name);
-        $("#InputOBScomment").text(obs.comment);
+        obs = getWSitems();
+        $("#InputOBSname").val(obs.name);
+        $("#InputOBScomment").val(obs.comment);
         $("#InputSelectSpecies").val(obs.id_tree_species);
         $("#InputSelectSpecies").val(obs.id_crown_diameter);
         $("#InputSelectSpecies").val(obs.id_canopy_status);
-        $("#Inputlatitude").text(obs.latitude);
-        $("#Inputlongitude").text(obs.longitude);
-        $("#Inputcompass").text(obs.compass);
+        $("#Inputlatitude").val(obs.latitude);
+        $("#Inputlongitude").val(obs.longitude);
+        $("#Inputcompass").val(obs.compass);
     },
 
     // Update DOM on a Received Event
@@ -57,8 +58,8 @@ function insert_OBS(obs) {
         var sqlstr = 
             "INSERT INTO obs(name, id_aoi, id_tree_species, id_crown_diameter, "
             + "id_canopy_status, comment, longitude, latitude, compass, is_deleted) "
-            + "VALUES(" + obs.name + "," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
-            + obs.id_canopy_status + "," +obs.comment + "," + obs.longitude + "," + obs.latitude + "," + obs.compass + ")";
+            + "VALUES('" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
+            + obs.id_canopy_status + ",'" +obs.comment + "'," + obs.longitude + "," + obs.latitude + "," + obs.compass + ")";
 
         tx.executeSql(sqlstr);
 
@@ -80,14 +81,14 @@ $("#selectposition").click( function(e) {
 } );
 
 function setWSitems() {
-    window.sessionStorage.setItem("obs_name",               $("#InputOBSname").text);
-    window.sessionStorage.setItem("obs_comment",            $("#InputOBScomment").text);
+    window.sessionStorage.setItem("obs_name",               $("#InputOBSname").val().trim());
+    window.sessionStorage.setItem("obs_comment",            $("#InputOBScomment").val().trim());
     window.sessionStorage.setItem("obs_id_tree_species",    $("#InputSelectSpecies").children("option:selected").val());
     window.sessionStorage.setItem("obs_id_crown_diameter",  $("#InputSelectCrown").children("option:selected").val());
     window.sessionStorage.setItem("obs_id_canopy_status",   $("#InputSelectStatus").children("option:selected").val());
-    window.sessionStorage.setItem("obs_latitude",           $("#Inputlatitude").text);
-    window.sessionStorage.setItem("obs_longitude",          $("#Inputlongitude").text);
-    window.sessionStorage.setItem("obs_compass",            $("#Inputcompass").text);
+    window.sessionStorage.setItem("obs_latitude",           $("#Inputlatitude").val().trim());
+    window.sessionStorage.setItem("obs_longitude",          $("#Inputlongitude").val().trim());
+    window.sessionStorage.setItem("obs_compass",            $("#Inputcompass").val().trim());
 }
 
 function getWSitems() {
