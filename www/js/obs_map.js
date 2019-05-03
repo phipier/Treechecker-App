@@ -38,6 +38,31 @@ function loadMap() {
         });
         mymap.addLayer(marker);
     });
+
+}
+
+function centerMapOnCurrentPosition() {
+
+    var onSuccess = function(position) {
+        alert('Latitude: '          + position.coords.latitude          + '\n' +
+              'Longitude: '         + position.coords.longitude         + '\n' +
+              'Altitude: '          + position.coords.altitude          + '\n' +
+              'Accuracy: '          + position.coords.accuracy          + '\n' +
+              'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+              'Heading: '           + position.coords.heading           + '\n' +
+              'Speed: '             + position.coords.speed             + '\n' +
+              'Timestamp: '         + position.timestamp                + '\n');
+    };
+
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
 }
 
 function initLayers() {
@@ -50,8 +75,7 @@ function addOfflineLayers(baseURL) {
     var id_AOI = window.sessionStorage.getItem("id_aoi");
     for(let layerName of LayerDefinitions.downloadables) {
         console.log("Adding " + layerName);
-        var layer = new L.TileLayer( cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layerName + "/{z}/{x}/{y}.png", 
-                                {maxZoom: 25});      
+        var layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layerName + "/{z}/{x}/{y}.png", {maxZoom: 20, maxNativeZoom: 19});      
         mymap.addLayer(layer);        
         if(controlLayers)
             controlLayers.addOverlay(layer, layerName);
@@ -63,7 +87,7 @@ function addOfflineLayers(baseURL) {
 function addMapControls() {
     controlLayers = new L.control.layers({}, overlays, {sortLayers: true, hideSingleBase: true});
     controlLayers.addTo(mymap);  
-    //L.control.locate().addTo(mymap);  
+    L.control.locate().addTo(mymap);  
     //var comp = new L.Control.Compass({autoActive: true});
     //mymap.addControl(comp);  
 }

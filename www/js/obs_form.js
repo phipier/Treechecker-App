@@ -11,7 +11,7 @@ var aoiform = {
 
         init_dropdowns();
         
-        if (id_obs !== null) { 
+        if (id_obs !== null && id_obs != "") { 
             // editing an existing observation           
             //latitude = DBvalue;
             //longitude = DBvalue;      

@@ -46,13 +46,13 @@
                 <label for="InputforceRedld">Force tiles re-download</label-->
             </div>
             <label for="Inputxmin">xmin</label>
-            <input type="bbox" class="form-control" id="Inputxmin" placeholder="Enter xmin">
+            <input type="bbox" class="form-control" id="Inputxmin" placeholder="Enter xmin" onkeypress="return isNumberKey(event)" required>
             <label for="Inputxmax">xmax</label>
-            <input type="bbox" class="form-control" id="Inputxmax" placeholder="Enter xmax">
+            <input type="bbox" class="form-control" id="Inputxmax" placeholder="Enter xmax" onkeypress="return isNumberKey(event)" required>
             <label for="Inputymin">ymin</label>
-            <input type="bbox" class="form-control" id="Inputymin" placeholder="Enter ymin">
+            <input type="bbox" class="form-control" id="Inputymin" placeholder="Enter ymin" onkeypress="return isNumberKey(event)" required>
             <label for="Inputymax">ymax</label>
-            <input type="bbox" class="form-control" id="Inputymax" placeholder="Enter ymax">
+            <input type="bbox" class="form-control" id="Inputymax" placeholder="Enter ymax" onkeypress="return isNumberKey(event)" required>
             <!--small id="bboxhelp" class="form-text text-muted">boundaries in WSG84, format is xmin:xmax:ymin:ymax</small-->
 
         </div>
