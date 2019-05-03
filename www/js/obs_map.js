@@ -5,6 +5,29 @@ var mymap;
 var geojsonLayer;
 var overlays;
 
+var customControl =  L.Control.extend({
+
+    options: {
+      position: 'topleft'
+    },
+  
+    onAdd: function (map) {
+      var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+  
+      container.style.backgroundColor = 'white';     
+      container.style.backgroundImage = "url(https://t1.gstatic.com/images?q=tbn:ANd9GcR6FCUMW5bPn8C4PbKak2BJQQsmC-K9-mbYBeFZm1ZM2w2GRy40Ew)";
+      container.style.backgroundSize = "30px 30px";
+      container.style.width = '30px';
+      container.style.height = '30px';
+  
+      container.onclick = function(){
+        console.log('buttonClicked');
+        centerMapOnCurrentPosition();
+      }  
+      return container;
+    }
+});
+
 function loadMap() {
     mymap = L.map('mapid');
     controlLayers = null;
@@ -18,27 +41,28 @@ function loadMap() {
     var corner2 = L.latLng(Number(window.sessionStorage.getItem("bbox_ymax")), Number(window.sessionStorage.getItem("bbox_xmax")));
     var bounds = L.latLngBounds(corner1, corner2);
     mymap.fitBounds(bounds);
-    
-
-    //mymap.setView([json.latitude, json.longitude], 17);
 
     addMapControls();
     initLayers();
     addOfflineLayers();        
-        //addMarkers(json.obs);        
-    //});
+    //addMarkers(json.obs); 
 
     mymap.on('click', (e) => {
-        marker = new L.marker(e.latlng, {draggable:'true'});
-        marker.on('dragend', function(event){
-          var marker = event.target;
-          var position = marker.getLatLng();
-          marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
-          map.panTo(new L.LatLng(position.lat, position.lng))
-        });
-        mymap.addLayer(marker);
-    });
 
+        if (marker == null) { 
+            marker = new L.marker(e.latlng, {draggable:'true'});
+            marker.on('dragend', function(event){
+                var marker = event.target;
+                var position = marker.getLatLng();
+                marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
+                mymap.panTo(new L.LatLng(position.lat, position.lng));
+            });
+            mymap.addLayer(marker);
+        }
+        else { 
+            marker.setLatLng(e.latlng, {draggable:'true'});
+        }
+    });
 }
 
 function centerMapOnCurrentPosition() {
@@ -52,6 +76,9 @@ function centerMapOnCurrentPosition() {
               'Heading: '           + position.coords.heading           + '\n' +
               'Speed: '             + position.coords.speed             + '\n' +
               'Timestamp: '         + position.timestamp                + '\n');
+
+        mymap.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
+
     };
 
     // onError Callback receives a PositionError object
@@ -61,8 +88,7 @@ function centerMapOnCurrentPosition() {
               'message: ' + error.message + '\n');
     }
 
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
-
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true});
 }
 
 function initLayers() {
@@ -87,9 +113,10 @@ function addOfflineLayers(baseURL) {
 function addMapControls() {
     controlLayers = new L.control.layers({}, overlays, {sortLayers: true, hideSingleBase: true});
     controlLayers.addTo(mymap);  
-    L.control.locate().addTo(mymap);  
+    //L.control.locate().addTo(mymap);  
     //var comp = new L.Control.Compass({autoActive: true});
     //mymap.addControl(comp);  
+    mymap.addControl(new customControl());
 }
 
 function addMarkers(data) {
@@ -131,7 +158,6 @@ function addMarkers(data) {
     
     geojsonLayer.addTo(mymap);
     controlLayers.addOverlay(geojsonLayer, 'Own data');
-
 }
       
 function buildSurveyDataPopup(data) {
