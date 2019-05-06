@@ -1,6 +1,8 @@
 var listAOI = {    
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        document.addEventListener("online", this.onOnline, false);
+        document.addEventListener("offline", this.onOffline, false);
     },
 
     onDeviceReady: function() {
@@ -17,8 +19,8 @@ var listAOI = {
                         html += '<div class="card"><div class="card-body"><h5 class="card-title">' 
                         + res.rows.item(x).name + '</h5>'
                         + '<a id="data_idaoi_'+id_aoi+'" class="btn button">see survey data</a>'
-                        + '<a id="edit_idaoi_'+id_aoi+'" class="btn button">edit aoi</a>'
-                        + '<a id="dele_idaoi_'+id_aoi+'" class="btn button">delete aoi</a></div></div>';
+                        + '<a id="edit_idaoi_'+id_aoi+'" class="btn button edit_delete_aoi">edit aoi</a>'
+                        + '<a id="dele_idaoi_'+id_aoi+'" class="btn button edit_delete_aoi">delete aoi</a></div></div>';
                     }                    
                     $("#listaoi-page").html(html);
                     $("[id^=data_idaoi_]").click(function(e) {
@@ -54,6 +56,12 @@ var listAOI = {
                 console.log('transaction AOI ok');                
             }
         );
+    },
+    onOnline: function() {
+        $('.edit_delete_aoi').show();
+    },
+    onOffline: function() {
+        $('.edit_delete_aoi').hide();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
