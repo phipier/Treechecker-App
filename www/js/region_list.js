@@ -2,6 +2,8 @@ var listRegions = {
     // Page Constructor
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        document.addEventListener("online", this.onOnline, false);
+        document.addEventListener("offline", this.onOffline, false);
     },
 
     // deviceready Event Handler
@@ -30,7 +32,8 @@ var listRegions = {
                     var id_region = this.id.substring(5);
                     window.sessionStorage.setItem("id_region", id_region);                    
                     window.location = 'aoi_list.html';
-                    return false; });
+                    return false;
+                });
                 window.plugins.spinnerDialog.hide();
             },
             function (tx, error) {
@@ -49,12 +52,20 @@ var listRegions = {
 
         $('#update').on('click', function() {
             window.plugins.spinnerDialog.show();
-            update();            
+            update();
         });
-        /*$('#sync').on('click', function() {
-            window.plugins.spinnerDialog.show();            
+        /*$('#syncobs').on('click', function() {
+            window.plugins.spinnerDialog.show();
             synchronize();
         });*/
+    },
+
+    onOnline: function() {
+        $('#sidebarCollapse').show();
+    },
+
+    onOffline: function() {
+        $('#sidebarCollapse').hide();
     },
 
     // Update DOM on a Received Event

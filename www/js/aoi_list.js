@@ -1,6 +1,8 @@
 var listAOI = {    
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        document.addEventListener("online", this.onOnline, false);
+        document.addEventListener("offline", this.onOffline, false);
     },
 
     onDeviceReady: function() {
@@ -17,8 +19,8 @@ var listAOI = {
                         html += '<div class="card"><div class="card-body"><h5 class="card-title">' 
                         + res.rows.item(x).name + '</h5>'
                         + '<a id="data_idaoi_'+id_aoi+'" class="btn button">see survey data</a>'
-                        + '<a id="edit_idaoi_'+id_aoi+'" class="btn button">edit aoi</a>'
-                        + '<a id="dele_idaoi_'+id_aoi+'" class="btn button">delete aoi</a></div></div>';
+                        + '<a id="edit_idaoi_'+id_aoi+'" class="btn button add_edit_delete_aoi">edit aoi</a>'
+                        + '<a id="dele_idaoi_'+id_aoi+'" class="btn button add_edit_delete_aoi">delete aoi</a></div></div>';
                     }                    
                     $("#listaoi-page").html(html);
                     $("[id^=data_idaoi_]").click(function(e) {
@@ -39,7 +41,7 @@ var listAOI = {
                         e.preventDefault(); 
                         var id_aoi = this.id.substring(11);
                         window.sessionStorage.setItem("id_aoi", id_aoi);   
-                        delete_aoi(id_aoi);                 
+                        this.delete_aoi(id_aoi);
                         
                         return false; 
                     });  
@@ -55,42 +57,47 @@ var listAOI = {
             }
         );
     },
+    onOnline: function() {
+        $('.add_edit_delete_aoi').show();
+
+        $("#addAOI").click( function(e) {
+            e.preventDefault();
+            window.sessionStorage.setItem("id_aoi", "");
+            window.sessionStorage.setItem("aoiname", "");
+
+            window.sessionStorage.setItem("bbox_ymin", "39.784352364601");
+            window.sessionStorage.setItem("bbox_ymax", "39.783579888405");
+            window.sessionStorage.setItem("bbox_xmin", "-7.6377547801287");
+            window.sessionStorage.setItem("bbox_xmax", "-7.63670469529");
+            /*
+            window.sessionStorage.setItem("bbox_xmin", "39.826");
+            window.sessionStorage.setItem("bbox_xmax", "39.839");
+            window.sessionStorage.setItem("bbox_ymin", "-7.713");
+            window.sessionStorage.setItem("bbox_ymax", "-7.696");
+            */
+
+            window.location = 'aoi_form.html';
+            return false;
+        });
+    },
+    onOffline: function() {
+        $('.add_edit_delete_aoi').hide();
+    },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
+    },
+    delete_aoi: function(id_aoi) {
+        db.transaction(function(tx) {
+            var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
+            tx.executeSql(sqlstr);
+        }, function(error) {
+            console.log('Transaction delete aoi ERROR: ' + error.message);
+        }, function() {
+            console.log('deleted AOI table OK');
+            window.location = 'aoi_list.html';
+        });
     }
 };
 
 listAOI.initialize();
 
-$("#addAOI").click( function(e) {
-    e.preventDefault();
-    window.sessionStorage.setItem("id_aoi", "");
-    window.sessionStorage.setItem("aoiname", "");
-
-    window.sessionStorage.setItem("bbox_ymin", "39.784352364601");
-    window.sessionStorage.setItem("bbox_ymax", "39.783579888405");
-    window.sessionStorage.setItem("bbox_xmin", "-7.6377547801287");
-    window.sessionStorage.setItem("bbox_xmax", "-7.63670469529");
-    /*
-    window.sessionStorage.setItem("bbox_xmin", "39.826");
-    window.sessionStorage.setItem("bbox_xmax", "39.839");
-    window.sessionStorage.setItem("bbox_ymin", "-7.713");
-    window.sessionStorage.setItem("bbox_ymax", "-7.696");
-    */
-
-    window.location = 'aoi_form.html';
-    return false;
-} );
-
-function delete_aoi(id_aoi) {
-    db.transaction(function(tx) {        
-        var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
-        tx.executeSql(sqlstr);
-    }, function(error) {
-        console.log('Transaction delete aoi ERROR: ' + error.message);
-    }, function() {
-        console.log('deleted AOI table OK');
-        window.location = 'aoi_list.html';
-    });
-}
-    
