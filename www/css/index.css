@@ -185,3 +185,7 @@ html, #mapid, #login-page {
 .progress-bar {
     background-color:green !important;
 }
+
+.forms {
+    margin:15px;
+}
