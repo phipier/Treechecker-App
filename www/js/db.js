@@ -12,7 +12,9 @@ function createTables() {
     runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS aoi (id integer primary key, name varchar(100) not null, x_min double precision not null, x_max double precision not null, y_min double precision not null, y_max double precision not null, creation_date date not null DEFAULT (datetime('now','localtime')), is_deleted varchar(5) not null DEFAULT 'false', geographical_zone_id integer not null, owner_id integer);"
     runSQL(sqlstr);
-    sqlstr = "CREATE TABLE IF NOT EXISTS obs (id integer, id_aoi integer, name varchar(100) not null, id_tree_species integer, id_crown_diameter integer, id_canopy_status integer, comment varchar(250) not null, longitude double precision not null, latitude double precision not null, compass integer, is_deleted varchar(5) not null DEFAULT 'false');"
+    //sqlstr = "DROP TABLE IF EXISTS obs;"
+    //runSQL(sqlstr);
+    sqlstr = "CREATE TABLE IF NOT EXISTS obs (id integer primary key, id_aoi integer, name varchar(100) not null, id_tree_species integer, id_crown_diameter integer, id_canopy_status integer, comment varchar(250) not null, longitude double precision not null, latitude double precision not null, compass integer, is_deleted varchar(5) not null DEFAULT 'false');"
     runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS treespecies (id integer primary key, name varchar(100) not null);"
     runSQL(sqlstr);

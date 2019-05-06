@@ -4,29 +4,17 @@ var aoiform = {
     },
 
     onDeviceReady: function() {
-        window.plugins.spinnerDialog.show();
+        //window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
-        var id_obs = window.sessionStorage.getItem("id_obs");
-        var obs;
-
-        init_dropdowns();
-        
+        var id_obs = window.sessionStorage.getItem("id_obs"); 
         if (id_obs !== null && id_obs != "") { 
             // editing an existing observation           
             //latitude = DBvalue;
             //longitude = DBvalue;      
         } else {
             //obs = getWSitems();
-        }       
-        obs = getWSitems();
-        $("#InputOBSname").val(obs.name);
-        $("#InputOBScomment").val(obs.comment);
-        $("#InputSelectSpecies").val(obs.id_tree_species);
-        $("#InputSelectSpecies").val(obs.id_crown_diameter);
-        $("#InputSelectSpecies").val(obs.id_canopy_status);
-        $("#Inputlatitude").val(obs.latitude);
-        $("#Inputlongitude").val(obs.longitude);
-        $("#Inputcompass").val(obs.compass);
+        }  
+        init_dropdowns(); 
     },
 
     // Update DOM on a Received Event
@@ -40,16 +28,9 @@ aoiform.initialize();
 $("#saveobs").click( function(e) {
     e.preventDefault();
     var id_aoi = window.sessionStorage.getItem("id_aoi");
-
-    $("select.country").change(function(){
-        var selectedCountry = $(this).children("option:selected").val();
-    });
-
-    var id_aoi = window.sessionStorage.getItem("id_aoi");
     setWSitems();
     // if online then send also data to server?  insert_OBS as success callback    
     insert_OBS(getWSitems());
-
     return false; 
 });
 
@@ -57,7 +38,7 @@ function insert_OBS(obs) {
     db.transaction(function(tx) {
         var sqlstr = 
             "INSERT INTO obs(name, id_aoi, id_tree_species, id_crown_diameter, "
-            + "id_canopy_status, comment, longitude, latitude, compass, is_deleted) "
+            + "id_canopy_status, comment, longitude, latitude, compass) "
             + "VALUES('" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
             + obs.id_canopy_status + ",'" +obs.comment + "'," + obs.longitude + "," + obs.latitude + "," + obs.compass + ")";
 
@@ -65,11 +46,12 @@ function insert_OBS(obs) {
 
     }, function(error) {
         console.log('Transaction OBS ERROR: ' + error.message);
+        alert(error.message);
     }, function() {
-        console.log('Populated table OBS OK');            
-        // download tiles         
+        console.log('Populated table OBS OK');
+        // download tiles
         window.sessionStorage.setItem("id_obs","");
-        window.location("obs_list.html")         
+        window.location = 'obs_list.html';
     });            
 }
 
@@ -156,7 +138,16 @@ function init_dropdowns() {
     }, function (error) {
         console.log('transaction treespecies error: ' + error.message);
     }, function () {
-        console.log('transaction treespecies ok');                
+        console.log('transaction treespecies ok'); 
+        var obs = getWSitems();
+        $("#InputOBSname").val(obs.name);
+        $("#InputOBScomment").val(obs.comment);
+        $("#InputSelectSpecies").val(obs.id_tree_species);
+        $("#InputSelectCrown").val(obs.id_crown_diameter);
+        $("#InputSelectStatus").val(obs.id_canopy_status);
+        $("#Inputlatitude").val(obs.latitude);
+        $("#Inputlongitude").val(obs.longitude);
+        $("#Inputcompass").val(obs.compass);               
     }
     );
 };
