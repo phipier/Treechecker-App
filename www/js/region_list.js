@@ -32,7 +32,8 @@ var listRegions = {
                     var id_region = this.id.substring(5);
                     window.sessionStorage.setItem("id_region", id_region);                    
                     window.location = 'aoi_list.html';
-                    return false; });
+                    return false;
+                });
                 window.plugins.spinnerDialog.hide();
             },
             function (tx, error) {
@@ -53,7 +54,7 @@ var listRegions = {
             window.plugins.spinnerDialog.show();
             update();
         });
-        /*$('#sync').on('click', function() {
+        /*$('#syncobs').on('click', function() {
             window.plugins.spinnerDialog.show();
             synchronize();
         });*/

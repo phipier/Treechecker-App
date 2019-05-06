@@ -41,7 +41,7 @@ var listAOI = {
                         e.preventDefault(); 
                         var id_aoi = this.id.substring(11);
                         window.sessionStorage.setItem("id_aoi", id_aoi);   
-                        delete_aoi(id_aoi);                 
+                        this.delete_aoi(id_aoi);
                         
                         return false; 
                     });  
