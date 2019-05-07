@@ -19,26 +19,25 @@ var login = {
     onDeviceReady: function() {
         $('#log_in').click(function(event) {
             window.plugins.spinnerDialog.show();
-            $('#errorpopupdata').children("p").remove();
             $(this).attr('disabled', 'disabled');
             $.ajax({
-                type : 'POST',
-                crossDomain : true,
-                dataType : 'text',
-                url : SERVERURL + '/api-token-auth/',
-                data : {
-                    //email : $("#username").val(),
-                    //password : $("#password").val()
-                    email : 'pier@test.com',
-                    password : 'trEEchecker789'
+                type: 'POST',
+                crossDomain: true,
+                dataType: 'text',
+                url: SERVERURL + '/api-token-auth/',
+                data: {
+                    //email: $("#username").val(),
+                    //password: $("#password").val()
+                    email: 'pier@test.com',
+                    password: 'trEEchecker789'
                 },
                 contentType: 'application/x-www-form-urlencoded',
-                success : function(tk) {
+                success: function(tk) {
                     window.plugins.spinnerDialog.hide();
                     window.sessionStorage.setItem("token", $.parseJSON(tk).token);
                     window.location = 'region_list.html';
                 },
-                error : function(req, status, error) {
+                error: function(req, status, error) {
                     if (status == "error") {
                         login.onErrorNotFound();
                     } else {
@@ -57,17 +56,19 @@ var login = {
 
     onErrorNotFound: function() {
         window.plugins.spinnerDialog.hide();
-        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length <= 0) {
-            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - Wrong username and/or password.</p>");
+        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+            $("#errorpopupdata>p").html("");
         }
+        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - Wrong username and/or password.</p>");
         $('#errorpopup').modal('show');
     },
 
     onError: function() {
         window.plugins.spinnerDialog.hide();
-        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length <= 0){
-            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - No connection to the DB.</p>");
+        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+            $("#errorpopupdata>p").html("");
         }
+        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - No connection to the DB.</p>");
         $('#errorpopup').modal('show');
     },
 

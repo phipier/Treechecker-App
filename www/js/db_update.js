@@ -59,14 +59,16 @@ function update_regions() {
 
                     tx.executeSql(sqlstr);                            
                 }, function(error) {
-                    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length <= 0) {
-                        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB.</p>");
+                    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+                        $("#errorpopupdata>p").html("");
                     }
+                    $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB.</p>");
                     $('#errorpopup').modal('show');
                 }, function() {
-                    if(document.getElementById("successpopupdata").getElementsByTagName('p').length <= 0) {
-                        $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Database updated.</p>");
+                    if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
+                        $("#successpopupdata>p").html("");
                     }
+                    $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Database updated.</p>");
                     $('#successpopup').modal('show');
                 });
             });
@@ -77,7 +79,11 @@ function update_regions() {
         },
         error : function(req, status, error) {
             window.plugins.spinnerDialog.hide();
-            console.log("no connection to DB");
+            if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+                $("#errorpopupdata>p").html("");
+            }
+            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - No connection to the DB.</p>");
+            $('#errorpopup').modal('show');
         }
     });
 }

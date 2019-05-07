@@ -4,7 +4,6 @@ var aoiform = {
     },
 
     onDeviceReady: function() {
-
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
         if (id_aoi !== null && id_aoi != "") { 
@@ -86,9 +85,21 @@ function add_AOI(aoiname, bbox) {
         success : function(val) {              
             insert_AOI(val, id_region); 
             // download tiles
-            downloadTiles(val.key, bbox);   
+            downloadTiles(val.key, bbox);
+
+            if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
+                $("#successpopupdata>p").html("");
+            }
+            $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> AOI created.</p>");
+            $('#successpopup').modal('show');
         },
         error : function(req, status, error) {
+            if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+                $("#errorpopupdata>p").html("");
+            }
+            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to add the AOI to the remote DB.</p>");
+            $('#errorpopup').modal('show');
+
             console.log("error in request: "+req.responseText);
         }
     });
@@ -105,10 +116,12 @@ function insert_AOI(val, id_region) {
         tx.executeSql(sqlstr);
 
     }, function(error) {
-        console.log('Transaction ERROR: ' + error.message);
+        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+            $("#errorpopupdata>p").html("");
+        }
+        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to add the AOI to the local DB.</p>");
+        $('#errorpopup').modal('show');
     }, function() {
-        console.log('Populated database OK'); 
+        console.log('Populated database OK');
     });
 }
-
-

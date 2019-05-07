@@ -187,7 +187,6 @@ function createPath(dirEntry, path, finalCB) {
 }
 
 
-
 /*
 // Xy returns the Spherical Mercator (x, y) in meters
 func Xy(lngLat LngLat) (x, y float64) {
