@@ -10,7 +10,7 @@ var app = {
     // 'pause', 'resume', etc.
     onDeviceReady: function() {
         $('#initApp').click(function() {
-            window.location = 'region_list.html';
+            window.location = 'login.html';
         });
     },
 
