@@ -11,7 +11,6 @@ var app = {
     // Bind any cordova events here. Common events are:
     // 'pause', 'resume', etc.
     onDeviceReady: function() {
-
     },
 
     onOnline: function() {
