@@ -58,8 +58,6 @@ function runSQL(query) {
 
 
 
-
-
 /*
     var obs.data =  '{"name" :"'    + $("#InputOBSname").text
                 + '", "id_aoi":"'               + id_aoi
@@ -71,4 +69,3 @@ function runSQL(query) {
                 + '", "longitude":"'            + Number($("#Inputlongitude").text) 
                 + '", "compass":"'              + Number($("#Inputcompass").text) + '"}';
 */
-

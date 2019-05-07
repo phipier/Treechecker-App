@@ -1,4 +1,3 @@
-
 function update() {
     update_regions();
     update_treespecies();
@@ -21,7 +20,6 @@ function update_regions() {
         success : function(reg) {
             $.each(reg, function(key, val) {
                 db.transaction(function(tx) {
-                    
                     var sqlstr = "REPLACE INTO geographicalzone("
                     + "id, name, layer_name, wms_url, proj, image_url, x_min, x_max, y_min, y_max) "
                     + "VALUES("+val.key+",'"+val.name+"','layer_name','wms_url','proj'"+",'"+val.image_url
@@ -122,28 +120,30 @@ function update_crowndiameter() {
   });
 }
 
-function update_canopystatus() {var token = window.sessionStorage.getItem("token");
-$.ajax({
-  type : 'GET',
-  crossDomain : true,
-  url : SERVERURL + '/api/canopies/',
-  beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
-  success : function(reg) {
-    $.each(reg, function(key, val) {
-        db.transaction(function(tx) {                    
-            var sqlstr = "INSERT INTO canopystatus(id, name) VALUES("+val.key+",'"+val.name+"')";
-            tx.executeSql(sqlstr);                            
-        }, function(error) {
-            console.log('Transaction ERROR: ' + error.message);
-        }, function() {
-            console.log('Populated table canopystatus OK');
+function update_canopystatus() {
+    var token = window.sessionStorage.getItem("token");
+    $.ajax({
+      type : 'GET',
+      crossDomain : true,
+      url : SERVERURL + '/api/canopies/',
+      beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
+      success : function(reg) {
+        $.each(reg, function(key, val) {
+            db.transaction(function(tx) {
+                var sqlstr = "INSERT INTO canopystatus(id, name) VALUES("+val.key+",'"+val.name+"')";
+                tx.executeSql(sqlstr);
+            }, function(error) {
+                console.log('Transaction ERROR: ' + error.message);
+            }, function() {
+                console.log('Populated table canopystatus OK');
+            });
         });
+      },
+      error : function(req, status, error) {
+          console.log("no connection to DB");
+      }
     });
-  },
-  error : function(req, status, error) {
-      console.log("no connection to DB");
-  }
-});}
+}
 
 
 function sync_AOIandObservations() {
@@ -196,4 +196,3 @@ obs_data =  '{"name" :"'            + $("#InputOBSname").text;
 */
 
 function sync_Images() {}
-

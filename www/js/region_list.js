@@ -28,9 +28,9 @@ var listRegions = {
                 }                  
                 $("#listregions-page").html(html);
                 $("[id^=idreg]").click(function(e) {
-                    e.preventDefault(); 
+                    e.preventDefault();
                     var id_region = this.id.substring(5);
-                    window.sessionStorage.setItem("id_region", id_region);                    
+                    window.sessionStorage.setItem("id_region", id_region);
                     window.location = 'aoi_list.html';
                     return false;
                 });

@@ -17,8 +17,7 @@ var login = {
 
     // deviceready Event Handler
     onDeviceReady: function() {
-        $('#send_data').click(function(event) {
-			console.log("TRCK send data");
+        $('#log_in').click(function(event) {
             window.plugins.spinnerDialog.show();
             $('#errorpopupdata').children("p").remove();
             $(this).attr('disabled', 'disabled');
@@ -35,17 +34,14 @@ var login = {
                 },
                 contentType: 'application/x-www-form-urlencoded',
                 success : function(tk) {
-					console.log("TRCK success");
                     window.plugins.spinnerDialog.hide();
                     window.sessionStorage.setItem("token", $.parseJSON(tk).token);
                     window.location = 'region_list.html';
                 },
                 error : function(req, status, error) {
                     if (status == "error") {
-						console.log("TRCK error");
                         login.onErrorNotFound();
                     } else {
-						console.log("TRCK else");
                         setTimeout(function(){login.onError();}, 500);
                     }
                 }
@@ -55,7 +51,7 @@ var login = {
         });
 
         $('#ok_sent_error').click(function() {
-            $('#send_data').removeAttr('disabled');
+            $('#log_in').removeAttr('disabled');
         });
     },
 
