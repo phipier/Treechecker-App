@@ -55,18 +55,12 @@ var login = {
         });
     },
 
-    onOnline: function() {
-        if(document.getElementById("noconnection") !== null) {
-            $("#noconnection").popup("close");
-        };
-    },
-
     onErrorNotFound: function() {
         window.plugins.spinnerDialog.hide();
         if(document.getElementById("errorpopupdata").getElementsByTagName('p').length <= 0) {
             $("#errorpopupdata").prepend("<p>Wrong username and/or password.</p>");
         }
-        $("#errorpopupdata").popup("open", {transition:"fade",positionTo:"window"});
+        $('#errorpopup').modal('show');
     },
 
     onError: function() {
@@ -74,15 +68,7 @@ var login = {
         if(document.getElementById("errorpopupdata").getElementsByTagName('p').length <= 0){
             $("#errorpopupdata").prepend("<p>Error - No connection to the DB.</p>");
         }
-        $("#errorpopupdata").popup("open", {transition:"fade",positionTo:"window"});
-    },
-
-    onOffline: function() {
-        window.plugins.spinnerDialog.hide();
-        if(document.getElementById("errorpopupdata") !== null) {
-            $("#errorpopupdata").popup("close");
-        };
-        $("#noconnection").popup("open", {transition:"fade",positionTo:"window"});
+        $('#errorpopup').modal('show');
     },
 
     // Update DOM on a Received Event

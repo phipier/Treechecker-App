@@ -22,20 +22,16 @@
             LOG IN
         </button>
 
-        <!-- <div data-role="popup" id="errorpopupdata" class="ui-content">
-            <a id="ok_sent_error" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-c"
-               data-rel="back">
-                Ok
-            </a>
+        <div class="modal fade" id="errorpopup" tabindex="-1" role="dialog" aria-labelledby="errorpopup" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div id="errorpopupdata" class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button id="ok_sent_error" type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div data-role="popup" id="noconnection" class="ui-content">
-            <p>Internet is not available.</p>
-            <a id="ok_error_connection"
-               class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-c" data-rel="back">
-                Ok
-            </a>
-        </div> -->
     </div>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/urls.js"></script>
