@@ -58,7 +58,7 @@ var login = {
     onErrorNotFound: function() {
         window.plugins.spinnerDialog.hide();
         if(document.getElementById("errorpopupdata").getElementsByTagName('p').length <= 0) {
-            $("#errorpopupdata").prepend("<p>Wrong username and/or password.</p>");
+            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - Wrong username and/or password.</p>");
         }
         $('#errorpopup').modal('show');
     },
@@ -66,7 +66,7 @@ var login = {
     onError: function() {
         window.plugins.spinnerDialog.hide();
         if(document.getElementById("errorpopupdata").getElementsByTagName('p').length <= 0){
-            $("#errorpopupdata").prepend("<p>Error - No connection to the DB.</p>");
+            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - No connection to the DB.</p>");
         }
         $('#errorpopup').modal('show');
     },

@@ -59,12 +59,20 @@ function update_regions() {
 
                     tx.executeSql(sqlstr);                            
                 }, function(error) {
-                    console.log('Transaction ERROR: ' + error.message);
+                    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length <= 0) {
+                        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB.</p>");
+                    }
+                    $('#errorpopup').modal('show');
                 }, function() {
-                    console.log('Populated database OK');
+                    if(document.getElementById("successpopupdata").getElementsByTagName('p').length <= 0) {
+                        $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Database updated.</p>");
+                    }
+                    $('#successpopup').modal('show');
                 });
             });
             loadRegions();
+            $('#sidebar').toggleClass('active');
+            $('.overlay').toggleClass('active');
             window.plugins.spinnerDialog.hide();
         },
         error : function(req, status, error) {
