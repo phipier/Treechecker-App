@@ -6,21 +6,13 @@ var aoiform = {
     onDeviceReady: function() {
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
-        if (id_aoi !== null && id_aoi != "") { 
-            // select from local DB ...
-            // editing an existing AOI            
-            //bbox_xmin = DBvalue; 
-            //bbox_xmax = DBvalue; 
-            //bbox_ymin = DBvalue;
-            //bbox_ymax = DBvalue;
-        } else {                   
-            $("#InputAOIname").val(window.sessionStorage.getItem("aoiname"));
-            $("#Inputxmin").val(window.sessionStorage.getItem("bbox_xmin")); 
-            $("#Inputxmax").val(window.sessionStorage.getItem("bbox_xmax"));
-            $("#Inputymin").val(window.sessionStorage.getItem("bbox_ymin")); 
-            $("#Inputymax").val(window.sessionStorage.getItem("bbox_ymax"));
-            $("#InputforceRedld").val(window.sessionStorage.getItem("forceRedld"));
-        }
+                 
+        $("#InputAOIname").val(window.sessionStorage.getItem("aoiname"));
+        $("#Inputxmin").val(window.sessionStorage.getItem("bbox_xmin")); 
+        $("#Inputxmax").val(window.sessionStorage.getItem("bbox_xmax"));
+        $("#Inputymin").val(window.sessionStorage.getItem("bbox_ymin")); 
+        $("#Inputymax").val(window.sessionStorage.getItem("bbox_ymax"));
+            
         window.plugins.spinnerDialog.hide();        
     },
     // Update DOM on a Received Event
@@ -40,15 +32,11 @@ $("#saveaoi").click( function(e) {
                  xmax : Number($("#Inputxmax").val()),
                  ymin : Number($("#Inputymin").val()),
                  ymax : Number($("#Inputymax").val()) }
-    //var forceRedld = $("#InputforceRedld").val();
     
     // check bbox value (not too large)
 
-    // insert AOI into server DB 
-    add_AOI(aoiname, bbox);    
-
+    add_AOI(aoiname, bbox);
     return false; 
-
 } );
 
 $("#selectarea").click( function(e) {
@@ -56,7 +44,7 @@ $("#selectarea").click( function(e) {
     window.sessionStorage.setItem("aoiname",$("#InputAOIname").val());
     window.location = 'aoi_map.html'; 
     return false;
-} );
+});
 
 function add_AOI(aoiname, bbox) {
     var token = window.sessionStorage.getItem("token");
@@ -119,7 +107,7 @@ function exit_form(success) {
 function insert_AOI(val, id_region) {
     db.transaction(function(tx) {
         var sqlstr = 
-            "INSERT INTO aoi(id, name, x_min, x_max, y_min, y_max, geographical_zone_id) "
+            "REPLACE INTO aoi(id, name, x_min, x_max, y_min, y_max, geographical_zone_id) "
             + "VALUES("+val.key+",'"+val.name+ "',"
             +           val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+ ","
             +           id_region+")";

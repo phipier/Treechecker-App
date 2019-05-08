@@ -76,6 +76,20 @@ function update_progress() {
     }
 }
 
+function deleteTiles(id_aoi) {
+    window.resolveLocalFileSystemURL(cordova.file.dataDirectory + "files/tiles/" + id_aoi, function (dirEntry) {
+        var success = function(parent) {
+            console.log("Remove Recursively Succeeded");
+        }
+        var fail = function(error) {
+            alert("Failed to remove directory or it's contents: " + error.code);
+        }
+        // remove the tiles directory
+        dirEntry.removeRecursively(success, fail);
+
+    }, function (filerror) {console.log("Failed request FS: " + filerror)}); 
+}
+
 function fileExists(fileName) {
     window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {        
         console.log("exists? "+fileName);

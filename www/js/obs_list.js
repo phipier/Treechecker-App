@@ -21,10 +21,9 @@ var listObs = {
                     $("#listobs-page").html(html);
                     $("[id^=edit_idobs_]").click(function(e) {
                         e.preventDefault(); 
-                        var id_obs = this.id.substring(11);
-                        window.sessionStorage.setItem("id_obs", id_obs);                    
-                        window.location = 'obs_form.html';
-                        return false; 
+                        var id_obs = this.id.substring(11);                                           
+                        edit_obs(id_obs);
+                        return false;
                     });
                     $("[id^=dele_idobs_]").click(function(e) {
                         e.preventDefault(); 
@@ -66,12 +65,40 @@ var listObs = {
     }
 };
 
+function edit_obs(id_obs) {
+    db.transaction(function (tx) {
+            var query = 'SELECT * FROM obs where id = '+id_obs+';';
+            tx.executeSql(query, [], function (tx, res) {                
+                window.sessionStorage.setItem("obs_id",                 res.rows.item(0).id);
+                window.sessionStorage.setItem("obs_name",               res.rows.item(0).name);
+                window.sessionStorage.setItem("obs_comment",            res.rows.item(0).comment);
+                window.sessionStorage.setItem("obs_id_tree_species",    res.rows.item(0).id_tree_species);
+                window.sessionStorage.setItem("obs_id_crown_diameter",  res.rows.item(0).id_crown_diameter);
+                window.sessionStorage.setItem("obs_id_canopy_status",   res.rows.item(0).id_canopy_status);
+                window.sessionStorage.setItem("obs_latitude",           res.rows.item(0).latitude);
+                window.sessionStorage.setItem("obs_longitude",          res.rows.item(0).longitude);
+                window.sessionStorage.setItem("obs_compass",            res.rows.item(0).compass);    
+                window.location = 'obs_form.html';            
+            },
+            function (tx, error) {
+                console.log('SELECT observation error: ' + error.message);
+            }); 
+        }, function (error) {
+            console.log('transaction observation error: ' + error.message);
+        }, function () {
+            console.log('transaction observation ok');
+        }
+    );
+}
+
 $("#addOBS").click( function(e) {
     e.preventDefault();
-    window.sessionStorage.setItem("id_obs", "");
+    window.sessionStorage.setItem("obs_id", "");
     window.sessionStorage.setItem("obs_name", "myobstest");
     window.sessionStorage.setItem("obs_latitude", "39.784352364601");
     window.sessionStorage.setItem("obs_longitude", "-7.6377547801287");
+
+    window.sessionStorage.setItem("updating","false");
     window.location = 'obs_form.html';
     return false;
 } );

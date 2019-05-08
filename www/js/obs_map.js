@@ -97,7 +97,6 @@ function addMapControls() {
     controlLayers.addTo(mymap);
     mymap.addControl(new customControl());
 }
-
   
 $("#savelocation").click(function(e) {
     e.preventDefault();   
@@ -107,8 +106,6 @@ $("#savelocation").click(function(e) {
     window.location = 'obs_form.html';   
     return false; 
 } );
-
-
 
 /* Could be useful to show all observations on same map for a given AOI 
 
