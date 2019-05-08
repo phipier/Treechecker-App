@@ -41,8 +41,7 @@ var listAOI = {
                         e.preventDefault(); 
                         var id_aoi = this.id.substring(11);
                         window.sessionStorage.setItem("id_aoi", id_aoi);   
-                        this.delete_aoi(id_aoi);
-                        
+                        delete_aoi(id_aoi);                        
                         return false; 
                     });  
                     window.plugins.spinnerDialog.hide();
@@ -85,19 +84,22 @@ var listAOI = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-    },
-    delete_aoi: function(id_aoi) {
-        db.transaction(function(tx) {
-            var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
-            tx.executeSql(sqlstr);
-        }, function(error) {
-            console.log('Transaction delete aoi ERROR: ' + error.message);
-        }, function() {
-            console.log('deleted AOI table OK');
-            window.location = 'aoi_list.html';
-        });
     }
 };
 
 listAOI.initialize();
+
+function delete_aoi(id_aoi) {
+    db.transaction(function(tx) {
+        var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
+        tx.executeSql(sqlstr);
+    }, function(error) {
+        console.log('Transaction delete aoi ERROR: ' + error.message);
+        // delete tiles from local storage
+
+    }, function() {
+        console.log('deleted AOI table OK');
+        window.location = 'aoi_list.html';
+    });
+}
 

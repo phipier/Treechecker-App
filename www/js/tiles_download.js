@@ -71,6 +71,9 @@ function update_progress() {
     cur_tile_num++;
     var cur_tilePC = tilePC*cur_tile_num;
     $('.progress-bar').css('width', cur_tilePC+'%').attr('aria-valuenow', cur_tilePC);
+    if (cur_tile_num == tile_num) {
+        exit_form(true);
+    }
 }
 
 function fileExists(fileName) {

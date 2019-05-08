@@ -54,8 +54,8 @@ $("#saveaoi").click( function(e) {
 $("#selectarea").click( function(e) {
     e.preventDefault();     
     window.sessionStorage.setItem("aoiname",$("#InputAOIname").val());
-    window.location = 'aoi_map.html';   
-    return false; 
+    window.location = 'aoi_map.html'; 
+    return false;
 } );
 
 function add_AOI(aoiname, bbox) {
@@ -83,15 +83,11 @@ function add_AOI(aoiname, bbox) {
         processData: false,
         data: aoi_data,
         success : function(val) {              
-            insert_AOI(val, id_region); 
+            insert_AOI(val, id_region);
             // download tiles
+            $("#saveaoi").prepend('<span id="loadingspinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+            
             downloadTiles(val.key, bbox);
-
-            if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
-                $("#successpopupdata>p").html("");
-            }
-            $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> AOI created.</p>");
-            $('#successpopup').modal('show');
         },
         error : function(req, status, error) {
             if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
@@ -103,6 +99,21 @@ function add_AOI(aoiname, bbox) {
             console.log("error in request: "+req.responseText);
         }
     });
+}
+
+function exit_form(success) {
+    $("#saveaoi").remove("#loadingspinner");
+    if (success) {        
+        if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
+            $("#successpopupdata>p").html("");
+        }
+        $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> AOI created.</p>");
+        $('#successpopup').modal('show');
+        $("#ok_sent_success").click(function(){
+            $("#successpopup").modal("hide");
+            window.location = 'aoi_list.html';
+        });        
+    }
 }
 
 function insert_AOI(val, id_region) {
