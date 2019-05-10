@@ -14,7 +14,13 @@ var obsform = {
 obsform.initialize();
 
 $("#saveobs").click( function(e) {
-    e.preventDefault();
+    e.preventDefault();    
+    if ($("#OBS-form")[0].checkValidity() === false) {
+        $("#OBS-form")[0].classList.add('was-validated');
+        return false;
+    } else {
+        $("#OBS-form")[0].classList.add('was-validated');
+    }
     setWSitems();
     insert_OBS(getWSitems());
     return false;

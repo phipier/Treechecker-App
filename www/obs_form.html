@@ -20,8 +20,8 @@
 </nav>
 <div class="overlay"></div>
 
-<div id="OBS-form" class="forms needs-validation" novalidate>
-    <form>
+<div class="forms" >
+    <form id="OBS-form" novalidate>
         <div class="form-group">
             <label for="InputAOIname">Name</label>
             <input type="text" class="form-control" id="InputOBSname" aria-describedby="emailHelp" placeholder="Enter name" required>
@@ -36,15 +36,15 @@
         </div>
         <div class="form-group">
             <label>Species</label>
-            <select class="custom-select" id="InputSelectSpecies">
+            <select type="number" class="custom-select" id="InputSelectSpecies" required>
                 <option value="" disabled selected>select species</option>
             </select>
             <label>Crown diameter</label>
-            <select class="custom-select" id="InputSelectCrown">
+            <select class="custom-select" id="InputSelectCrown" required>
                 <option value="" disabled selected>select crown diameter</option>
             </select>
             <label>Tree status</label>
-            <select class="custom-select" id="InputSelectStatus">
+            <select class="custom-select" id="InputSelectStatus" required>
                 <option value="" disabled selected>select canopy status</option>
             </select>
         </div>
@@ -53,19 +53,19 @@
                 <a id="selectposition" href="#" class="btn button">select position</a><br>
             </div>
             <label for="Inputlatitude">Latitude</label>
-            <input type="number" class="form-control" id="Inputlatitude" placeholder="Enter latitude" onkeypress="return isNumberKey(event)" required>
+            <input class="form-control" id="Inputlatitude" placeholder="Enter latitude" onkeypress="return isNumberKey(event)" required>
             <div class="invalid-feedback">
                 Please provide a latitude for the position of this observation.
             </div>
             <label for="Inputlongitude">Longitude</label>
-            <input type="number" class="form-control" id="Inputlongitude" placeholder="Enter longitude" onkeypress="return isNumberKey(event)" required>
+            <input class="form-control" id="Inputlongitude" placeholder="Enter longitude" onkeypress="return isNumberKey(event)" required>
             <div class="invalid-feedback">
                 Please provide a longitude for the position of this observation.
             </div>
         </div>
         <div class="form-group">
             <label for="Inputcompass">Compass</label>
-            <input type="number" class="form-control" id="Inputcompass" placeholder="Enter compass value">            
+            <input class="form-control" id="Inputcompass" placeholder="Enter compass value" required>            
         </div>
         <!-- button id="btn_saveobs" type="submit" class="btn btn-primary">save my AOI</button -->
         <a id="saveobs" href="#" class="btn button">save my observation</a>

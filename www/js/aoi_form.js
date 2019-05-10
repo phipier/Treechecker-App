@@ -24,7 +24,12 @@ aoiform.initialize();
 
 $("#saveaoi").click( function(e) {
     e.preventDefault();
-
+    if ($("#AOI-form")[0].checkValidity() === false) {
+        $("#AOI-form")[0].classList.add('was-validated');
+        return false;
+    } else {
+        $("#AOI-form")[0].classList.add('was-validated');
+   }
     var id_aoi = window.sessionStorage.getItem("id_aoi");
 
     var aoiname = $("#InputAOIname").val();
@@ -39,6 +44,13 @@ $("#saveaoi").click( function(e) {
     return false; 
 } );
 
+$("#cancelaoi").click( function(e) {
+    e.preventDefault();
+    clearWSitems();
+    window.location = 'aoi_list.html'
+    return false;
+});
+
 $("#selectarea").click( function(e) {
     e.preventDefault();     
     window.sessionStorage.setItem("aoiname",$("#InputAOIname").val());
@@ -47,6 +59,9 @@ $("#selectarea").click( function(e) {
 });
 
 function add_AOI(aoiname, bbox) {
+    //$('#saveaoi').prop('disabled', true);
+    $("#saveaoi").prepend('<span id="loadingspinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp');            
+
     var token = window.sessionStorage.getItem("token");
     var id_region = window.sessionStorage.getItem("id_region");
 
@@ -73,7 +88,6 @@ function add_AOI(aoiname, bbox) {
         success : function(val) {              
             insert_AOI(val, id_region);
             // download tiles
-            $("#saveaoi").prepend('<span id="loadingspinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
             
             downloadTiles(val.key, bbox);
         },
@@ -85,8 +99,18 @@ function add_AOI(aoiname, bbox) {
             $('#errorpopup').modal('show');
 
             console.log("error in request: "+req.responseText);
+
+            $('#saveaoi').prop('disabled', false);
         }
     });
+}
+
+function clearWSitems() {
+    window.sessionStorage.removeItem("aoiname");
+    window.sessionStorage.removeItem("bbox_xmin");
+    window.sessionStorage.removeItem("bbox_xmax");
+    window.sessionStorage.removeItem("bbox_ymin");
+    window.sessionStorage.removeItem("bbox_ymax");
 }
 
 function exit_form(success) {
@@ -99,6 +123,7 @@ function exit_form(success) {
         $('#successpopup').modal('show');
         $("#ok_sent_success").click(function(){
             $("#successpopup").modal("hide");
+            clearWSitems();
             window.location = 'aoi_list.html';
         });        
     }
