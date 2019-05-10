@@ -84,6 +84,8 @@ function update_regions() {
             }
             $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - No connection to the DB.</p>");
             $('#errorpopup').modal('show');
+            $('#sidebar').toggleClass('active');
+            $('.overlay').toggleClass('active');
         }
     });
 }
