@@ -13,12 +13,26 @@
 </head>
 <body>
 <nav class="navbar navbar-light" style="background-color:#8BC34A; min-height:64px;">
-    <font class="header">Area of interest</font>
+    <font class="header">Observation form</font>
     <button class="navbar-toggler ml-auto" type="button" id="sidebarCollapse" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 </nav>
 <div class="overlay"></div>
+<div class="wrapper">
+    <nav id="sidebar">
+        <div id="sliderLinks">
+            <div class="listItem">
+                <i class="fas fa-sync-alt"></i>
+                <span id="syncobs">Send observations</span>
+            </div>
+            <div class="listItem">
+                <i class="fas fa-user"></i>
+                <span id="prof">Profile</span>
+            </div>
+        </div>
+    </nav>
+</div>
 
 <div class="forms">
     <form id="OBS-form" novalidate>

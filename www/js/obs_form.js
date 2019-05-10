@@ -1,11 +1,50 @@
 var obsform = {    
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        document.addEventListener("online", this.onOnline, false);
+        document.addEventListener("offline", this.onOffline, false);
     },
     onDeviceReady: function() {
         window.plugins.spinnerDialog.show();
         init_form();
+
+        $('#sidebarCollapse').on('click', function() {
+            $('#sidebar').toggleClass('active');
+            $('.overlay').toggleClass('active');
+        });
+
+        $('#syncobs').on('click', function() {
+            window.plugins.spinnerDialog.show();
+            this.syncObservations();
+        });
     },
+    onOnline: function() {
+        $('#sidebarCollapse').show();
+    },
+
+    onOffline: function() {
+        $('#sidebarCollapse').hide();
+    },
+    syncObservations: function() {
+        db.transaction(function (tx) {
+            var query = 'SELECT * FROM obs;';
+            tx.executeSql(query, [], function (tx, res) {
+                alert(res.rows.item(x).image);
+                //for(var x = 0; x < res.rows.length; x++) {
+                //}
+            },
+            function (tx, error) {
+                console.log('SELECT obs error: ' + error.message);
+            });
+        }, function (error) {
+            console.log('transaction obs error: ' + error.message);
+        }, function () {
+            console.log('transaction obs ok');
+            $('#sidebar').toggleClass('active');
+            $('.overlay').toggleClass('active');
+            window.plugins.spinnerDialog.hide();
+        });
+    }
 
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -189,7 +228,6 @@ $(function() {
     $('#photo').on('click', function() {
         navigator.camera.getPicture(
             function(imageData) {
-                alert('ciao');
                 $('#preview_text').remove();
                 var image = document.getElementById('image');
                 image.src = "data:image/jpeg;base64," + imageData;

@@ -26,10 +26,6 @@ var listRegions = {
             window.plugins.spinnerDialog.show();
             update();
         });
-        /*$('#syncobs').on('click', function() {
-            window.plugins.spinnerDialog.show();
-            synchronize();
-        });*/
     },
 
     onOnline: function() {

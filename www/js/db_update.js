@@ -5,11 +5,6 @@ function update() {
     update_canopystatus();       
 }
 
-function synchronize() {
-    sync_AOIandObservations();
-    sync_Images();
-}
-
 function update_regions() {
     var token = window.sessionStorage.getItem("token");
     $.ajax({
