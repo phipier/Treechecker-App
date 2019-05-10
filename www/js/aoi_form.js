@@ -137,7 +137,7 @@ function displayMessage(message, action) {
 
 function concludeTileDownload(success, message) {
     $("#saveaoi").remove("#loadingspinner");
-<<<<<<< Updated upstream
+
     if (success) { 
         var OKfunction = function() {
             $("#messagepopup").modal("hide");
@@ -157,7 +157,6 @@ function concludeTileDownload(success, message) {
     }
 }
 
-=======
     if (success) {
         displayMessage("AOI created.");
     } else {
@@ -185,4 +184,3 @@ function insert_AOI(val, id_region) {
         console.log('Populated database OK');
     });
 }
->>>>>>> Stashed changes
