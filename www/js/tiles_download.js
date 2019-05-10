@@ -2,9 +2,11 @@ var tile_num;
 var cur_tile_num;
 var tilePC;   
 var AOI_cancel = false; 
+var tile_downloading = false;
 
 function downloadTiles(id_AOI, bbox) {  
     init_progress();
+    tile_downloading = true;
 
     var fetchQueue = getTileDownloadURLs(bbox);
 

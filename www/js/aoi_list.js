@@ -6,6 +6,7 @@ var listAOI = {
     },
 
     onDeviceReady: function() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
         window.plugins.spinnerDialog.show();
         var id_region = window.sessionStorage.getItem("id_region");
 
@@ -30,7 +31,7 @@ var listAOI = {
                         window.location = 'obs_list.html';
                         return false; 
                     });
-                    /* 
+                    /* TO DO later ... not a priority
                     $("[id^=edit_idaoi_]").click(function(e) {
                         e.preventDefault(); 
                         var id_aoi = this.id.substring(11);
@@ -88,6 +89,10 @@ var listAOI = {
 
 listAOI.initialize();
 
+function onBackKeyDown() {
+    window.location = "region_list.html";
+}
+
 function delete_aoi(id_aoi) {   
 
     if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {
@@ -106,36 +111,7 @@ function delete_aoi(id_aoi) {
 
 }
 
-function delete_aoi_fromDB(id_aoi) {
-    var token = window.sessionStorage.getItem("token");
-    var id_aoi = window.sessionStorage.getItem("id_aoi");
-    $.ajax({
-        type : 'DELETE',
-        crossDomain : true,
-        url : SERVERURL + '/api/aois/' + id_aoi,
-        beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
-        success : function(reg) {
-            db.transaction(function(tx) {
-                // add DB contraint on observation?
-                var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
-                tx.executeSql(sqlstr);
-            }, function(error) {
-                console.log('Transaction delete aoi ERROR: ' + error.message);
-            }, function() {
-                console.log('deleted AOI');
-                // delete tiles from local storage
-                deleteTiles(id_aoi);                
-                window.plugins.spinnerDialog.hide();    
-                window.location = 'aoi_list.html';
-            });            
-        },
-        error : function(req, status, error) {
-            window.plugins.spinnerDialog.hide();
-        }
-    });   
-}
-
-/*
+/*  TO DO later ... not a priority
 function edit_aoi(id_aoi) {
     db.transaction(function (tx) {
             var query = 'SELECT * FROM aoi where id = '+id_aoi+';';

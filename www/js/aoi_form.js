@@ -4,6 +4,7 @@ var aoiform = {
     },
 
     onDeviceReady: function() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
                  
@@ -15,12 +16,19 @@ var aoiform = {
             
         window.plugins.spinnerDialog.hide();        
     },
+
     // Update DOM on a Received Event
     receivedEvent: function(id) {
     }
 };
 
 aoiform.initialize();
+
+function onBackKeyDown() {    
+    if (!AOI_cancel) {
+        displayMessage("AOI creation canceled.", function() {clearWSitems(); window.location = "aoi_list.html";});
+    }
+}
 
 $("#saveaoi").click( function(e) {
     e.preventDefault();
@@ -46,7 +54,11 @@ $("#saveaoi").click( function(e) {
 
 $("#cancelaoi").click( function(e) {
     e.preventDefault();
-    AOI_cancel = true;    
+    if (tile_downloading) {
+        AOI_cancel = true;
+    } else { 
+        displayMessage("AOI creation canceled.", function() {clearWSitems(); window.location = "aoi_list.html";});        
+     }
     return false;
 });
 
@@ -137,6 +149,7 @@ function displayMessage(message, action) {
 
 function concludeTileDownload(success, message) {
     $("#saveaoi").remove("#loadingspinner");
+    tile_downloading = false;
     if (success) { 
         var OKfunction = function() {
             $("#messagepopup").modal("hide");
