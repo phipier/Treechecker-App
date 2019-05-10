@@ -169,13 +169,6 @@ function concludeTileDownload(success, message) {
     }
 }
 
-    if (success) {
-        displayMessage("AOI created.");
-    } else {
-        displayMessage(message);
-    }
-}
-
 function insert_AOI(val, id_region) {
     db.transaction(function(tx) {
         var sqlstr = 
