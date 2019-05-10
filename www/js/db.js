@@ -24,22 +24,6 @@ function createTables() {
     runSQL(sqlstr);
 }
 
-function checkIftableexists(tablename) {
-    db.transaction(function (tx) {
-        var query = "SELECT name FROM sqlite_master WHERE type='table' AND name='{"+tablename+"}';";
-        tx.executeSql(query, [], function (tx, res) {   
-            return res;
-        },
-        function (tx, error) {
-            console.log('SELECT error: ' + error.message);
-        });
-    }, function (error) {
-        console.log('transaction error: ' + error.message);
-    }, function () {
-        console.log('transaction ok');
-    });
-}
-
 function runSQL(query) {
     db.transaction(function (tx) {       
         tx.executeSql(query, [], function (tx, res) {            
@@ -54,18 +38,3 @@ function runSQL(query) {
         console.log('transaction ok');
     });
 }
-
-
-
-
-/*
-    var obs.data =  '{"name" :"'    + $("#InputOBSname").text
-                + '", "id_aoi":"'               + id_aoi
-                + '", "id_tree_species":"'      + $("#InputSelectSpecies").children("option:selected").val()
-                + '", "id_crown_diameter":"'    + $("#InputSelectCrown").children("option:selected").val()
-                + '", "id_canopy_status":"'     + $("#InputSelectStatus").children("option:selected").val()
-                + '", "comment":"'              + $("#InputOBScomment").text
-                + '", "latitude":"'             + Number($("#Inputlatitude").text) 
-                + '", "longitude":"'            + Number($("#Inputlongitude").text) 
-                + '", "compass":"'              + Number($("#Inputcompass").text) + '"}';
-*/
