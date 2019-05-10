@@ -87,20 +87,11 @@ function add_AOI(aoiname, bbox) {
         data: aoi_data,
         success : function(val) {              
             insert_AOI(val, id_region);
-            // download tiles
-            
+            // download tiles            
             downloadTiles(val.key, bbox);
         },
         error : function(req, status, error) {
-            if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                $("#errorpopupdata>p").html("");
-            }
-            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to add the AOI to the remote DB.</p>");
-            $('#errorpopup').modal('show');
-
-            console.log("error in request: "+req.responseText);
-
-            $('#saveaoi').prop('disabled', false);
+            displayMessage("Error - It was not possible to add the AOI to the remote DB. <br> "+req.responseText);            
         }
     });
 }
@@ -113,7 +104,15 @@ function clearWSitems() {
     window.sessionStorage.removeItem("bbox_ymax");
 }
 
-function exit_form(success) {
+function displayMessage(err_message) {
+    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+        $("#errorpopupdata>p").html("");
+    }
+    $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> " + err_message + "</p>");
+    $('#errorpopup').modal('show');   
+}
+
+function concludeTileDownload(success, message) {
     $("#saveaoi").remove("#loadingspinner");
     if (success) {        
         if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
@@ -126,6 +125,8 @@ function exit_form(success) {
             clearWSitems();
             window.location = 'aoi_list.html';
         });        
+    } else {
+        displayMessage(message);
     }
 }
 
