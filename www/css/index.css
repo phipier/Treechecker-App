@@ -189,3 +189,11 @@ html, #mapid, #login-page {
 .forms {
     margin:15px;
 }
+
+#taken-picture {
+    dislay:block;
+    border:2px solid black;
+    width:215px;
+    height:215px;
+    margin:0 auto;
+}

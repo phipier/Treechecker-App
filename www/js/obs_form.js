@@ -3,9 +3,10 @@ var obsform = {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
     },
     onDeviceReady: function() {
-        window.plugins.spinnerDialog.show(); 
-        init_form(); 
+        window.plugins.spinnerDialog.show();
+        init_form();
     },
+
     // Update DOM on a Received Event
     receivedEvent: function(id) {
     }
@@ -20,6 +21,13 @@ $("#saveobs").click( function(e) {
         return false;
     } else {
         $("#OBS-form")[0].classList.add('was-validated');
+    }
+    if(!window.sessionStorage.getItem("photo")) {
+        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+            $("#errorpopupdata>p").html("");
+        }
+        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - You cannot send an observation without attaching a photo.</p>");
+        $('#errorpopupdata').modal('show');
     }
     setWSitems();
     insert_OBS(getWSitems());
@@ -40,17 +48,25 @@ function insert_OBS(obs) {
         // UPDATE obs SET name = "name" WHERE id=id_obs
         var sqlstr = 
             "REPLACE INTO obs(id, name, id_aoi, id_tree_species, id_crown_diameter, "
-            + "id_canopy_status, comment, longitude, latitude, compass) "
+            + "id_canopy_status, comment, longitude, latitude, compass, photo) "
             + "VALUES(" + obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
-            + obs.id_canopy_status + ",'" +obs.comment + "'," + obs.longitude + "," + obs.latitude + "," + obs.compass + ")";
+            + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + "," + obs.compass + "," + obs.photo + ")";
 
         tx.executeSql(sqlstr);
 
     }, function(error) {
         console.log('Transaction OBS ERROR: ' + error.message);
-        alert(error.message);
+        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+            $("#errorpopupdata>p").html("");
+        }
+        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB." + obs.photo + "</p>");
+        $('#errorpopup').modal('show');
     }, function() {
-        console.log('Populated table OBS OK');
+        if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
+            $("#successpopupdata>p").html("");
+        }
+        $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Remote database updated.</p>");
+        $('#successpopup').modal('show');
         clearWSitems();
         window.location = 'obs_list.html';
     });            
@@ -75,7 +91,7 @@ function setWSitems() {
 }
 
 function getWSitems() {
-    var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:''};
+    var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', photo:''};
     obs.name =              window.sessionStorage.getItem("obs_name");       
     obs.comment =           window.sessionStorage.getItem("obs_comment");
     obs.id_tree_species =   window.sessionStorage.getItem("obs_id_tree_species");
@@ -90,7 +106,8 @@ function getWSitems() {
         obs.id = window.sessionStorage.setItem("obs_id","NULL");
     } else {
         obs.id = id_obs;
-    }    
+    }
+    obs.photo = window.sessionStorage.getItem("photo");
     return obs;
 }
 
@@ -104,6 +121,7 @@ function clearWSitems() {
     window.sessionStorage.removeItem("obs_latitude");
     window.sessionStorage.removeItem("obs_longitude");
     window.sessionStorage.removeItem("obs_compass");
+    window.sessionStorage.removeItem("photo");
 }
 
 function init_form() {
@@ -112,9 +130,9 @@ function init_form() {
         tx.executeSql(query, [], function (tx, res) {
             var html = "";
             for(var x = 0; x < res.rows.length; x++) {
-                $('#InputSelectSpecies').append($('<option>', { 
+                $('#InputSelectSpecies').append($('<option>', {
                     value: res.rows.item(x).id,
-                    text : res.rows.item(x).name 
+                    text : res.rows.item(x).name
                 }));
             }
         },
@@ -152,9 +170,9 @@ function init_form() {
     }, function (error) {
         console.log('transaction treespecies error: ' + error.message);
     }, function () {
-        console.log('transaction treespecies ok');  
-        var obs = getWSitems();               
-        var id_obs = obs.id;     
+        console.log('transaction treespecies ok');
+        var obs = getWSitems();
+        var id_obs = obs.id;
         $("#InputOBSname").val(obs.name);
         $("#InputOBScomment").val(obs.comment);
         $("#InputSelectSpecies").val(obs.id_tree_species);
@@ -162,10 +180,27 @@ function init_form() {
         $("#InputSelectStatus").val(obs.id_canopy_status);
         $("#Inputlatitude").val(obs.latitude);
         $("#Inputlongitude").val(obs.longitude);
-        $("#Inputcompass").val(obs.compass);  
-        window.plugins.spinnerDialog.hide();             
-    }
-    );
+        $("#Inputcompass").val(obs.compass);
+        window.plugins.spinnerDialog.hide();
+    });
 };
 
-
+$(function() {
+    $('#photo').on('click', function() {
+        navigator.camera.getPicture(
+            function(imageData) {
+                alert('ciao');
+                $('#preview_text').remove();
+                var image = document.getElementById('image');
+                image.src = "data:image/jpeg;base64," + imageData;
+                window.sessionStorage.setItem("photo", "data:image/jpeg;base64," + imageData);
+            },
+            function() {
+                $("#errorpopupdata>p").html("");
+                $("#errorpopupdata>p").append("There are problems with the camera. Try to take the photo again or restart the app.");
+                $('#errorpopupdata').modal('show');
+            },
+            {quality:50, destinationType:Camera.DestinationType.DATA_URL}
+        );
+    });
+});

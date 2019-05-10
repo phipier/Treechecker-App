@@ -149,7 +149,11 @@ function displayMessage(message, action) {
 
 function concludeTileDownload(success, message) {
     $("#saveaoi").remove("#loadingspinner");
+<<<<<<< HEAD
     tile_downloading = false;
+=======
+
+>>>>>>> dad41a192bcb2f852e6b3a1d96cab9442bfaa869
     if (success) { 
         var OKfunction = function() {
             $("#messagepopup").modal("hide");
@@ -169,3 +173,30 @@ function concludeTileDownload(success, message) {
     }
 }
 
+    if (success) {
+        displayMessage("AOI created.");
+    } else {
+        displayMessage(message);
+    }
+}
+
+function insert_AOI(val, id_region) {
+    db.transaction(function(tx) {
+        var sqlstr = 
+            "REPLACE INTO aoi(id, name, x_min, x_max, y_min, y_max, geographical_zone_id) "
+            + "VALUES("+val.key+",'"+val.name+ "',"
+            +           val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+ ","
+            +           id_region+")";
+
+        tx.executeSql(sqlstr);
+
+    }, function(error) {
+        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+            $("#messagepopupdata>p").html("");
+        }
+        $("#messagepopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to add the AOI to the local DB.</p>");
+        $('#messagepopup').modal('show');
+    }, function() {
+        console.log('Populated database OK');
+    });
+}
