@@ -30,7 +30,7 @@ var listAOI = {
                         window.location = 'obs_list.html';
                         return false; 
                     });
-                    /*
+                    /* 
                     $("[id^=edit_idaoi_]").click(function(e) {
                         e.preventDefault(); 
                         var id_aoi = this.id.substring(11);
@@ -50,11 +50,14 @@ var listAOI = {
                 },
                 function (tx, error) {
                     console.log('SELECT AOI error: ' + error.message);
+                    window.plugins.spinnerDialog.hide();
                 });
             }, function (error) {
                 console.log('transaction AOI error: ' + error.message);
+                window.plugins.spinnerDialog.hide();
             }, function () {
-                console.log('transaction AOI ok');                
+                console.log('transaction AOI ok');  
+                window.plugins.spinnerDialog.hide();              
             }
         );
     },
@@ -85,8 +88,9 @@ var listAOI = {
 
 listAOI.initialize();
 
-function delete_aoi(id_aoi) {
+function delete_aoi(id_aoi) {    
     db.transaction(function(tx) {
+        // add DB contraint on observation
         var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
         tx.executeSql(sqlstr);
     }, function(error) {
@@ -95,6 +99,8 @@ function delete_aoi(id_aoi) {
         console.log('deleted AOI table OK');
         // delete tiles from local storage
         deleteTiles(id_aoi);
+        // TO DO : delete AOI from remote DB
+        
         window.location = 'aoi_list.html';
     });
 }

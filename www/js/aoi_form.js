@@ -46,19 +46,20 @@ $("#saveaoi").click( function(e) {
 
 $("#cancelaoi").click( function(e) {
     e.preventDefault();
-    clearWSitems();
-    window.location = 'aoi_list.html'
+    AOI_cancel = true;    
     return false;
 });
 
 $("#selectarea").click( function(e) {
-    e.preventDefault();     
+    e.preventDefault();         
     window.sessionStorage.setItem("aoiname",$("#InputAOIname").val());
     window.location = 'aoi_map.html'; 
     return false;
 });
 
 function add_AOI(aoiname, bbox) {
+    AOI_cancel = false;
+    
     //$('#saveaoi').prop('disabled', true);
     $("#saveaoi").prepend('<span id="loadingspinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp');            
 
@@ -104,29 +105,26 @@ function clearWSitems() {
     window.sessionStorage.removeItem("bbox_ymax");
 }
 
-function displayMessage(err_message) {
-    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-        $("#errorpopupdata>p").html("");
+function displayMessage(message) {
+    if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {
+        $("#messagepopupdata>p").html("");
     }
-    $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> " + err_message + "</p>");
-    $('#errorpopup').modal('show');   
+    $("#messagepopupdata").prepend("<p><i class='fas'></i> " + message + "</p>");
+    $('#messagepopup').modal('show');   
+    $("#ok_sent").click(function(){
+        $("#messagepopup").modal("hide");
+        clearWSitems();
+        // TO DO : delete AOI from remote DB and local DB;
+        window.location = 'aoi_list.html';
+    });
 }
 
 function concludeTileDownload(success, message) {
     $("#saveaoi").remove("#loadingspinner");
     if (success) {        
-        if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
-            $("#successpopupdata>p").html("");
-        }
-        $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> AOI created.</p>");
-        $('#successpopup').modal('show');
-        $("#ok_sent_success").click(function(){
-            $("#successpopup").modal("hide");
-            clearWSitems();
-            window.location = 'aoi_list.html';
-        });        
+        displayMessage("AOI created.");
     } else {
-        displayMessage(message);
+        displayMessage(message);      
     }
 }
 
@@ -142,10 +140,10 @@ function insert_AOI(val, id_region) {
 
     }, function(error) {
         if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-            $("#errorpopupdata>p").html("");
+            $("#messagepopupdata>p").html("");
         }
-        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to add the AOI to the local DB.</p>");
-        $('#errorpopup').modal('show');
+        $("#messagepopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to add the AOI to the local DB.</p>");
+        $('#messagepopup').modal('show');
     }, function() {
         console.log('Populated database OK');
     });

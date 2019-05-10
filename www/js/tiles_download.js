@@ -1,6 +1,7 @@
 var tile_num;
 var cur_tile_num;
-var tilePC;    
+var tilePC;   
+var AOI_cancel = false; 
 
 function downloadTiles(id_AOI, bbox) {  
     init_progress();
@@ -68,11 +69,15 @@ function init_progress() {
 }
 
 function update_progress() {
-    cur_tile_num++;
-    var cur_tilePC = tilePC*cur_tile_num;
-    $('.progress-bar').css('width', cur_tilePC+'%').attr('aria-valuenow', cur_tilePC);
-    if (cur_tile_num == tile_num) {
-        concludeTileDownload(true,"");
+    if (!AOI_cancel) {
+        cur_tile_num++;
+        var cur_tilePC = tilePC*cur_tile_num;
+        $('.progress-bar').css('width', cur_tilePC+'%').attr('aria-valuenow', cur_tilePC);
+        if (cur_tile_num == tile_num) {
+            concludeTileDownload(true,"");
+        }
+    } else {
+        concludeTileDownload(false,"AOI creation canceled.");
     }
 }
 
