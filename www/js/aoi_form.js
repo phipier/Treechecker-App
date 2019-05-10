@@ -149,11 +149,7 @@ function displayMessage(message, action) {
 
 function concludeTileDownload(success, message) {
     $("#saveaoi").remove("#loadingspinner");
-<<<<<<< HEAD
     tile_downloading = false;
-=======
-
->>>>>>> dad41a192bcb2f852e6b3a1d96cab9442bfaa869
     if (success) { 
         var OKfunction = function() {
             $("#messagepopup").modal("hide");
