@@ -88,21 +88,51 @@ var listAOI = {
 
 listAOI.initialize();
 
-function delete_aoi(id_aoi) {    
-    db.transaction(function(tx) {
-        // add DB contraint on observation
-        var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
-        tx.executeSql(sqlstr);
-    }, function(error) {
-        console.log('Transaction delete aoi ERROR: ' + error.message);
-    }, function() {
-        console.log('deleted AOI table OK');
-        // delete tiles from local storage
-        deleteTiles(id_aoi);
-        // TO DO : delete AOI from remote DB
-        
-        window.location = 'aoi_list.html';
+function delete_aoi(id_aoi) {   
+
+    if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {
+        $("#messagepopupdata>p").html("");
+    }
+    var message = "All observations of this AOI will be deleted. Do you want to proceed anyway?";
+    $("#messagepopupdata").prepend("<p><i class='fas'></i> " + message + "</p>");
+    $('#messagepopup').modal('show');   
+    $("#ok_sent").click(function(){
+        $("#messagepopup").modal("hide");
+        delete_aoi_fromDB(id_aoi);        
     });
+    $("#cancel_sent").click(function(){
+        $("#messagepopup").modal("hide");
+    });
+
+}
+
+function delete_aoi_fromDB(id_aoi) {
+    var token = window.sessionStorage.getItem("token");
+    var id_aoi = window.sessionStorage.getItem("id_aoi");
+    $.ajax({
+        type : 'DELETE',
+        crossDomain : true,
+        url : SERVERURL + '/api/aois/' + id_aoi,
+        beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
+        success : function(reg) {
+            db.transaction(function(tx) {
+                // add DB contraint on observation?
+                var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
+                tx.executeSql(sqlstr);
+            }, function(error) {
+                console.log('Transaction delete aoi ERROR: ' + error.message);
+            }, function() {
+                console.log('deleted AOI');
+                // delete tiles from local storage
+                deleteTiles(id_aoi);                
+                window.plugins.spinnerDialog.hide();    
+                window.location = 'aoi_list.html';
+            });            
+        },
+        error : function(req, status, error) {
+            window.plugins.spinnerDialog.hide();
+        }
+    });   
 }
 
 /*

@@ -97,37 +97,6 @@ function add_AOI(aoiname, bbox) {
     });
 }
 
-function clearWSitems() {
-    window.sessionStorage.removeItem("aoiname");
-    window.sessionStorage.removeItem("bbox_xmin");
-    window.sessionStorage.removeItem("bbox_xmax");
-    window.sessionStorage.removeItem("bbox_ymin");
-    window.sessionStorage.removeItem("bbox_ymax");
-}
-
-function displayMessage(message) {
-    if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {
-        $("#messagepopupdata>p").html("");
-    }
-    $("#messagepopupdata").prepend("<p><i class='fas'></i> " + message + "</p>");
-    $('#messagepopup').modal('show');   
-    $("#ok_sent").click(function(){
-        $("#messagepopup").modal("hide");
-        clearWSitems();
-        // TO DO : delete AOI from remote DB and local DB;
-        window.location = 'aoi_list.html';
-    });
-}
-
-function concludeTileDownload(success, message) {
-    $("#saveaoi").remove("#loadingspinner");
-    if (success) {        
-        displayMessage("AOI created.");
-    } else {
-        displayMessage(message);      
-    }
-}
-
 function insert_AOI(val, id_region) {
     db.transaction(function(tx) {
         var sqlstr = 
@@ -139,7 +108,7 @@ function insert_AOI(val, id_region) {
         tx.executeSql(sqlstr);
 
     }, function(error) {
-        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+        if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {
             $("#messagepopupdata>p").html("");
         }
         $("#messagepopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to add the AOI to the local DB.</p>");
@@ -148,3 +117,42 @@ function insert_AOI(val, id_region) {
         console.log('Populated database OK');
     });
 }
+
+function clearWSitems() {
+    window.sessionStorage.removeItem("aoiname");
+    window.sessionStorage.removeItem("bbox_xmin");
+    window.sessionStorage.removeItem("bbox_xmax");
+    window.sessionStorage.removeItem("bbox_ymin");
+    window.sessionStorage.removeItem("bbox_ymax");
+}
+
+function displayMessage(message, action) {
+    if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {
+        $("#messagepopupdata>p").html("");
+    }
+    $("#messagepopupdata").prepend("<p><i class='fas'></i> " + message + "</p>");
+    $('#messagepopup').modal('show');   
+    $("#ok_sent").click(action);
+}
+
+function concludeTileDownload(success, message) {
+    $("#saveaoi").remove("#loadingspinner");
+    if (success) { 
+        var OKfunction = function() {
+            $("#messagepopup").modal("hide");
+            clearWSitems();
+            window.location = 'aoi_list.html';
+        }       
+        displayMessage("AOI created.", OKfunction);
+    } else {
+        var OKfunction = function() {
+            $("#messagepopup").modal("hide");
+            clearWSitems();
+            // delete AOI from remote DB and local DB;
+            delete_aoi_fromDB(window.sessionStorage.getItem("id_aoi"));
+            window.location = 'aoi_list.html';
+        }
+        displayMessage(message, OKfunction);      
+    }
+}
+
