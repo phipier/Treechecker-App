@@ -1,51 +1,28 @@
 var obsform = {    
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
-        document.addEventListener("online", this.onOnline, false);
-        document.addEventListener("offline", this.onOffline, false);
     },
     onDeviceReady: function() {
         window.plugins.spinnerDialog.show();
         init_form();
 
-        $('#sidebarCollapse').on('click', function() {
-            $('#sidebar').toggleClass('active');
-            $('.overlay').toggleClass('active');
-        });
-
-        $('#syncobs').on('click', function() {
-            window.plugins.spinnerDialog.show();
-            this.syncObservations();
+        $('#photo').on('click', function() {
+            navigator.camera.getPicture(
+                function(imageData) {
+                    $('#preview_text').remove();
+                    var image = document.getElementById('image');
+                    image.src = "data:image/jpeg;base64," + imageData;
+                    window.sessionStorage.setItem("photo", "data:image/jpeg;base64," + imageData);
+                },
+                function() {
+                    $("#errorpopupdata>p").html("");
+                    $("#errorpopupdata>p").append("There are problems with the camera. Try to take the photo again or restart the app.");
+                    $('#errorpopupdata').modal('show');
+                },
+                {quality:50, destinationType:Camera.DestinationType.DATA_URL}
+            );
         });
     },
-    onOnline: function() {
-        $('#sidebarCollapse').show();
-    },
-
-    onOffline: function() {
-        $('#sidebarCollapse').hide();
-    },
-    syncObservations: function() {
-        db.transaction(function (tx) {
-            var query = 'SELECT * FROM obs;';
-            tx.executeSql(query, [], function (tx, res) {
-                alert(res.rows.item(x).image);
-                //for(var x = 0; x < res.rows.length; x++) {
-                //}
-            },
-            function (tx, error) {
-                console.log('SELECT obs error: ' + error.message);
-            });
-        }, function (error) {
-            console.log('transaction obs error: ' + error.message);
-        }, function () {
-            console.log('transaction obs ok');
-            $('#sidebar').toggleClass('active');
-            $('.overlay').toggleClass('active');
-            window.plugins.spinnerDialog.hide();
-        });
-    }
-
     // Update DOM on a Received Event
     receivedEvent: function(id) {
     }
@@ -183,9 +160,9 @@ function init_form() {
         tx.executeSql(query, [], function (tx, res) {
             var html = "";
             for(var x = 0; x < res.rows.length; x++) {
-                $('#InputSelectCrown').append($('<option>', { 
+                $('#InputSelectCrown').append($('<option>', {
                     value: res.rows.item(x).id,
-                    text : res.rows.item(x).name 
+                    text : res.rows.item(x).name
                 }));
             }
         },
@@ -223,22 +200,3 @@ function init_form() {
         window.plugins.spinnerDialog.hide();
     });
 };
-
-$(function() {
-    $('#photo').on('click', function() {
-        navigator.camera.getPicture(
-            function(imageData) {
-                $('#preview_text').remove();
-                var image = document.getElementById('image');
-                image.src = "data:image/jpeg;base64," + imageData;
-                window.sessionStorage.setItem("photo", "data:image/jpeg;base64," + imageData);
-            },
-            function() {
-                $("#errorpopupdata>p").html("");
-                $("#errorpopupdata>p").append("There are problems with the camera. Try to take the photo again or restart the app.");
-                $('#errorpopupdata').modal('show');
-            },
-            {quality:50, destinationType:Camera.DestinationType.DATA_URL}
-        );
-    });
-});

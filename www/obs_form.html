@@ -14,25 +14,7 @@
 <body>
 <nav class="navbar navbar-light" style="background-color:#8BC34A; min-height:64px;">
     <font class="header">Observation form</font>
-    <button class="navbar-toggler ml-auto" type="button" id="sidebarCollapse" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
 </nav>
-<div class="overlay"></div>
-<div class="wrapper">
-    <nav id="sidebar">
-        <div id="sliderLinks">
-            <div class="listItem">
-                <i class="fas fa-sync-alt"></i>
-                <span id="syncobs">Send observations</span>
-            </div>
-            <div class="listItem">
-                <i class="fas fa-user"></i>
-                <span id="prof">Profile</span>
-            </div>
-        </div>
-    </nav>
-</div>
 
 <div class="forms">
     <form id="OBS-form" novalidate>
@@ -82,14 +64,16 @@
             <input class="form-control" id="Inputcompass" placeholder="Enter compass value" required>            
         </div>
 
-        <div data-role="content" id="content" class="custom-content">
-            <div id="picture" class="ui-content">
-                <p>
-                    <button id="photo" class="btn button">Take photo</button>
-                </p>
-                <div id="taken-picture">
-                    <span id="preview_text">Image Preview</span>
-                    <img height="215" width="215" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" id="image" />
+        <div class="form-group">
+            <div data-role="content" id="content" class="custom-content">
+                <div id="picture" class="ui-content">
+                    <p>
+                        <button id="photo" class="btn button">Take photo</button>
+                    </p>
+                    <div id="taken-picture">
+                        <span id="preview_text">Image Preview</span>
+                        <img height="215" width="215" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" id="image" />
+                    </div>
                 </div>
             </div>
         </div>
