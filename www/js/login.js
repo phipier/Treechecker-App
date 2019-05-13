@@ -59,7 +59,8 @@ var login = {
         if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
             $("#errorpopupdata>p").html("");
         }
-        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - Wrong username and/or password.</p>");
+        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i>No connection to remote server?</p>");
+        //$("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - Wrong username and/or password.</p>");
         $('#errorpopup').modal('show');
     },
 

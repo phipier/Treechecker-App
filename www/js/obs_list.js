@@ -2,10 +2,11 @@ var listObs = {
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
         document.addEventListener("online", this.onOnline, false);
-        document.addEventListener("offline", this.onOffline, false);
+        document.addEventListener("offline", this.onOffline, false);        
     },
     onDeviceReady: function() {
         //window.plugins.spinnerDialog.show(null, "loading survey data ...");
+        document.addEventListener("backbutton", onBackKeyDown, false);
         var id_aoi = window.sessionStorage.getItem("id_aoi");
 
         db.transaction(function (tx) {
@@ -102,6 +103,10 @@ var listObs = {
     receivedEvent: function(id) {
     }
 };
+
+function onBackKeyDown() {
+    window.location = "aoi_list.html";
+}
 
 function edit_obs(id_obs) {
     db.transaction(function (tx) {

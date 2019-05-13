@@ -4,6 +4,7 @@ var aoiform = {
     },
 
     onDeviceReady: function() {
+        AOI_cancel = false;
         document.addEventListener("backbutton", onBackKeyDown, false);
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
@@ -23,12 +24,6 @@ var aoiform = {
 };
 
 aoiform.initialize();
-
-function onBackKeyDown() {    
-    if (!AOI_cancel) {
-        displayMessage("AOI creation canceled.", function() {clearWSitems(); window.location = "aoi_list.html";});
-    }
-}
 
 $("#saveaoi").click( function(e) {
     e.preventDefault();
@@ -54,13 +49,21 @@ $("#saveaoi").click( function(e) {
 
 $("#cancelaoi").click( function(e) {
     e.preventDefault();
+    cancel_AOI()
+    return false;
+});
+
+function onBackKeyDown() {
+    cancel_AOI();    
+}
+
+function cancel_AOI() {    
     if (tile_downloading) {
         AOI_cancel = true;
     } else { 
         displayMessage("AOI creation canceled.", function() {clearWSitems(); window.location = "aoi_list.html";});        
-     }
-    return false;
-});
+    }    
+}
 
 $("#selectarea").click( function(e) {
     e.preventDefault();         
@@ -98,7 +101,8 @@ function add_AOI(aoiname, bbox) {
         },
         processData: false,
         data: aoi_data,
-        success : function(val) {              
+        success : function(val) { 
+            window.sessionStorage.setItem("id_aoi",val.key);             
             insert_AOI(val, id_region);
             // download tiles            
             downloadTiles(val.key, bbox);
@@ -138,35 +142,31 @@ function clearWSitems() {
     window.sessionStorage.removeItem("bbox_ymax");
 }
 
-function displayMessage(message, action) {
-    if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {
-        $("#messagepopupdata>p").html("");
-    }
-    $("#messagepopupdata").prepend("<p><i class='fas'></i> " + message + "</p>");
-    $('#messagepopup').modal('show');   
-    $("#ok_sent").click(action);
-}
+function exit_AOI(success, message) {
+    $("#saveaoi").remove("#loadingspinner");    
 
-function concludeTileDownload(success, message) {
-    $("#saveaoi").remove("#loadingspinner");
-    tile_downloading = false;
     if (success) { 
+
         var OKfunction = function() {
-            $("#messagepopup").modal("hide");
-            clearWSitems();
-            window.location = 'aoi_list.html';
-        }       
-        displayMessage("AOI created.", OKfunction);
-    } else {
-        var OKfunction = function() {
-            $("#messagepopup").modal("hide");
-            clearWSitems();
-            // delete AOI from remote DB and local DB;
-            delete_aoi_fromDB(window.sessionStorage.getItem("id_aoi"));
+            $("#messagepopup").modal("hide"); 
+            clearWSitems();           
             window.location = 'aoi_list.html';
         }
-        displayMessage(message, OKfunction);      
+        l_message = "AOI created."               
+
+    } else {
+
+        var OKfunction = function() {               
+            $("#messagepopup").modal("hide");        
+            // delete AOI from remote DB and local DB;
+            delete_aoi_fromDB(window.sessionStorage.getItem("id_aoi"));
+            clearWSitems();
+            window.location = 'aoi_list.html';
+        }
+        l_message = message;
     }
+
+    displayMessage(l_message, OKfunction);
 }
 
 function insert_AOI(val, id_region) {

@@ -4,6 +4,7 @@ var obsform = {
     },
     onDeviceReady: function() {
         window.plugins.spinnerDialog.show();
+        document.addEventListener("backbutton", onBackKeyDown, false);
         init_form();
 
         $('#photo').on('click', function() {
@@ -30,6 +31,20 @@ var obsform = {
 
 obsform.initialize();
 
+$("#cancelobs").click( function(e) {
+    e.preventDefault();
+    cancel_OBS();
+    return false;
+});
+
+function onBackKeyDown() {
+    cancel_OBS();    
+}
+
+function cancel_OBS() {    
+    displayMessage("OBS creation canceled.", function() {clearWSitems(); window.location = "obs_list.html";});                
+}
+
 $("#saveobs").click( function(e) {
     e.preventDefault();    
     if ($("#OBS-form")[0].checkValidity() === false) {
@@ -47,13 +62,6 @@ $("#saveobs").click( function(e) {
     }
     setWSitems();
     insert_OBS(getWSitems());
-    return false;
-});
-
-$("#cancelobs").click( function(e) {
-    e.preventDefault();
-    clearWSitems();
-    window.location = 'obs_list.html'
     return false;
 });
 

@@ -4,7 +4,7 @@ var tilePC;
 var AOI_cancel = false; 
 var tile_downloading = false;
 
-function downloadTiles(id_AOI, bbox) {  
+function downloadTiles(id_AOI, bbox) {
     init_progress();
     tile_downloading = true;
 
@@ -20,49 +20,53 @@ function downloadTiles(id_AOI, bbox) {
     
     for(var i=0, len=fetchQueue.length; i<len; ++i) {
     //for(var i=0, len=5; i<len; ++i) {
+        if (tile_downloading) {
+   
 
-        var data = fetchQueue[i];
+            var data = fetchQueue[i];
+            
+            console.log("i: " + i
+                        + " layername: " + data.layerName
+                        + " x: " +      data.x
+                        + " y: " +      data.y
+                        + " zoom: " +   data.z)
+
+            console.log("URL: " + fetchQueue[i].url);
+
+            var dirPath = `files/tiles/${id_AOI}/${data.layerName}/${data.z}/${data.x}`;
+            var filePath = `${data.y}.png`;
+            var fileName = dirPath+"/"+filePath;
+
+            //if (!fileExists(fileName)) {         
         
-        console.log("i: " + i
-                    + " layername: " + data.layerName
-                    + " x: " +      data.x
-                    + " y: " +      data.y
-                    + " zoom: " +   data.z)
+                var makeRequest = function(dataURL, dirPath, filePath) {
+                    // download tile
+                    var url = dataURL;
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.responseType = 'blob';
+                    xhr.onload = function() {
+                        if (this.status == 200) {      
+                            var blob = new Blob([this.response], { type: 'image/png' });
+                            window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
+                                                                
+                                console.log("dirpath: "+dirPath);
 
-        console.log("URL: " + fetchQueue[i].url);
+                                createPath(dirEntry, dirPath, function(dirTileEntry) {
+                                    saveFile(dirTileEntry, blob, filePath);
+                                    update_progress();
+                                })
 
-        var dirPath = `files/tiles/${id_AOI}/${data.layerName}/${data.z}/${data.x}`;
-        var filePath = `${data.y}.png`;
-        var fileName = dirPath+"/"+filePath;
-
-        //if (!fileExists(fileName)) {         
-    
-            var makeRequest = function(dataURL, dirPath, filePath) {
-                // download tile
-                var url = dataURL;
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', url, true);
-                xhr.responseType = 'blob';
-                xhr.onload = function() {
-                    if (this.status == 200) {      
-                        var blob = new Blob([this.response], { type: 'image/png' });
-                        window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
-                                                            
-                            console.log("dirpath: "+dirPath);
-
-                            createPath(dirEntry, dirPath, function(dirTileEntry) {
-                                saveFile(dirTileEntry, blob, filePath);
-                                update_progress();
-                            })
-
-                        }, function (filerror) {console.log("Failed request FS: " + filerror)});                
-                    }
+                            }, function (filerror) {console.log("Failed request FS: " + filerror)});                
+                        }
+                    };
+                    xhr.send();
                 };
-                xhr.send();
-            };
-            makeRequest(data.url, dirPath, filePath);
-        //};
-    
+                makeRequest(data.url, dirPath, filePath);
+            //};
+        } else {
+            return false;
+        }
     };
 };
 
@@ -76,10 +80,11 @@ function update_progress() {
         var cur_tilePC = tilePC*cur_tile_num;
         $('.progress-bar').css('width', cur_tilePC+'%').attr('aria-valuenow', cur_tilePC);
         if (cur_tile_num == tile_num) {
-            concludeTileDownload(true,"");
+            exit_AOI(true,"");
         }
     } else {
-        concludeTileDownload(false,"AOI creation canceled.");
+        tile_downloading = false;
+        exit_AOI(false,"AOI creation canceled.");
     }
 }
 
