@@ -38,8 +38,8 @@ function loadMap() {
         var bounds = L.latLngBounds(corner1, corner2);
         map.fitBounds(bounds);
     } else {
-        //map.setView([39.701, -7.69], 10);
-        map.fitBounds(l_ortho.getBounds());
+        map.setView([39.701, -7.69], 10);
+        //map.fitBounds(l_ortho.getBounds());
     }
 
     areaSelect = L.areaSelect({width:200, height:200});
