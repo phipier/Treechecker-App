@@ -6,8 +6,7 @@ var tile_downloading = false;
 
 function downloadTiles(id_AOI, bbox) {
     init_progress();
-    tile_downloading = true;
-
+    
     var fetchQueue = getTileDownloadURLs(bbox);
 
     var deleteFile_flag = false;
@@ -53,13 +52,13 @@ function downloadTiles(id_AOI, bbox) {
                                     createPath(dirEntry, dirPath, function(dirTileEntry) {
                                         saveFile(dirTileEntry, blob, filePath);                                    
                                     })
-                                }
+                                } else {return}
                             }, function (filerror) {console.log("Failed request FS: " + filerror)});                
                         }
                     };
                     xhr.send();
                 };
-                if (tile_downloading) {makeRequest(data.url, dirPath, filePath);}
+                if (tile_downloading) {makeRequest(data.url, dirPath, filePath);} else {return}
             //};
         } else {
             return;
@@ -137,7 +136,7 @@ function deleteFile(fileName) {
 
 function saveFile(dirEntry, fileData, fileName) {
     dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
-        if (tile_downloading) { writeFile(fileEntry, fileData); }
+        if (tile_downloading) { writeFile(fileEntry, fileData); } else {return}
     }, function (fileError) {
         console.log("Failed save to file: " + fileError);       
     });
