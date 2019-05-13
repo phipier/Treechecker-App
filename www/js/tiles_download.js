@@ -20,8 +20,7 @@ function downloadTiles(id_AOI, bbox) {
     
     for(var i=0, len=fetchQueue.length; i<len; ++i) {
     //for(var i=0, len=5; i<len; ++i) {
-        if (tile_downloading) {
-   
+        if (tile_downloading) {   
 
             var data = fetchQueue[i];
             
@@ -46,26 +45,24 @@ function downloadTiles(id_AOI, bbox) {
                     xhr.open('GET', url, true);
                     xhr.responseType = 'blob';
                     xhr.onload = function() {
-                        if (this.status == 200) {      
+                        if (this.status == 200 && tile_downloading) {      
                             var blob = new Blob([this.response], { type: 'image/png' });
                             window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
-                                                                
-                                console.log("dirpath: "+dirPath);
-
-                                createPath(dirEntry, dirPath, function(dirTileEntry) {
-                                    saveFile(dirTileEntry, blob, filePath);
-                                    update_progress();
-                                })
-
+                                if (tile_downloading) {                                
+                                    console.log("fileName: "+fileName);
+                                    createPath(dirEntry, dirPath, function(dirTileEntry) {
+                                        saveFile(dirTileEntry, blob, filePath);                                    
+                                    })
+                                }
                             }, function (filerror) {console.log("Failed request FS: " + filerror)});                
                         }
                     };
                     xhr.send();
                 };
-                makeRequest(data.url, dirPath, filePath);
+                if (tile_downloading) {makeRequest(data.url, dirPath, filePath);}
             //};
         } else {
-            return false;
+            return;
         }
     };
 };
@@ -75,16 +72,18 @@ function init_progress() {
 }
 
 function update_progress() {
-    if (!AOI_cancel) {
-        cur_tile_num++;
-        var cur_tilePC = tilePC*cur_tile_num;
-        $('.progress-bar').css('width', cur_tilePC+'%').attr('aria-valuenow', cur_tilePC);
-        if (cur_tile_num == tile_num) {
-            exit_AOI(true,"");
+    if (tile_downloading) {
+        if (!AOI_cancel) {
+            cur_tile_num++;
+            var cur_tilePC = tilePC*cur_tile_num;
+            $('.progress-bar').css('width', cur_tilePC+'%').attr('aria-valuenow', cur_tilePC);
+            if (cur_tile_num == tile_num) {
+                exit_AOI(true,"");
+            }
+        } else {
+            tile_downloading = false;
+            exit_AOI(false,"AOI creation canceled.");
         }
-    } else {
-        tile_downloading = false;
-        exit_AOI(false,"AOI creation canceled.");
     }
 }
 
@@ -138,7 +137,7 @@ function deleteFile(fileName) {
 
 function saveFile(dirEntry, fileData, fileName) {
     dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
-        writeFile(fileEntry, fileData);        
+        if (tile_downloading) { writeFile(fileEntry, fileData); }
     }, function (fileError) {
         console.log("Failed save to file: " + fileError);       
     });
@@ -150,12 +149,13 @@ function writeFile(fileEntry, dataObj, isAppend) {
 
         fileWriter.onwriteend = function() {
             console.log("Successful file write...");
-            if (dataObj.type == "image/png") {
+            update_progress();
+            /*if (dataObj.type == "image/png") {
                 readBinaryFile(fileEntry);
             }
             else {
                 readFile(fileEntry);
-            }
+            }*/
         };
 
         fileWriter.onerror = function(e) {
@@ -166,7 +166,7 @@ function writeFile(fileEntry, dataObj, isAppend) {
     });
 }
 
-function readBinaryFile(fileEntry) {
+/*function readBinaryFile(fileEntry) {
 
     fileEntry.file(function (file) {
         var reader = new FileReader();
@@ -182,7 +182,7 @@ function readBinaryFile(fileEntry) {
         reader.readAsArrayBuffer(file);
 
     }, function (filerror) {console.log("Failed save to file: " + filerror)});
-}
+}*/
 
 // builds directory path
 function createPath(dirEntry, path, finalCB) {

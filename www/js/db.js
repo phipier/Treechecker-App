@@ -47,13 +47,13 @@ function runSQL(query) {
 
 function delete_aoi_fromDB(id_aoi) {
     var token = window.sessionStorage.getItem("token");
-    var id_aoi = window.sessionStorage.getItem("id_aoi");
     $.ajax({
-        type : 'DELETE',
+        method : 'DELETE',
         crossDomain : true,
         url : SERVERURL + '/api/aois/' + id_aoi,
         beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
         success : function(reg) {
+            console.log("DELETE AOI success.")
             db.transaction(function(tx) {
                 // add DB contraint on observation?
                 var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
@@ -66,10 +66,15 @@ function delete_aoi_fromDB(id_aoi) {
                 deleteTiles(id_aoi);                
                 window.plugins.spinnerDialog.hide();    
                 window.location = 'aoi_list.html';
-            });            
+            });  
         },
         error : function(req, status, error) {
             window.plugins.spinnerDialog.hide();
+            console.log("could not delete AOI from remote server.");
+        },
+        complete : function(xhr,textStatus) {
+            window.plugins.spinnerDialog.hide();
+            console.log("DELETE AOI complete. " + textStatus);
         }
-    });   
+    });          
 }

@@ -159,9 +159,8 @@ function exit_AOI(success, message) {
         var OKfunction = function() {               
             $("#messagepopup").modal("hide");        
             // delete AOI from remote DB and local DB;
-            delete_aoi_fromDB(window.sessionStorage.getItem("id_aoi"));
             clearWSitems();
-            window.location = 'aoi_list.html';
+            delete_aoi_fromDB(window.sessionStorage.getItem("id_aoi"));
         }
         l_message = message;
     }
