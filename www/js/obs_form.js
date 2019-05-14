@@ -17,7 +17,7 @@ var obsform = {
                 },
                 function() {
                     $("#errorpopupdata>p").html("");
-                    $("#errorpopupdata>p").append("There are problems with the camera. Try to take the photo again or restart the app.");
+                    $("#errorpopupdata>p").append("<p><i class='fas fa-exclamation-circle'></i> Error - There are problems with the camera. Try to take the photo again or restart the app.");
                     $('#errorpopupdata').modal('show');
                 },
                 {quality:50, destinationType:Camera.DestinationType.DATA_URL}
@@ -72,9 +72,9 @@ function insert_OBS(obs) {
         // UPDATE obs SET name = "name" WHERE id=id_obs
         var sqlstr = 
             "REPLACE INTO obs(id, name, id_aoi, id_tree_species, id_crown_diameter, "
-            + "id_canopy_status, comment, longitude, latitude, compass, photo) "
+            + "id_canopy_status, comment, longitude, latitude, compass, image) "
             + "VALUES(" + obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
-            + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + "," + obs.compass + "," + obs.photo + ")";
+            + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + "," + obs.compass + "," + obs.image + ")";
 
         tx.executeSql(sqlstr);
 
@@ -83,7 +83,7 @@ function insert_OBS(obs) {
         if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
             $("#errorpopupdata>p").html("");
         }
-        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB." + obs.photo + "</p>");
+        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB." + obs.image + "</p>");
         $('#errorpopup').modal('show');
     }, function() {
         if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
@@ -115,7 +115,7 @@ function setWSitems() {
 }
 
 function getWSitems() {
-    var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', photo:''};
+    var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', image:''};
     obs.name =              window.sessionStorage.getItem("obs_name");       
     obs.comment =           window.sessionStorage.getItem("obs_comment");
     obs.id_tree_species =   window.sessionStorage.getItem("obs_id_tree_species");
@@ -131,7 +131,7 @@ function getWSitems() {
     } else {
         obs.id = id_obs;
     }
-    obs.photo = window.sessionStorage.getItem("photo");
+    obs.image = window.sessionStorage.getItem("photo");
     return obs;
 }
 
