@@ -39,6 +39,7 @@ function loadMap() {
         map.fitBounds(bounds);
     } else {
         map.setView([39.701, -7.69], 10);
+        // get bbox from response to GetCapabilities request ...
         //map.fitBounds(l_ortho.getBounds());
     }
 
@@ -47,7 +48,6 @@ function loadMap() {
         var bounds = this.getBounds();        
     });
     areaSelect.addTo(map);
-
 };
 
 $("#savearea").click( function(e) {
