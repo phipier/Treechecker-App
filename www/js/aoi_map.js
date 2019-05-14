@@ -63,3 +63,13 @@ $("#savearea").click( function(e) {
     window.location = 'aoi_form.html';   
     return false; 
 } );
+
+function onBackKeyDown() {
+    window.location = "aoi_form.html";
+}
+
+$("#cancelarea").click(function(e) {
+    e.preventDefault();         
+    window.location = 'aoi_form.html';   
+    return false; 
+} );

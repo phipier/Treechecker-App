@@ -17,8 +17,8 @@ var listObs = {
                         var id_obs = res.rows.item(x).id;
                         html += '<div class="card"><div class="card-body">'
                         + '<h5 class="card-title">' + res.rows.item(x).name + '</h5>'
-                        + '<a id="edit_idobs_'+id_obs+'" class="btn button">edit observation</a>'
-                        + '<a id="dele_idobs_'+id_obs+'" class="btn button">delete observation</a></div></div>';
+                        + '<a id="edit_idobs_'+id_obs+'" class="btn button">edit</a>'
+                        + '<a id="dele_idobs_'+id_obs+'" class="btn button">delete</a></div></div>';
                     }                    
                     $("#listobs-page").html(html);
                     $("[id^=edit_idobs_]").click(function(e) {

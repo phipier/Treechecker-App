@@ -12,11 +12,13 @@ var customControl =  L.Control.extend({
     onAdd: function (map) {
       var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');  
       L.DomEvent.disableClickPropagation(container);
+      container.title = "Center map on current GPS position";
       container.style.backgroundColor = 'white';     
-      container.style.backgroundImage = "url(https://t1.gstatic.com/images?q=tbn:ANd9GcR6FCUMW5bPn8C4PbKak2BJQQsmC-K9-mbYBeFZm1ZM2w2GRy40Ew)";
-      container.style.backgroundSize = "30px 30px";
-      container.style.width = '30px';
-      container.style.height = '30px';  
+      //container.style.backgroundImage = "url(https://t1.gstatic.com/images?q=tbn:ANd9GcR6FCUMW5bPn8C4PbKak2BJQQsmC-K9-mbYBeFZm1ZM2w2GRy40Ew)";
+      container.style.backgroundImage = "url(file:///android_asset/www/lib/images/gps.png)";
+      container.style.backgroundSize = "40px 40px";
+      container.style.width = '40px';
+      container.style.height = '40px';
       container.onclick = function(){
         centerMapOnCurrentPosition();
       }  
@@ -25,7 +27,16 @@ var customControl =  L.Control.extend({
 });
 
 function loadMap() {
+    document.addEventListener("backbutton", onBackKeyDown, false);
+
     mymap = L.map('mapid');
+
+    mymap.on('error', e => {
+        // Hide those annoying non-error errors
+        if (e && e.error !== 'Error: Not Found')
+            console.error(e);
+    });
+
     controlLayers = null;
     geojsonLayer = null;
     overlays = {};
@@ -44,26 +55,35 @@ function loadMap() {
     //addMarkers(json.obs); 
 
     mymap.on('click', (e) => {
-        if (marker == null) { 
-            marker = new L.marker(e.latlng, {draggable:'true'});
-            marker.setOpacity(0.7);
-            marker.on('dragend', function(event){
-                var marker = event.target;
-                var position = marker.getLatLng();
-                marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
-                mymap.panTo(new L.LatLng(position.lat, position.lng));
-            });
-            mymap.addLayer(marker);
-        }
-        else { 
-            marker.setLatLng(e.latlng, {draggable:'true'});
-        }
+        createMarker(e.latlng);
     });
+}
+
+function createMarker(latlng_pos) {
+    if (marker == null) { 
+        marker = new L.marker(latlng_pos, {draggable:'true'});
+        marker.setOpacity(0.7);
+        marker.on('dragend', function(event){
+            var marker = event.target;
+            var position = marker.getLatLng();
+            marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
+            mymap.panTo(new L.LatLng(position.lat, position.lng));
+        });
+        mymap.addLayer(marker);
+    }
+    else { 
+        marker.setLatLng(latlng_pos, {draggable:'true'});
+    }
+}
+
+function onBackKeyDown() {
+    window.location = "obs_form.html";
 }
 
 function centerMapOnCurrentPosition() {
     var onSuccess = function(position) {
         mymap.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
+        createMarker(new L.LatLng(position.coords.latitude, position.coords.longitude));
     };
     function onError(error) {
         //alert('code: '    + error.code    + '\n' +
@@ -100,9 +120,19 @@ function addMapControls() {
   
 $("#savelocation").click(function(e) {
     e.preventDefault();   
-    window.sessionStorage.setItem("obs_latitude", marker.getLatLng().lat); 
-    window.sessionStorage.setItem("obs_longitude", marker.getLatLng().lng);
-    console.log("selected location: lat " + marker.getLatLng().lat + " lng " + marker.getLatLng().lng);
+    if (marker) {
+        window.sessionStorage.setItem("obs_latitude", marker.getLatLng().lat); 
+        window.sessionStorage.setItem("obs_longitude", marker.getLatLng().lng);
+        console.log("selected location: lat " + marker.getLatLng().lat + " lng " + marker.getLatLng().lng);
+        window.location = 'obs_form.html';   
+        return false;
+    } else {
+        alert("Please click on the map to select a location");
+    }
+} );
+
+$("#cancellocation").click(function(e) {
+    e.preventDefault();         
     window.location = 'obs_form.html';   
     return false; 
 } );
