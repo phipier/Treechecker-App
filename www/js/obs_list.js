@@ -69,7 +69,7 @@ var listObs = {
 
         $('#syncobs').on('click', function() {
             window.plugins.spinnerDialog.show();
-            this.syncObservations();
+            listObs.syncObservations();
         });
     },
     onOnline: function() {
@@ -82,10 +82,9 @@ var listObs = {
         db.transaction(function (tx) {
             var query = 'SELECT * FROM obs;';
             tx.executeSql(query, [], function (tx, res) {
-                alert(res.image);
-                //for(var x = 0; x < res.rows.length; x++) {
-                //    alert(res.rows.item(x).image);
-                //}
+                for(var x = 0; x < res.rows.length; x++) {
+                    alert(res.rows.item(x).image);
+                }
             },
             function (tx, error) {
                 console.log('SELECT obs error: ' + error.message);
@@ -103,6 +102,8 @@ var listObs = {
     receivedEvent: function(id) {
     }
 };
+
+listObs.initialize();
 
 function onBackKeyDown() {
     window.location = "aoi_list.html";
@@ -157,5 +158,3 @@ function delete_obs(id_obs) {
         window.location = 'obs_list.html';        
     });
 }
-
-listObs.initialize();
