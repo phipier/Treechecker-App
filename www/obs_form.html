@@ -10,11 +10,12 @@
     <script src="lib/popper.min.js"></script>
     <script src="lib/bootstrap.min.js"></script>
     <script defer src="lib/font-awesome.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
     <title>TreeChecker</title>
 </head>
 <body>
 <nav class="navbar navbar-light" style="background-color:#8BC34A; min-height:64px;">
-    <font class="header">Observation form</font>
+    <font class="header">Observation</font>
 </nav>
 
 <div class="forms">
@@ -31,6 +32,7 @@
                 Please provide a comment for this observation.
             </div>
         </div>
+        <hr>
         <div class="form-group">
             <label>Species</label>
             <select type="number" class="custom-select" id="InputSelectSpecies" required>
@@ -45,6 +47,7 @@
                 <option value="" disabled selected>select canopy status</option>
             </select>
         </div>
+        <hr>
         <div class="form-group">
             <div class="d-inline">
                 <a id="selectposition" href="#" class="btn button">select location on map</a><span> or provide coordinates:</span><br>
@@ -60,11 +63,12 @@
                 Please provide a longitude for the position of this observation.
             </div>
         </div>
+        <hr>
         <div class="form-group">
             <label for="Inputcompass">Compass</label>
-            <input class="form-control" id="Inputcompass" placeholder="Enter compass value" required>            
+            <input class="form-control" id="Inputcompass" placeholder="Enter compass value"><!--required-->            
         </div>
-
+        <hr>
         <div class="form-group">
             <div id="content">
                 <div id="picture">
@@ -79,7 +83,7 @@
             </div>
         </div>
         <br>
-
+        <hr>
         <!-- button id="btn_saveobs" type="submit" class="btn btn-primary">save my AOI</button -->
         <a id="saveobs" href="#" class="btn button">Save</a>
         <a id="cancelobs" href="#" class="btn button">Cancel</a>
@@ -123,7 +127,6 @@
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/db.js"></script>
 <script type="text/javascript" src="js/urls.js"></script>
-<script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/obs_form.js"></script>
 </body>
 </html>

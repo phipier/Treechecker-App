@@ -29,12 +29,13 @@
                 Please provide a name for the AOI.
             </div>
         </div>
+        <hr>
         <div class="form-group">
             <div class="d-inline">
                 <a id="selectarea" href="#" class="btn button">select area on map</a><span> or provide coordinates:</span><br>                
                 <!--input class="form-check-input" type="checkbox" value="" id="InputforceRedld">
                 <label for="InputforceRedld">Force tiles re-download</label-->
-            </div>
+            </div>            
             <label for="Inputxmin">longitude min</label>
             <input type="bbox" class="form-control" id="Inputxmin" placeholder="Enter longitude min" onkeypress="return isNumberKey(event)" required>
             <label for="Inputxmax">longitude max</label>
@@ -45,6 +46,7 @@
             <input type="bbox" class="form-control" id="Inputymin" placeholder="Enter latitude max" onkeypress="return isNumberKey(event)" required>            
             <!--small id="bboxhelp" class="form-text text-muted">boundaries in WSG84, format is xmin:xmax:ymin:ymax</small-->
         </div>
+        <hr>
         <!-- button id="aoisavebtn" type="submit" class="btn btn-primary">save my AOI</button -->
         <a id="saveaoi" href="#" class="btn button">Save</a>
         <a id="cancelaoi" href="#" class="btn button">Cancel</a>        
