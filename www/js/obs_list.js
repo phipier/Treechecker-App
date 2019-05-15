@@ -121,7 +121,7 @@ function edit_obs(id_obs) {
                 window.sessionStorage.setItem("obs_id_canopy_status",   res.rows.item(0).id_canopy_status);
                 window.sessionStorage.setItem("obs_latitude",           res.rows.item(0).latitude);
                 window.sessionStorage.setItem("obs_longitude",          res.rows.item(0).longitude);
-                window.sessionStorage.setItem("obs_compass",            res.rows.item(0).compass);    
+                window.sessionStorage.setItem("obs_compass",            res.rows.item(0).compass);
                 window.location = 'obs_form.html';            
             },
             function (tx, error) {
