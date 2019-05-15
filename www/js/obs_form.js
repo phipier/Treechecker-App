@@ -73,9 +73,9 @@ function insert_OBS(obs) {
         // UPDATE obs SET name = "name" WHERE id=id_obs
         var sqlstr = 
             "REPLACE INTO obs(id, name, id_aoi, id_tree_species, id_crown_diameter, "
-            + "id_canopy_status, comment, longitude, latitude, compass, image) "
+            + "id_canopy_status, comment, longitude, latitude, compass) "
             + "VALUES(" + obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
-            + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + "," + obs.compass + "," + obs.image + ")";
+            + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + "," + obs.compass + ");";
 
         tx.executeSql(sqlstr);
 
@@ -131,6 +131,9 @@ function getWSitems() {
         obs.id = window.sessionStorage.setItem("obs_id","NULL");
     } else {
         obs.id = id_obs;
+    }
+    if ((obs.compass === null) || (obs.compass == '')) {
+        obs.compass = "NULL";
     }
     obs.image = window.sessionStorage.getItem("photo");
     return obs;
