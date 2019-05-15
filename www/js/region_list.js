@@ -49,9 +49,9 @@ function loadRegions() {
         tx.executeSql(query, [], function (tx, res) {
             var html = "";
             for(var x = 0; x < res.rows.length; x++) {
-                html += '<div class="card"><img id="img-card" class="card-img-top" src="img/'
-                + res.rows.item(x).image_url
-                + '" alt="Image"><div class="card-body"><h5 class="card-title">'
+                html += '<div class="card">'                
+                //+ '<img id="img-card" class="card-img-top" src="img/' + res.rows.item(x).image_url + '" alt="Image">'
+                + '<div class="card-body"><h5 class="card-title">'
                 + res.rows.item(x).name
                 + '</h5><a id="idreg'+res.rows.item(x).id+'" href="#" class="btn button">Go</a></div></div>';
             }
