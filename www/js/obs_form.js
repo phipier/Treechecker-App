@@ -22,6 +22,7 @@ var obsform = {
                 },
                 {quality:50, destinationType:Camera.DestinationType.DATA_URL}
             );
+            return false;
         });
     },
     // Update DOM on a Received Event
@@ -83,7 +84,7 @@ function insert_OBS(obs) {
         if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
             $("#errorpopupdata>p").html("");
         }
-        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB." + obs.image + "</p>");
+        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB.</p>");
         $('#errorpopup').modal('show');
     }, function() {
         if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {

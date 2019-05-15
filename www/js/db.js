@@ -16,7 +16,9 @@ function createTables() {
     runSQL(sqlstr);
     //sqlstr = "DROP TABLE IF EXISTS obs;"
     //runSQL(sqlstr);
-    sqlstr = "CREATE TABLE IF NOT EXISTS obs (id integer primary key, id_aoi integer, name varchar(100) not null, id_tree_species integer, id_crown_diameter integer, id_canopy_status integer, comment varchar(250) not null, longitude double precision not null, latitude double precision not null, compass integer, is_deleted varchar(5) not null DEFAULT 'false', image text, CONSTRAINT fk_aoi FOREIGN KEY (id_aoi) REFERENCES aoi(id) ON DELETE CASCADE);"
+    sqlstr = "CREATE TABLE IF NOT EXISTS obs (id integer primary key, id_aoi integer, name varchar(100) not null, id_tree_species integer, id_crown_diameter integer, id_canopy_status integer, comment varchar(250) not null, longitude double precision not null, latitude double precision not null, compass integer, is_deleted varchar(5) not null DEFAULT 'false', CONSTRAINT fk_aoi FOREIGN KEY (id_aoi) REFERENCES aoi(id) ON DELETE CASCADE);"
+    runSQL(sqlstr);
+    sqlstr = "CREATE TABLE IF NOT EXISTS photo (id integer primary key, longitude double precision not null, latitude double precision not null, compass integer not null, url varchar(255) not null, CONSTRAINT fk_surveydata FOREIGN KEY (survey_data_id) REFERENCES obs(id) ON DELETE CASCADE);"
     runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS treespecies (id integer primary key, name varchar(100) not null);"
     runSQL(sqlstr);
