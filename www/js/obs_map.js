@@ -14,11 +14,10 @@ var customControl =  L.Control.extend({
       L.DomEvent.disableClickPropagation(container);
       container.title = "Center map on current GPS position";
       container.style.backgroundColor = 'white';     
-      //container.style.backgroundImage = "url(https://t1.gstatic.com/images?q=tbn:ANd9GcR6FCUMW5bPn8C4PbKak2BJQQsmC-K9-mbYBeFZm1ZM2w2GRy40Ew)";
       container.style.backgroundImage = "url(file:///android_asset/www/lib/images/gps.png)";
-      container.style.backgroundSize = "40px 40px";
-      container.style.width = '40px';
-      container.style.height = '40px';
+      container.style.backgroundSize = "30px 30px";
+      container.style.width = '30px';
+      container.style.height = '30px';
       container.onclick = function(){
         centerMapOnCurrentPosition();
       }  
@@ -50,7 +49,7 @@ function loadMap() {
     mymap.fitBounds(bounds);
 
     addMapControls();
-    initLayers();
+    //initLayers();
     addOfflineLayers();        
     //addMarkers(json.obs); 
 
@@ -66,8 +65,10 @@ function createMarker(latlng_pos) {
         marker.on('dragend', function(event){
             var marker = event.target;
             var position = marker.getLatLng();
-            marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
-            mymap.panTo(new L.LatLng(position.lat, position.lng));
+            //marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
+            marker.setLatLng(position ,{draggable:'true'});
+            //mymap.panTo(new L.LatLng(position.lat, position.lng));
+            mymap.panTo(position);
         });
         mymap.addLayer(marker);
     }

@@ -89,16 +89,16 @@ L.AreaSelect = L.Class.extend({
         yMod = yMod || 1;
         
         var self = this;
-        function onMouseDown(event) {
+        function onTouchDown(event) {
             event.stopPropagation();
             self.map.dragging.disable();
-            L.DomEvent.removeListener(this, "mousedown", onMouseDown);
+            L.DomEvent.removeListener(this, "touchstart", onTouchDown);
             var curX = event.pageX;
             var curY = event.pageY;
             var ratio = self._width / self._height;
             var size = self.map.getSize();
             
-            function onMouseMove(event) {
+            function onTouchMove(event) {
                 if (self.options.keepAspectRatio) {
                     var maxHeight = (self._height >= self._width ? size.y : size.y * (1/ratio) ) - 30;
                     self._height += (curY - event.originalEvent.pageY) * 2 * yMod;
@@ -111,26 +111,25 @@ L.AreaSelect = L.Class.extend({
                     self._width = Math.max(30, self._width);
                     self._height = Math.max(30, self._height);
                     self._width = Math.min(size.x-30, self._width);
-                    self._height = Math.min(size.y-30, self._height);
-                    
+                    self._height = Math.min(size.y-30, self._height);                    
                 }
                 
                 curX = event.originalEvent.pageX;
                 curY = event.originalEvent.pageY;
                 self._render();
             }
-            function onMouseUp(event) {
+            function onTouchUp(event) {
                 self.map.dragging.enable();
-                L.DomEvent.removeListener(self.map, "mouseup", onMouseUp);
-                L.DomEvent.removeListener(self.map, "mousemove", onMouseMove);
-                L.DomEvent.addListener(handle, "mousedown", onMouseDown);
+                L.DomEvent.removeListener(self.map, "touchend", onTouchUp);
+                L.DomEvent.removeListener(self.map, "touchmove", onTouchMove);
+                L.DomEvent.addListener(handle, "touchstart", onTouchDown);
                 self.fire("change");
             }
             
-            L.DomEvent.addListener(self.map, "mousemove", onMouseMove);
-            L.DomEvent.addListener(self.map, "mouseup", onMouseUp);
+            L.DomEvent.addListener(self.map, "touchmove", onTouchMove);
+            L.DomEvent.addListener(self.map, "touchend", onTouchUp);
         }
-        L.DomEvent.addListener(handle, "mousedown", onMouseDown);
+        L.DomEvent.addListener(handle, "touchstart", onTouchDown);
     },
     
     _onMapResize: function() {
