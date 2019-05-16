@@ -14,11 +14,11 @@ function createTables() {
     //runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS aoi (id integer primary key, name varchar(100) not null, x_min double precision not null, x_max double precision not null, y_min double precision not null, y_max double precision not null, creation_date date not null DEFAULT (datetime('now','localtime')), is_deleted varchar(5) not null DEFAULT 'false', geographical_zone_id integer not null, owner_id integer);"
     runSQL(sqlstr);
-    //sqlstr = "DROP TABLE IF EXISTS obs;"
+    //sqlstr = "DROP TABLE IF EXISTS surveydata;"
     //runSQL(sqlstr);
-    sqlstr = "CREATE TABLE IF NOT EXISTS obs (id integer primary key, id_aoi integer, name varchar(100) not null, id_tree_species integer, id_crown_diameter integer, id_canopy_status integer, comment varchar(250) not null, longitude double precision not null, latitude double precision not null, compass integer, is_deleted varchar(5) not null DEFAULT 'false', CONSTRAINT fk_aoi FOREIGN KEY (id_aoi) REFERENCES aoi(id) ON DELETE CASCADE);"
+    sqlstr = "CREATE TABLE IF NOT EXISTS surveydata (id integer primary key, name varchar(255) not null, id_tree_species integer not null REFERENCES treespecies(id) ON UPDATE CASCADE, id_crown_diameter integer not null REFERENCES crowndiameter(id) ON UPDATE CASCADE, id_canopy_status integer not null REFERENCES canopystatus(id) ON UPDATE CASCADE, comment text, id_aoi integer not null REFERENCES aoi(id) ON UPDATE CASCADE, longitude double precision not null, latitude double precision not null);"
     runSQL(sqlstr);
-    sqlstr = "CREATE TABLE IF NOT EXISTS photo (id integer primary key, longitude double precision not null, latitude double precision not null, compass integer not null, url varchar(255) not null, CONSTRAINT fk_surveydata FOREIGN KEY (survey_data_id) REFERENCES obs(id) ON DELETE CASCADE);"
+    sqlstr = "CREATE TABLE IF NOT EXISTS photo (id integer primary key, id_survey_data integer not null REFERENCES surveydata(id) ON UPDATE CASCADE, compass double precision, image text not null);"
     runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS treespecies (id integer primary key, name varchar(100) not null);"
     runSQL(sqlstr);
