@@ -83,7 +83,7 @@ var listObs = {
             var query = 'SELECT * FROM obs;';
             tx.executeSql(query, [], function (tx, res) {
                 for(var x = 0; x < res.rows.length; x++) {
-                    console.log(res.rows.item(x).image);
+                    console.log(res.rows.item(x).name);
                 }
             },
             function (tx, error) {
