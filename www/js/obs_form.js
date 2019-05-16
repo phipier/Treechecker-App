@@ -74,10 +74,30 @@ function insert_OBS(obs) {
         var sqlstr = 
             "REPLACE INTO surveydata(id, name, id_aoi, id_tree_species, id_crown_diameter, "
             + "id_canopy_status, comment, longitude, latitude) "
-            + "VALUES(" + obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
+            + "VALUES(NULL, '" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
             + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ");";
 
-        tx.executeSql(sqlstr);
+        tx.executeSql(sqlstr,
+            function(tx, results) {
+                window.sessionStorage.setItem("obs_id", results.insertId);
+
+                var sql =
+                    "REPLACE INTO photo(id, id_survey_data, compass, image) "
+                    + "VALUES(NULL, " + results.insertId + "," + obs.compass + ",'" + obs.photo + "');";
+
+                tx.executeSql(sql,
+                    function(tx, results) {
+                        window.sessionStorage.setItem("photo_id", results.insertId);
+                    },
+                    function(tx, error) {
+                        console.log('ExecuteSQL Photo error: ' + error.message);
+                    }
+                );
+            },
+            function(tx, error) {
+                console.log('ExecuteSQL Surveydata error: ' + error.message);
+            }
+        );
 
     }, function(error) {
         console.log('Transaction OBS ERROR: ' + error.message);
@@ -86,6 +106,7 @@ function insert_OBS(obs) {
         }
         $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB.</p>");
         $('#errorpopup').modal('show');
+        return true;
     }, function() {
         if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
             $("#successpopupdata>p").html("");
@@ -112,7 +133,7 @@ function setWSitems() {
     window.sessionStorage.setItem("obs_id_canopy_status",   $("#InputSelectStatus").children("option:selected").val());
     window.sessionStorage.setItem("obs_latitude",           $("#Inputlatitude").val().trim());
     window.sessionStorage.setItem("obs_longitude",          $("#Inputlongitude").val().trim());
-    window.sessionStorage.setItem("obs_compass",            $("#Inputcompass").val().trim());
+    window.sessionStorage.setItem("photo_compass",          $("#Inputcompass").val().trim());
 }
 
 function getWSitems() {
@@ -124,18 +145,16 @@ function getWSitems() {
     obs.id_canopy_status =  window.sessionStorage.getItem("obs_id_canopy_status");
     obs.latitude =          window.sessionStorage.getItem("obs_latitude");
     obs.longitude =         window.sessionStorage.getItem("obs_longitude");
-    obs.compass =           window.sessionStorage.getItem("obs_compass");
+    obs.compass =           window.sessionStorage.getItem("photo_compass");
     obs.id_aoi =            window.sessionStorage.getItem("id_aoi");
     var id_obs = window.sessionStorage.getItem("obs_id");
-    if ((id_obs === null) || (id_obs == '')) {
-        obs.id = window.sessionStorage.setItem("obs_id","NULL");
-    } else {
+    if ((id_obs !== null) && (id_obs != '')) {
         obs.id = id_obs;
     }
     if ((obs.compass === null) || (obs.compass == '')) {
         obs.compass = "NULL";
     }
-    obs.photo = window.sessionStorage.getItem("photo");
+    obs.photo = window.sessionStorage.getItem("photo_image");
     return obs;
 }
 
@@ -148,8 +167,8 @@ function clearWSitems() {
     window.sessionStorage.removeItem("obs_id_canopy_status");
     window.sessionStorage.removeItem("obs_latitude");
     window.sessionStorage.removeItem("obs_longitude");
-    window.sessionStorage.removeItem("obs_compass");
-    window.sessionStorage.removeItem("photo");
+    window.sessionStorage.removeItem("photo_compass");
+    window.sessionStorage.removeItem("photo_image");
 }
 
 function init_form() {
