@@ -98,8 +98,20 @@ h1 {
     font-size:16px;
 }
 
+.button-navbar {
+    background-color:#8BC34A;
+    border:none;
+    color:white;
+    padding:10px 15px;
+    font-size:16px;
+}
+
 .button-bottom {
     margin-top:50px;
+}
+
+.button-circle {
+    border-radius: 50%;
 }
 
 html, #mapid, #login-page {

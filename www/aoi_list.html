@@ -9,10 +9,14 @@
     <script src="lib/jquery-3.3.1.min.js"></script>
     <script src="lib/popper.min.js"></script>
     <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/font-awesome.js"></script>
     <title>TreeChecker</title>
 </head>
 <body>
 <nav class="navbar navbar-light" style="background-color:#8BC34A; min-height:64px;">
+    <a class="btn button-navbar" type="button" id="addAOI">
+        <i class="fas fa-plus"></i>
+    </a>
     <font class="header">Area of interest</font>
     <button class="navbar-toggler ml-auto" type="button" id="sidebarCollapse" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -22,7 +26,7 @@
 
 <div id="listaoi-page"></div>
 
-<a id="addAOI" href="aoi_form.html" class="btn button add_edit_delete_aoi">add AOI</a>
+<!--a id="addAOI" href="aoi_form.html" class="btn button button-circle"><i class="fas fa-plus"></i></a-->
 
 <div class="modal fade" id="messagepopup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
