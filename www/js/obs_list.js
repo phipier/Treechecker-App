@@ -12,14 +12,16 @@ var listObs = {
         db.transaction(function (tx) {
                 var query = 'SELECT * FROM surveydata where id_aoi = '+id_aoi+';';
                 tx.executeSql(query, [], function (tx, res) {
-                    var html = "";                    
+                    var html = '<ul class="list-group">';
                     for(var x = 0; x < res.rows.length; x++) {
                         var id_obs = res.rows.item(x).id;
-                        html += '<div class="card"><div class="card-body">'
-                        + '<h5 class="card-title">' + res.rows.item(x).name + '</h5>'
-                        + '<a id="edit_idobs_'+id_obs+'" class="btn button">Edit</a>'
-                        + '<a id="dele_idobs_'+id_obs+'" class="btn button">Delete</a></div></div>';
-                    }                    
+                        html += '<li class="list-group-item">'
+                        + '<h5>' + res.rows.item(x).name + '</h5>'
+                        + '<a id="edit_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-edit white"></i></i></a>'
+                        + '<a id="dele_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-trash white"></a></div></div>';
+                        + '</li>';
+                    }  
+                    html += "</ul>";                  
                     $("#listobs-page").html(html);
                     $("[id^=edit_idobs_]").click(function(e) {
                         e.preventDefault(); 

@@ -13,16 +13,19 @@ var listAOI = {
         db.transaction(function (tx) {
                 var query = 'SELECT * FROM aoi where geographical_zone_id = '+id_region+';';
                 tx.executeSql(query, [], function (tx, res) {
-                    var html = "";
 
+                    var html = '<ul class="list-group">';  
                     for(var x = 0; x < res.rows.length; x++) {
                         var id_aoi = res.rows.item(x).id;
-                        html += '<div class="card"><div class="card-body"><h5 class="card-title">' 
-                        + res.rows.item(x).name + '</h5>'
-                        + '<a id="data_idaoi_'+id_aoi+'" class="btn button">Observations</a>'
+                        html += '<li class="list-group-item">' 
+                        + '<h5>' + res.rows.item(x).name + '</h5>'
+                        + '<a id="data_idaoi_'+id_aoi+'" class="btn button button-navbar m-2"><i class="fas fa-clipboard-list white"></i></a>'
                         /*+ '<a id="edit_idaoi_'+id_aoi+'" class="btn button add_edit_delete_aoi">edit aoi</a>'*/
-                        + '<a id="dele_idaoi_'+id_aoi+'" class="btn button add_edit_delete_aoi">Delete</a></div></div>';
-                    }                    
+                        + '<a id="dele_idaoi_'+id_aoi+'" class="btn button button-navbar m-2"><i class="fas fa-trash white"></i></a>'
+                        + '</li>';
+                    }    
+                    html += "</ul>";
+
                     $("#listaoi-page").html(html);
                     $("[id^=data_idaoi_]").click(function(e) {
                         e.preventDefault(); 
