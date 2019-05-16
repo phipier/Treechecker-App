@@ -10,7 +10,7 @@ var listObs = {
         var id_aoi = window.sessionStorage.getItem("id_aoi");
 
         db.transaction(function (tx) {
-                var query = 'SELECT * FROM obs where id_aoi = '+id_aoi+';';
+                var query = 'SELECT * FROM surveydata where id_aoi = '+id_aoi+';';
                 tx.executeSql(query, [], function (tx, res) {
                     var html = "";                    
                     for(var x = 0; x < res.rows.length; x++) {
@@ -80,10 +80,10 @@ var listObs = {
     },
     syncObservations: function() {
         db.transaction(function (tx) {
-            var query = 'SELECT * FROM obs;';
+            var query = 'SELECT * FROM surveydata;';
             tx.executeSql(query, [], function (tx, res) {
                 for(var x = 0; x < res.rows.length; x++) {
-                    console.log(res.rows.item(x).image);
+                    console.log(res.rows.item(x).name);
                 }
             },
             function (tx, error) {
@@ -111,7 +111,7 @@ function onBackKeyDown() {
 
 function edit_obs(id_obs) {
     db.transaction(function (tx) {
-            var query = 'SELECT * FROM obs where id = '+id_obs+';';
+            var query = 'SELECT * FROM surveydata where id = '+id_obs+';';
             tx.executeSql(query, [], function (tx, res) {                
                 window.sessionStorage.setItem("obs_id",                 res.rows.item(0).id);
                 window.sessionStorage.setItem("obs_name",               res.rows.item(0).name);
@@ -149,7 +149,7 @@ $("#addOBS").click( function(e) {
 
 function delete_obs(id_obs) {
     db.transaction(function(tx) {        
-        var sqlstr = "DELETE FROM obs WHERE id = " + id_obs + ";";
+        var sqlstr = "DELETE FROM surveydata WHERE id = " + id_obs + ";";
         tx.executeSql(sqlstr);
     }, function(error) {
         console.log('Transaction delete obs ERROR: ' + error.message);
