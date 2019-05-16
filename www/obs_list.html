@@ -13,12 +13,16 @@
     <title>TreeChecker</title>
 </head>
 <body>
-<nav class="navbar navbar-light" style="background-color:#8BC34A; min-height:64px;">
-    <font class="header">Observations</font>
-    <button class="navbar-toggler ml-auto" type="button" id="sidebarCollapse" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</nav>
+    <nav class="navbar navbar-light trckapp-navbar">
+        <a class="btn button-navbar" type="button" id="addOBS">
+            <i class="fas fa-plus white"></i>
+        </a>
+        <span class="header">Observations</span>
+        <button class="navbar-toggler ml-auto" type="button" id="sidebarCollapse" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+
 <div class="overlay"></div>
 <div class="wrapper">
     <nav id="sidebar">
@@ -36,8 +40,6 @@
 </div>
 
 <div id="listobs-page"></div>
-
-<a id="addobs" href="obs_form.html" class="btn button">add observation</a>
 
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/db.js"></script>
