@@ -72,10 +72,10 @@ function insert_OBS(obs) {
         // INSERT OR IGNORE INTO obs (id, name) VALUES (myid, myname)
         // UPDATE obs SET name = "name" WHERE id=id_obs
         var sqlstr = 
-            "REPLACE INTO obs(id, name, id_aoi, id_tree_species, id_crown_diameter, "
-            + "id_canopy_status, comment, longitude, latitude, compass) "
+            "REPLACE INTO surveydata(id, name, id_aoi, id_tree_species, id_crown_diameter, "
+            + "id_canopy_status, comment, longitude, latitude) "
             + "VALUES(" + obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
-            + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + "," + obs.compass + ");";
+            + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ");";
 
         tx.executeSql(sqlstr);
 
