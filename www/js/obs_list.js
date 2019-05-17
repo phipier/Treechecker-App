@@ -17,8 +17,8 @@ var listObs = {
                         var id_obs = res.rows.item(x).id;
                         html += '<li class="list-group-item">'
                         + '<h5>' + res.rows.item(x).name + '</h5>'
-                        + '<a id="edit_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-edit white"></i></i></a>'
-                        + '<a id="dele_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-trash white"></a></div></div>'
+                        + '<a id="edit_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-edit fa-2x white"></i></i></a>'
+                        + '<a id="dele_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-trash fa-2x white"></a></div></div>'
                         + '</li>';
                     }
                     html += "</ul>";
