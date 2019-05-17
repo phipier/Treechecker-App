@@ -83,8 +83,8 @@ function insert_OBS(obs) {
                 window.sessionStorage.setItem("obs_id", obsid);
 
                 var sql =
-                        "REPLACE INTO photo(id, id_survey_data, compass, image) "
-                        + "VALUES(NULL, " + obsid + "," + obs.compass + ",'" + obs.photo + "');";
+                        "REPLACE INTO photo(id_survey_data, compass, image) "
+                        + "VALUES(" + obsid + "," + obs.compass + ",'" + obs.photo + "');";
 
                     tx.executeSql(sql, [],
                         function(tx, res) {
@@ -94,21 +94,10 @@ function insert_OBS(obs) {
                             console.log('ExecuteSQL Photo error: ' + error.message);
                         }
                     );
-                }, function(error) {
-                    console.log('Transaction PHOTO ERROR: ' + error.message);
-                    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                        $("#errorpopupdata>p").html("");
-                    }
-                    $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to store the photos.</p>");
-                    $('#errorpopup').modal('show');
-                }, function() {
-                    if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
-                        $("#successpopupdata>p").html("");
-                    }
-                    $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Remote database updated.</p>");
-                    $('#successpopup').modal('show');
-                    clearWSitems();
-                    window.location = 'obs_list.html';
+            }, function(error) {
+                console.log('Transaction PHOTO ERROR: ' + error.message);
+            }, function() {
+                console.log("survey data stored");
             },
             function(tx, error) {
                 console.log('ExecuteSQL Surveydata error: ' + error.message);
@@ -123,6 +112,8 @@ function insert_OBS(obs) {
         $('#errorpopup').modal('show');
     }, function() {
         console.log("transaction ok");
+        clearWSitems();
+        window.location = 'obs_list.html';
     });
 }
 
@@ -237,8 +228,9 @@ function init_form() {
         $("#Inputlatitude").val(obs.latitude);
         $("#Inputlongitude").val(obs.longitude);
         $("#Inputcompass").val(obs.compass);
+        $('#preview_text').remove();
         var image = document.getElementById('image');
-        image.src = "data:image/jpeg;base64," + obs.photo;
+        image.src = obs.photo;
         window.plugins.spinnerDialog.hide();
     });
 };
