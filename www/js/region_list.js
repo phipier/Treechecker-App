@@ -47,14 +47,15 @@ function loadRegions() {
     db.transaction(function (tx) {
         var query = 'SELECT * FROM geographicalzone';
         tx.executeSql(query, [], function (tx, res) {
-            var html = "";
+            var html = '<ul class="list-group">';
             for(var x = 0; x < res.rows.length; x++) {
-                html += '<div class="card">'                
+                html += '<li class="list-group-item">'                 
                 //+ '<img id="img-card" class="card-img-top" src="img/' + res.rows.item(x).image_url + '" alt="Image">'
-                + '<div class="card-body"><h5 class="card-title">'
-                + res.rows.item(x).name
-                + '</h5><a id="idreg'+res.rows.item(x).id+'" href="#" class="btn button">Go</a></div></div>';
+                + '<h5>' + res.rows.item(x).name + '</h5>'
+                + '<a id="idreg'+res.rows.item(x).id+'" href="#" class="btn button button-navbar m-2"><i class="fas fa-door-open fa-2x white"></i></a>'
+                + '</li>';
             }
+            html += "</ul>";
             $("#listregions-page").html(html);
             $("[id^=idreg]").click(function(e) {
                 e.preventDefault();

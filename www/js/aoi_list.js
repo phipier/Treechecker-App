@@ -19,9 +19,9 @@ var listAOI = {
                         var id_aoi = res.rows.item(x).id;
                         html += '<li class="list-group-item">' 
                         + '<h5>' + res.rows.item(x).name + '</h5>'
-                        + '<a id="data_idaoi_'+id_aoi+'" class="btn button button-navbar m-2"><i class="fas fa-clipboard-list white"></i></a>'
+                        + '<a id="data_idaoi_'+id_aoi+'" class="btn button button-navbar m-2"><i class="fas fa-clipboard-list fa-2x white"></i></a>'
                         /*+ '<a id="edit_idaoi_'+id_aoi+'" class="btn button add_edit_delete_aoi">edit aoi</a>'*/
-                        + '<a id="dele_idaoi_'+id_aoi+'" class="btn button button-navbar m-2"><i class="fas fa-trash white"></i></a>'
+                        + '<a id="dele_idaoi_'+id_aoi+'" class="btn button button-navbar m-2"><i class="fas fa-trash fa-2x white"></i></a>'
                         + '</li>';
                     }    
                     html += "</ul>";
