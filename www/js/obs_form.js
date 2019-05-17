@@ -16,7 +16,9 @@ var obsform = {
                     window.sessionStorage.setItem("photo_image", "data:image/jpeg;base64," + imageData);
                 },
                 function() {
-                    $("#errorpopupdata>p").html("");
+                    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+                        $("#errorpopupdata>p").html("");
+                    }
                     $("#errorpopupdata>p").append("<p><i class='fas fa-exclamation-circle'></i> Error - There are problems with the camera. Try to take the photo again or restart the app.");
                     $('#errorpopupdata').modal('show');
                 },
@@ -111,7 +113,6 @@ function insert_OBS(obs) {
         $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to store the survey data.</p>");
         $('#errorpopup').modal('show');
     }, function() {
-        console.log("transaction ok");
         clearWSitems();
         window.location = 'obs_list.html';
     });

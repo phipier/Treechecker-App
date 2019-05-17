@@ -30,7 +30,7 @@ var listAOI = {
                     $("[id^=data_idaoi_]").click(function(e) {
                         e.preventDefault(); 
                         var id_aoi = this.id.substring(11);
-                        window.sessionStorage.setItem("id_aoi", id_aoi);                    
+                        window.sessionStorage.setItem("id_aoi", id_aoi);
                         window.location = 'obs_list.html';
                         return false; 
                     });
@@ -141,4 +141,3 @@ function edit_aoi(id_aoi) {
     );
 }
 */
-
