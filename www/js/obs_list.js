@@ -140,7 +140,6 @@ function edit_obs(id_obs) {
             });
         }, function (error) {
             console.log('transaction observation_photo error: ' + error.message);
-            return true;
         }, function () {
             console.log('transaction observation_photo ok');
         }

@@ -72,51 +72,58 @@ function insert_OBS(obs) {
         // INSERT OR IGNORE INTO obs (id, name) VALUES (myid, myname)
         // UPDATE obs SET name = "name" WHERE id=id_obs
         var sqlstr = 
-            "REPLACE INTO surveydata(id, name, id_aoi, id_tree_species, id_crown_diameter, "
+            "REPLACE INTO surveydata(name, id_aoi, id_tree_species, id_crown_diameter, "
             + "id_canopy_status, comment, longitude, latitude) "
-            + "VALUES(NULL, '" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
+            + "VALUES('" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
             + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ");";
 
-        tx.executeSql(sqlstr,
+        tx.executeSql(sqlstr, [],
             function(tx, results) {
                 var obsid = results.insertId;
                 window.sessionStorage.setItem("obs_id", obsid);
 
                 var sql =
-                    "REPLACE INTO photo(id, id_survey_data, compass, image) "
-                    + "VALUES(NULL, " + obsid + "," + obs.compass + ",'" + obs.photo + "');";
+                        "REPLACE INTO photo(id, id_survey_data, compass, image) "
+                        + "VALUES(NULL, " + obsid + "," + obs.compass + ",'" + obs.photo + "');";
 
-                tx.executeSql(sql,
-                    function(tx, results) {
-                        window.sessionStorage.setItem("photo_id", results.insertId);
-                    },
-                    function(tx, error) {
-                        console.log('ExecuteSQL Photo error: ' + error.message);
+                    tx.executeSql(sql, [],
+                        function(tx, res) {
+                            window.sessionStorage.setItem("photo_id", res.insertId);
+                        },
+                        function(tx, error) {
+                            console.log('ExecuteSQL Photo error: ' + error.message);
+                        }
+                    );
+                }, function(error) {
+                    console.log('Transaction PHOTO ERROR: ' + error.message);
+                    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+                        $("#errorpopupdata>p").html("");
                     }
-                );
+                    $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to store the photos.</p>");
+                    $('#errorpopup').modal('show');
+                }, function() {
+                    if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
+                        $("#successpopupdata>p").html("");
+                    }
+                    $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Remote database updated.</p>");
+                    $('#successpopup').modal('show');
+                    clearWSitems();
+                    window.location = 'obs_list.html';
             },
             function(tx, error) {
                 console.log('ExecuteSQL Surveydata error: ' + error.message);
             }
         );
-
     }, function(error) {
-        console.log('Transaction OBS ERROR: ' + error.message);
+        console.log('Transaction SURVEYDATA ERROR: ' + error.message);
         if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
             $("#errorpopupdata>p").html("");
         }
-        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB.</p>");
+        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to store the survey data.</p>");
         $('#errorpopup').modal('show');
-        return true;
     }, function() {
-        if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
-            $("#successpopupdata>p").html("");
-        }
-        $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Remote database updated.</p>");
-        $('#successpopup').modal('show');
-        clearWSitems();
-        window.location = 'obs_list.html';
-    });            
+        console.log("transaction ok");
+    });
 }
 
 $("#selectposition").click( function(e) {
@@ -153,7 +160,7 @@ function getWSitems() {
         obs.id = id_obs;
     }
     if ((obs.compass === null) || (obs.compass == '')) {
-        obs.compass = "NULL";
+        obs.compass = 0.0;
     }
     obs.photo = window.sessionStorage.getItem("photo_image");
     return obs;
@@ -168,6 +175,7 @@ function clearWSitems() {
     window.sessionStorage.removeItem("obs_id_canopy_status");
     window.sessionStorage.removeItem("obs_latitude");
     window.sessionStorage.removeItem("obs_longitude");
+    window.sessionStorage.removeItem("photo_id");
     window.sessionStorage.removeItem("photo_compass");
     window.sessionStorage.removeItem("photo_image");
 }
