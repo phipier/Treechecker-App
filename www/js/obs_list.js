@@ -18,14 +18,14 @@ var listObs = {
                         html += '<li class="list-group-item">'
                         + '<h5>' + res.rows.item(x).name + '</h5>'
                         + '<a id="edit_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-edit white"></i></i></a>'
-                        + '<a id="dele_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-trash white"></a></div></div>';
+                        + '<a id="dele_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-trash white"></a></div></div>'
                         + '</li>';
-                    }  
-                    html += "</ul>";                  
+                    }
+                    html += "</ul>";
                     $("#listobs-page").html(html);
                     $("[id^=edit_idobs_]").click(function(e) {
-                        e.preventDefault(); 
-                        var id_obs = this.id.substring(11);                                           
+                        e.preventDefault();
+                        var id_obs = this.id.substring(11);
                         edit_obs(id_obs);
                         return false;
                     });
@@ -33,7 +33,7 @@ var listObs = {
                         e.preventDefault(); 
                         var id_obs = this.id.substring(11);                        
                         delete_obs(id_obs);
-                        $(this).closest(".card").remove();
+                        $(this).closest(".list-group-item").remove();
                         return false; 
                     });
                     window.plugins.spinnerDialog.hide();

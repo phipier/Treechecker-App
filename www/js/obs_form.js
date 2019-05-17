@@ -13,7 +13,7 @@ var obsform = {
                     $('#preview_text').remove();
                     var image = document.getElementById('image');
                     image.src = "data:image/jpeg;base64," + imageData;
-                    window.sessionStorage.setItem("photo", "data:image/jpeg;base64," + imageData);
+                    window.sessionStorage.setItem("photo_image", "data:image/jpeg;base64," + imageData);
                 },
                 function() {
                     $("#errorpopupdata>p").html("");
@@ -79,11 +79,12 @@ function insert_OBS(obs) {
 
         tx.executeSql(sqlstr,
             function(tx, results) {
-                window.sessionStorage.setItem("obs_id", results.insertId);
+                var obsid = results.insertId;
+                window.sessionStorage.setItem("obs_id", obsid);
 
                 var sql =
                     "REPLACE INTO photo(id, id_survey_data, compass, image) "
-                    + "VALUES(NULL, " + results.insertId + "," + obs.compass + ",'" + obs.photo + "');";
+                    + "VALUES(NULL, " + obsid + "," + obs.compass + ",'" + obs.photo + "');";
 
                 tx.executeSql(sql,
                     function(tx, results) {
@@ -228,6 +229,8 @@ function init_form() {
         $("#Inputlatitude").val(obs.latitude);
         $("#Inputlongitude").val(obs.longitude);
         $("#Inputcompass").val(obs.compass);
+        var image = document.getElementById('image');
+        image.src = "data:image/jpeg;base64," + obs.photo;
         window.plugins.spinnerDialog.hide();
     });
 };
