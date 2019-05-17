@@ -20,7 +20,7 @@ var obsform = {
                     $("#errorpopupdata>p").append("<p><i class='fas fa-exclamation-circle'></i> Error - There are problems with the camera. Try to take the photo again or restart the app.");
                     $('#errorpopupdata').modal('show');
                 },
-                {quality:50, destinationType:Camera.DestinationType.DATA_URL}
+                {quality:50, destinationType:Camera.DestinationType.DATA_URL, correctOrientation: true}
             );
             return false;
         });
