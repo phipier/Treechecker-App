@@ -25,6 +25,7 @@ var listObs = {
                     $("#listobs-page").html(html);
                     $("[id^=edit_idobs_]").click(function(e) {
                         e.preventDefault();
+                        window.sessionStorage.setItem("edit_mode", "t");
                         var id_obs = this.id.substring(11);
                         edit_obs(id_obs);
                         return false;
@@ -93,7 +94,7 @@ var listObs = {
                     var obs_id_canopy_status = res.rows.item(x).id_canopy_status;
                     var obs_latitude = res.rows.item(x).obs_latitude;
                     var obs_longitude = res.rows.item(x).obs_longitude;
-
+                    console.log("ID AOI " + window.sessionStorage.getItem("id_aoi"));
                     var token = window.sessionStorage.getItem("token");
                     $.ajax({
                         type : 'POST',
@@ -108,14 +109,13 @@ var listObs = {
                         },
                         error : function(req, status, error) {
                             window.plugins.spinnerDialog.hide();
+                            $('#sidebar').toggleClass('active');
+                            $('.overlay').toggleClass('active');
                             if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
                                 $("#errorpopupdata>p").html("");
                             }
                             $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - No connection to the remote DB.</p>");
                             $('#errorpopup').modal('show');
-                            $('#sidebar').toggleClass('active');
-                            $('.overlay').toggleClass('active');
-                            window.plugins.spinnerDialog.hide();
                         }
                     });
                 }
@@ -137,6 +137,8 @@ var listObs = {
             });
         }, function (error) {
             console.log('transaction obs error: ' + error.message);
+            $('#sidebar').toggleClass('active');
+            $('.overlay').toggleClass('active');
             if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
                 $("#errorpopupdata>p").html("");
             }

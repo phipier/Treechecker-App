@@ -70,32 +70,48 @@ $("#saveobs").click( function(e) {
 
 function insert_OBS(obs) {
     db.transaction(function(tx) {
-        // ?? in order to keep ids unchanged, replace it with: 
-        // INSERT OR IGNORE INTO obs (id, name) VALUES (myid, myname)
-        // UPDATE obs SET name = "name" WHERE id=id_obs
         var sqlstr = 
-            "REPLACE INTO surveydata(name, id_aoi, id_tree_species, id_crown_diameter, "
+            "INSERT INTO surveydata(name, id_aoi, id_tree_species, id_crown_diameter, "
             + "id_canopy_status, comment, longitude, latitude) "
             + "VALUES('" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
             + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ");";
 
+        if (window.sessionStorage.getItem("edit_mode")) {
+            if (window.sessionStorage.getItem("edit_mode") == "t") {
+                var sqlstr =
+                    "REPLACE INTO surveydata(id, name, id_aoi, id_tree_species, id_crown_diameter, "
+                    + "id_canopy_status, comment, longitude, latitude) "
+                    + "VALUES(" + obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
+                    + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ");";
+            }
+        }
+
         tx.executeSql(sqlstr, [],
             function(tx, results) {
                 var obsid = results.insertId;
-                window.sessionStorage.setItem("obs_id", obsid);
 
                 var sql =
-                        "REPLACE INTO photo(id_survey_data, compass, image) "
-                        + "VALUES(" + obsid + "," + obs.compass + ",'" + obs.photo + "');";
+                    "INSERT INTO photo(id_survey_data, compass, image) "
+                    + "VALUES(" + obsid + "," + obs.compass + ",'" + obs.photo + "');";
 
-                    tx.executeSql(sql, [],
-                        function(tx, res) {
-                            window.sessionStorage.setItem("photo_id", res.insertId);
-                        },
-                        function(tx, error) {
-                            console.log('ExecuteSQL Photo error: ' + error.message);
-                        }
-                    );
+                if (window.sessionStorage.getItem("edit_mode")) {
+                    if (window.sessionStorage.getItem("edit_mode") == "t") {
+                        var pid = window.sessionStorage.getItem('photo_id');
+                        var sql =
+                            "REPLACE INTO photo(id, id_survey_data, compass, image) "
+                            + "VALUES(" + pid + "," + obsid + "," + obs.compass + ",'" + obs.photo + "');";
+                        window.sessionStorage.removeItem("edit_mode");
+                    }
+                }
+
+                tx.executeSql(sql, [],
+                    function(tx, res) {
+                        window.sessionStorage.setItem("photo_id", res.insertId);
+                    },
+                    function(tx, error) {
+                        console.log('ExecuteSQL Photo error: ' + error.message);
+                    }
+                );
             }, function(error) {
                 console.log('Transaction PHOTO ERROR: ' + error.message);
             }, function() {
@@ -137,7 +153,7 @@ function setWSitems() {
 }
 
 function getWSitems() {
-    var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', photo:''};
+    var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', compass:'', photo:''};
     obs.name =              window.sessionStorage.getItem("obs_name");
     obs.comment =           window.sessionStorage.getItem("obs_comment");
     obs.id_tree_species =   window.sessionStorage.getItem("obs_id_tree_species");
@@ -229,9 +245,11 @@ function init_form() {
         $("#Inputlatitude").val(obs.latitude);
         $("#Inputlongitude").val(obs.longitude);
         $("#Inputcompass").val(obs.compass);
-        $('#preview_text').remove();
-        var image = document.getElementById('image');
-        image.src = obs.photo;
+        if (obs.photo) {
+            $('#preview_text').remove();
+            var image = document.getElementById('image');
+            image.src = obs.photo;
+        }
         window.plugins.spinnerDialog.hide();
     });
 };
