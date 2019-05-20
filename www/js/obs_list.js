@@ -96,6 +96,19 @@ var listObs = {
                     var obs_longitude = res.rows.item(x).obs_longitude;
                     console.log("ID AOI " + window.sessionStorage.getItem("id_aoi"));
                     var token = window.sessionStorage.getItem("token");
+
+                //    tx.executeSql('SELECT * FROM photo;', [], function (tx, res) {
+                //        for(var x = 0; x < res.rows.length; x++) {
+                //            var photo_id = res.rows.item(x).id;
+                //            var photo_id_survey_data = res.rows.item(x).id_survey_data;
+                //            var photo_compass = res.rows.item(x).compass;
+                //            var photo_image = res.rows.item(x).image;
+                //        }
+                //    },
+                //    function (tx, error) {
+                //        console.log('SELECT photo error: ' + error.message);
+                //    });
+
                     $.ajax({
                         type : 'POST',
                         crossDomain : true,
@@ -106,6 +119,11 @@ var listObs = {
                             $('#sidebar').toggleClass('active');
                             $('.overlay').toggleClass('active');
                             window.plugins.spinnerDialog.hide();
+                            if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
+                                $("#successpopupdata>p").html("");
+                            }
+                            $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Remote database updated.</p>");
+                            $('#successpopup').modal('show');
                         },
                         error : function(req, status, error) {
                             window.plugins.spinnerDialog.hide();
@@ -114,7 +132,7 @@ var listObs = {
                             if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
                                 $("#errorpopupdata>p").html("");
                             }
-                            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - No connection to the remote DB.</p>");
+                            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the remote DB.</p>");
                             $('#errorpopup').modal('show');
                         }
                     });
@@ -123,36 +141,11 @@ var listObs = {
             function (tx, error) {
                 console.log('SELECT obs error: ' + error.message);
             });
-
-            tx.executeSql('SELECT * FROM photo;', [], function (tx, res) {
-                for(var x = 0; x < res.rows.length; x++) {
-                    var photo_id = res.rows.item(x).id;
-                    var photo_id_survey_data = res.rows.item(x).id_survey_data;
-                    var photo_compass = res.rows.item(x).compass;
-                    var photo_image = res.rows.item(x).image;
-                }
-            },
-            function (tx, error) {
-                console.log('SELECT obs error: ' + error.message);
-            });
         }, function (error) {
             console.log('transaction obs error: ' + error.message);
-            $('#sidebar').toggleClass('active');
-            $('.overlay').toggleClass('active');
-            if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                $("#errorpopupdata>p").html("");
-            }
-            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the remote DB.</p>");
-            $('#errorpopupdata').modal('show');
         }, function () {
-            $('#sidebar').toggleClass('active');
-            $('.overlay').toggleClass('active');
-            window.plugins.spinnerDialog.hide();
-            if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
-                $("#successpopupdata>p").html("");
-            }
-            $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Remote database updated.</p>");
-            $('#successpopup').modal('show');
+            console.log('transaction obs ok');
+
         });
     },
     // Update DOM on a Received Event
