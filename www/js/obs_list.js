@@ -83,10 +83,10 @@ var listObs = {
         $('#sidebarCollapse').hide();
     },
     syncObservations: function() {
+        var token = window.sessionStorage.getItem("token");
         db.transaction(function (tx) {
             tx.executeSql('SELECT * FROM surveydata;', [], function (tx, res) {
                 for(var x = 0; x < res.rows.length; x++) {
-                    var obs_id = res.rows.item(x).id;
                     var obs_name = res.rows.item(x).name;
                     var obs_comment = res.rows.item(x).comment;
                     var obs_id_tree_species = res.rows.item(x).id_tree_species;
@@ -95,7 +95,6 @@ var listObs = {
                     var obs_latitude = res.rows.item(x).latitude;
                     var obs_longitude = res.rows.item(x).longitude;
                     var idaoi = res.rows.item(x).id_aoi;
-                    var token = window.sessionStorage.getItem("token");
 
                     var data = '{"name" :"' + obs_name
                                + '", "tree_specie":"' + obs_id_tree_species
@@ -110,6 +109,45 @@ var listObs = {
                         type: 'POST',
                         crossDomain: true,
                         url: SERVERURL + '/api/aois/' + idaoi + '/observations/',
+                        headers: {
+                            "Authorization": "JWT " + token,
+                            "Content-Type": "application/json",
+                            "cache-control": "no-cache"
+                        },
+                        processData: false,
+                        data: data,
+                        error: function(req, status, error) {
+                            window.plugins.spinnerDialog.hide();
+                            $('#sidebar').toggleClass('active');
+                            $('.overlay').toggleClass('active');
+                            if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+                                $("#errorpopupdata>p").html("");
+                            }
+                            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the remote DB.</p>");
+                            $('#errorpopup').modal('show');
+                        }
+                    });
+                }
+            },
+            function (tx, error) {
+                console.log('SELECT obs error: ' + error.message);
+            });
+
+            tx.executeSql('SELECT * FROM photo;', [], function (tx, res) {
+                for(var x = 0; x < res.rows.length; x++) {
+                    var photo_id_survey_data = res.rows.item(x).id_survey_data;
+                    var photo_compass = res.rows.item(x).compass;
+                    var photo_image = res.rows.item(x).image;
+
+                    var data = '{"survey_data" :"' + photo_id_survey_data
+                               + '", "compass":"' + photo_compass
+                               + '", "image":"' + photo_image
+                               + '"}';
+
+                    $.ajax({
+                        type: 'POST',
+                        crossDomain: true,
+                        url: SERVERURL + '/api/images/',
                         headers: {
                             "Authorization": "JWT " + token,
                             "Content-Type": "application/json",
@@ -141,20 +179,8 @@ var listObs = {
                 }
             },
             function (tx, error) {
-                console.log('SELECT obs error: ' + error.message);
+                console.log('SELECT photo error: ' + error.message);
             });
-
-            //    tx.executeSql('SELECT * FROM photo;', [], function (tx, res) {
-            //        for(var x = 0; x < res.rows.length; x++) {
-            //            var photo_id = res.rows.item(x).id;
-            //            var photo_id_survey_data = res.rows.item(x).id_survey_data;
-            //            var photo_compass = res.rows.item(x).compass;
-            //            var photo_image = res.rows.item(x).image;
-            //        }
-            //    },
-            //    function (tx, error) {
-            //        console.log('SELECT photo error: ' + error.message);
-            //    });
         }, function (error) {
             console.log('transaction obs error: ' + error.message);
         }, function () {
