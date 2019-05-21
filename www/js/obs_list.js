@@ -92,30 +92,32 @@ var listObs = {
                     var obs_id_tree_species = res.rows.item(x).id_tree_species;
                     var obs_id_crown_diameter = res.rows.item(x).id_crown_diameter;
                     var obs_id_canopy_status = res.rows.item(x).id_canopy_status;
-                    var obs_latitude = res.rows.item(x).obs_latitude;
-                    var obs_longitude = res.rows.item(x).obs_longitude;
-                    console.log("ID AOI " + window.sessionStorage.getItem("id_aoi"));
+                    var obs_latitude = res.rows.item(x).latitude;
+                    var obs_longitude = res.rows.item(x).longitude;
+                    var idaoi = res.rows.item(x).id_aoi;
                     var token = window.sessionStorage.getItem("token");
 
-                //    tx.executeSql('SELECT * FROM photo;', [], function (tx, res) {
-                //        for(var x = 0; x < res.rows.length; x++) {
-                //            var photo_id = res.rows.item(x).id;
-                //            var photo_id_survey_data = res.rows.item(x).id_survey_data;
-                //            var photo_compass = res.rows.item(x).compass;
-                //            var photo_image = res.rows.item(x).image;
-                //        }
-                //    },
-                //    function (tx, error) {
-                //        console.log('SELECT photo error: ' + error.message);
-                //    });
+                    var data = '{"name" :"' + obs_name
+                               + '", "tree_specie":"' + obs_id_tree_species
+                               + '", "crown_diameter":"' + obs_id_crown_diameter
+                               + '", "canopy_status":"' + obs_id_canopy_status
+                               + '", "comment":"' + obs_comment
+                               + '", "latitude":"' + obs_latitude
+                               + '", "longitude":"' + obs_longitude
+                               + '"}';
 
                     $.ajax({
-                        type : 'POST',
-                        crossDomain : true,
-                        url : SERVERURL + '/api/aois/' + window.sessionStorage.getItem("id_aoi") + '/observations/',
-                        beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
-                        data: {name:obs_name, tree_specie:obs_id_tree_species, crown_diameter:obs_id_crown_diameter, canopy_status:obs_id_canopy_status, comment:obs_comment, latitude:obs_latitude, longitude:obs_longitude},
-                        success : function() {
+                        type: 'POST',
+                        crossDomain: true,
+                        url: SERVERURL + '/api/aois/' + idaoi + '/observations/',
+                        headers: {
+                            "Authorization": "JWT " + token,
+                            "Content-Type": "application/json",
+                            "cache-control": "no-cache"
+                        },
+                        processData: false,
+                        data: data,
+                        success: function() {
                             $('#sidebar').toggleClass('active');
                             $('.overlay').toggleClass('active');
                             window.plugins.spinnerDialog.hide();
@@ -125,7 +127,7 @@ var listObs = {
                             $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Remote database updated.</p>");
                             $('#successpopup').modal('show');
                         },
-                        error : function(req, status, error) {
+                        error: function(req, status, error) {
                             window.plugins.spinnerDialog.hide();
                             $('#sidebar').toggleClass('active');
                             $('.overlay').toggleClass('active');
@@ -141,6 +143,18 @@ var listObs = {
             function (tx, error) {
                 console.log('SELECT obs error: ' + error.message);
             });
+
+            //    tx.executeSql('SELECT * FROM photo;', [], function (tx, res) {
+            //        for(var x = 0; x < res.rows.length; x++) {
+            //            var photo_id = res.rows.item(x).id;
+            //            var photo_id_survey_data = res.rows.item(x).id_survey_data;
+            //            var photo_compass = res.rows.item(x).compass;
+            //            var photo_image = res.rows.item(x).image;
+            //        }
+            //    },
+            //    function (tx, error) {
+            //        console.log('SELECT photo error: ' + error.message);
+            //    });
         }, function (error) {
             console.log('transaction obs error: ' + error.message);
         }, function () {
