@@ -72,8 +72,10 @@ var listObs = {
         });
 
         $('#syncobs').on('click', function() {
-            window.plugins.spinnerDialog.show();
-            listObs.syncObservations();
+            if ($('[id^=edit_idobs_]').length != 0) {
+                window.plugins.spinnerDialog.show();
+                listObs.syncObservations();
+            }
         });
     },
     onOnline: function() {
@@ -174,6 +176,20 @@ var listObs = {
                             }
                             $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the remote DB.</p>");
                             $('#errorpopup').modal('show');
+                        },
+                        complete: function (data) {
+                            db.transaction(function (tx) {
+                                tx.executeSql('DELETE FROM surveydata;');
+                                tx.executeSql('DELETE FROM photo;');
+                                $('#ok_sent_success').click(function() {
+                                    window.location = 'aoi_list.html';
+                                });
+                            }, function (error) {
+                                console.log('observation del error: ' + error.message);
+                            }, function () {
+                                console.log('observation del ok');
+
+                            });
                         }
                     });
                 }
