@@ -35,6 +35,10 @@ var login = {
                 success: function(tk) {
                     window.plugins.spinnerDialog.hide();
                     window.sessionStorage.setItem("token", $.parseJSON(tk).token);
+                    //window.sessionStorage.setItem("email", $("#username").val());
+                    //window.sessionStorage.setItem("password", $("#password").val());
+                    window.sessionStorage.setItem("email", 'pier@test.com');
+                    window.sessionStorage.setItem("password", 'trEEchecker789');
                     window.location = 'region_list.html';
                 },
                 error: function(req, status, error) {

@@ -117,7 +117,31 @@ function add_AOI(aoiname, bbox) {
                 downloadTiles(val.key, bbox);
             },
             error : function(req, status, error) {
-                displayMessage("Error - It was not possible to add the AOI to the remote DB. <br> "+req.responseText);            
+                if ($.parseJSON(req.responseText).detail == "Signature has expired.") {
+                    $.ajax({
+                        type: 'POST',
+                        crossDomain: true,
+                        dataType: 'text',
+                        url: SERVERURL + '/api-token-auth/',
+                        data: {
+                            email: window.sessionStorage.getItem("email"),
+                            password: window.sessionStorage.getItem("password")
+                        },
+                        contentType: 'application/x-www-form-urlencoded',
+                        success: function(r) {
+                            window.sessionStorage.setItem("token", $.parseJSON(r).token);
+                            displayMessage("Error - Please try again to store the AOI.");
+                            $('#ok_sent').click(function() {
+                                window.location = 'aoi_form.html';
+                            });
+                        },
+                        error: function(req, status, error) {
+                            displayMessage("Error - It was not possible to add the AOI to the remote DB. Try again later or check if there is internet connection.<br>" + req.responseText);
+                        }
+                    })
+                } else {
+                    displayMessage("Error - It was not possible to add the AOI to the remote DB. <br> " + req.responseText);
+                }
             }
         });
     }

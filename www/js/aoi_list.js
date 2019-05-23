@@ -20,7 +20,7 @@ var listAOI = {
                         html += '<li class="list-group-item">' 
                         + '<h5>' + res.rows.item(x).name + '</h5>'
                         + '<a id="data_idaoi_'+id_aoi+'" class="btn button button-navbar m-2"><i class="fas fa-clipboard-list fa-2x white"></i></a>'
-                        /*+ '<a id="edit_idaoi_'+id_aoi+'" class="btn button add_edit_delete_aoi">edit aoi</a>'*/
+                        /*+ '<a id="edit_idaoi_'+id_aoi+'" class="btn button edit_aoi">edit aoi</a>'*/
                         + '<a id="dele_idaoi_'+id_aoi+'" class="btn button button-navbar m-2"><i class="fas fa-trash fa-2x white"></i></a>'
                         + '</li>';
                     }    
@@ -66,7 +66,8 @@ var listAOI = {
         );
     },
     onOnline: function() {
-        $('.add_edit_delete_aoi').show();
+        $('.add_aoi').show();
+        $('.edit_aoi').show();
 
         $("#addAOI").click( function(e) {
             e.preventDefault();
@@ -83,7 +84,8 @@ var listAOI = {
         });
     },
     onOffline: function() {
-        $('.add_edit_delete_aoi').hide();
+        $('.add_aoi').hide();
+        $('.edit_aoi').hide();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {

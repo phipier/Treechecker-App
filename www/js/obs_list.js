@@ -122,11 +122,43 @@ var listObs = {
                             window.plugins.spinnerDialog.hide();
                             $('#sidebar').toggleClass('active');
                             $('.overlay').toggleClass('active');
-                            if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                                $("#errorpopupdata>p").html("");
+                            if ($.parseJSON(req.responseText).detail == "Signature has expired.") {
+                                $.ajax({
+                                    type: 'POST',
+                                    crossDomain: true,
+                                    dataType: 'text',
+                                    url: SERVERURL + '/api-token-auth/',
+                                    data: {
+                                        email: window.sessionStorage.getItem("email"),
+                                        password: window.sessionStorage.getItem("password")
+                                    },
+                                    contentType: 'application/x-www-form-urlencoded',
+                                    success: function(r) {
+                                        window.sessionStorage.setItem("token", $.parseJSON(r).token);
+                                        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+                                            $("#errorpopupdata>p").html("");
+                                        }
+                                        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - Please try again to store the observation.</p>");
+                                        $('#errorpopup').modal('show');
+                                        $('#ok_sent_success').click(function() {
+                                            window.location = 'obs_list.html';
+                                        });
+                                    },
+                                    error: function(req, status, error) {
+                                        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+                                            $("#errorpopupdata>p").html("");
+                                        }
+                                        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to add the observation to the remote DB. Try again later or check if there is internet connection.<br>" + req.responseText);
+                                        $('#errorpopup').modal('show');
+                                    }
+                                })
+                            } else {
+                                if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+                                    $("#errorpopupdata>p").html("");
+                                }
+                                $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the remote DB.</p>");
+                                $('#errorpopup').modal('show');
                             }
-                            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the remote DB.</p>");
-                            $('#errorpopup').modal('show');
                         }
                     });
                 }
