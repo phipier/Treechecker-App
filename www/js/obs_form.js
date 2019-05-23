@@ -41,11 +41,11 @@ $("#cancelobs").click( function(e) {
 });
 
 function onBackKeyDown() {
-    cancel_OBS();    
+    cancel_OBS();
 }
 
-function cancel_OBS() {    
-    displayMessage("OBS creation canceled.", function() {clearWSitems(); window.location = "obs_list.html";});                
+function cancel_OBS() {
+    displayMessage("OBS creation/editing canceled.", function() {clearWSitems(); window.location = "obs_list.html";});
 }
 
 $("#saveobs").click( function(e) {
