@@ -89,6 +89,7 @@ var listObs = {
         db.transaction(function (tx) {
             tx.executeSql('SELECT * FROM surveydata;', [], function (tx, res) {
                 for(var x = 0; x < res.rows.length; x++) {
+                    var obs_id = res.rows.item(x).id;
                     var obs_name = res.rows.item(x).name;
                     var obs_comment = res.rows.item(x).comment;
                     var obs_id_tree_species = res.rows.item(x).id_tree_species;
@@ -118,6 +119,72 @@ var listObs = {
                         },
                         processData: false,
                         data: data,
+                        success: function(r) {
+                            var remote_id_obs = $.parseJSON(r).key;
+                            tx.executeSql('SELECT * FROM photo;', [], function (tx, res) {
+                                for(var x = 0; x < res.rows.length; x++) {
+                                    var photo_id_survey_data = res.rows.item(x).id_survey_data;
+                                    var photo_compass = res.rows.item(x).compass;
+                                    var photo_image = res.rows.item(x).image;
+
+                                    var data = '{"survey_data" :"' + photo_id_survey_data
+                                               + '", "compass":"' + photo_compass
+                                               + '", "image":"' + photo_image
+                                               + '"}';
+
+                                    $.ajax({
+                                        type: 'POST',
+                                        crossDomain: true,
+                                        url: SERVERURL + '/api/images/',
+                                        headers: {
+                                            "Authorization": "JWT " + token,
+                                            "Content-Type": "application/json",
+                                            "cache-control": "no-cache"
+                                        },
+                                        processData: false,
+                                        data: data,
+                                        success: function(res) {
+                                            window.plugins.spinnerDialog.hide();
+                                            $('#sidebar').toggleClass('active');
+                                            $('.overlay').toggleClass('active');
+
+                                            db.transaction(function (tx) {
+                                                tx.executeSql('DELETE FROM surveydata;');
+                                                tx.executeSql('DELETE FROM photo;');
+                                                $('#ok_sent_success').click(function() {
+                                                    window.location = 'aoi_list.html';
+                                                });
+                                            }, function (error) {
+                                                console.log('observation del error: ' + error.message);
+                                            }, function () {
+                                                console.log('observation del ok');
+
+                                            });
+
+                                            if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
+                                                $("#successpopupdata>p").html("");
+                                            }
+                                            $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Remote database updated.</p>");
+                                            $('#successpopup').modal('show');
+                                        },
+                                        error: function(req, status, error) {
+                                            window.plugins.spinnerDialog.hide();
+                                            $('#sidebar').toggleClass('active');
+                                            $('.overlay').toggleClass('active');
+                                            if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
+                                                $("#errorpopupdata>p").html("");
+                                            }
+                                            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the remote DB.</p>");
+                                            $('#errorpopup').modal('show');
+                                        }
+                                    });
+                                }
+                            },
+                            function (tx, error) {
+                                console.log('SELECT photo error: ' + error.message);
+                            });
+
+                        }
                         error: function(req, status, error) {
                             window.plugins.spinnerDialog.hide();
                             $('#sidebar').toggleClass('active');
@@ -134,6 +201,9 @@ var listObs = {
                                     },
                                     contentType: 'application/x-www-form-urlencoded',
                                     success: function(r) {
+                                        window.plugins.spinnerDialog.hide();
+                                        $('#sidebar').toggleClass('active');
+                                        $('.overlay').toggleClass('active');
                                         window.sessionStorage.setItem("token", $.parseJSON(r).token);
                                         if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
                                             $("#errorpopupdata>p").html("");
@@ -165,69 +235,6 @@ var listObs = {
             },
             function (tx, error) {
                 console.log('SELECT obs error: ' + error.message);
-            });
-
-            tx.executeSql('SELECT * FROM photo;', [], function (tx, res) {
-                for(var x = 0; x < res.rows.length; x++) {
-                    var photo_id_survey_data = res.rows.item(x).id_survey_data;
-                    var photo_compass = res.rows.item(x).compass;
-                    var photo_image = res.rows.item(x).image;
-
-                    var data = '{"survey_data" :"' + photo_id_survey_data
-                               + '", "compass":"' + photo_compass
-                               + '", "image":"' + photo_image
-                               + '"}';
-
-                    $.ajax({
-                        type: 'POST',
-                        crossDomain: true,
-                        url: SERVERURL + '/api/images/',
-                        headers: {
-                            "Authorization": "JWT " + token,
-                            "Content-Type": "application/json",
-                            "cache-control": "no-cache"
-                        },
-                        processData: false,
-                        data: data,
-                        success: function() {
-                            window.plugins.spinnerDialog.hide();
-                            $('#sidebar').toggleClass('active');
-                            $('.overlay').toggleClass('active');
-
-                            db.transaction(function (tx) {
-                                tx.executeSql('DELETE FROM surveydata;');
-                                tx.executeSql('DELETE FROM photo;');
-                                $('#ok_sent_success').click(function() {
-                                    window.location = 'aoi_list.html';
-                                });
-                            }, function (error) {
-                                console.log('observation del error: ' + error.message);
-                            }, function () {
-                                console.log('observation del ok');
-
-                            });
-
-                            if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
-                                $("#successpopupdata>p").html("");
-                            }
-                            $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Remote database updated.</p>");
-                            $('#successpopup').modal('show');
-                        },
-                        error: function(req, status, error) {
-                            window.plugins.spinnerDialog.hide();
-                            $('#sidebar').toggleClass('active');
-                            $('.overlay').toggleClass('active');
-                            if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                                $("#errorpopupdata>p").html("");
-                            }
-                            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the remote DB.</p>");
-                            $('#errorpopup').modal('show');
-                        }
-                    });
-                }
-            },
-            function (tx, error) {
-                console.log('SELECT photo error: ' + error.message);
             });
         }, function (error) {
             console.log('transaction obs error: ' + error.message);
