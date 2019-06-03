@@ -52,9 +52,10 @@ $("#saveobs").click( function(e) {
     } else {
         $("#OBS-form")[0].classList.add('was-validated');
     }
-    if(!window.sessionStorage.getItem("photo")) {
-        displayMessage("Error - You cannot send an observation without attaching a photo.", function () {});        
-    }
+    var l_image = window.sessionStorage.getItem("photo");
+    if ((l_image === null) || (l_image == '')) {
+        displayMessage("Error - You cannot send an observation without attaching a photo.", function () {});
+    }   
     setWSitems();
     insert_OBS(getWSitems());
     return false;
@@ -85,7 +86,7 @@ function insert_OBS(obs) {
                     }
                 );
             }, function(error) {
-                console.log('Transaction PHOTO ERROR: ' + error.message);
+                console.log('ExecuteSQL surveydata ERROR: ' + error.message);
             }, function() {
                 console.log("survey data stored");
             },
@@ -95,7 +96,7 @@ function insert_OBS(obs) {
         );
     }, function(error) {
         console.log('Transaction SURVEYDATA ERROR: ' + error.message);
-        displayMessage("Error - It was not possible to store the survey data.",function () {});
+        displayMessage("Error - It was not possible to store the observation.",function () {});
     }, function() {
         clearWSitems();
         window.location = 'obs_list.html';
@@ -121,7 +122,9 @@ function setWSitems() {
 }
 
 function getWSitems() {
+    
     var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', photo:''};
+    
     obs.name =              window.sessionStorage.getItem("obs_name");
     obs.comment =           window.sessionStorage.getItem("obs_comment");
     obs.id_tree_species =   window.sessionStorage.getItem("obs_id_tree_species");
@@ -132,14 +135,12 @@ function getWSitems() {
     obs.id_aoi =            window.sessionStorage.getItem("id_aoi");
     obs.id =                window.sessionStorage.getItem("obs_id");    
 
-    if ((obs.pid === null) && (obs.pid == '')) {
-        obs.pid = "NULL";
-    }
-    if ((obs.id === null) && (obs.id == '')) {
+    if ((obs.id === null) || (obs.id == '')) {
         obs.id = "NULL";
     }
 
-    var photo = {id:'', id_obs:'', compass:'', photo:''};
+    var photo = {id:'', id_obs:'', compass:'', image:''};
+
     photo.id =              window.sessionStorage.getItem("photo_id");    
     photo.image =           window.sessionStorage.getItem("photo_image");   
     photo.compass =         window.sessionStorage.getItem("photo_compass");   
@@ -226,11 +227,11 @@ function init_form() {
         $("#InputSelectStatus").val(obs.id_canopy_status);
         $("#Inputlatitude").val(obs.latitude);
         $("#Inputlongitude").val(obs.longitude);
-        $("#Inputcompass").val(obs.compass);
-        if (obs.photo) {
+        $("#Inputcompass").val(obs.photo.compass);
+        if (obs.photo.image) {
             $('#preview_text').remove();
             var image = document.getElementById('image');
-            image.src = obs.photo;
+            image.src = obs.photo.image;
         }
         window.plugins.spinnerDialog.hide();
     });

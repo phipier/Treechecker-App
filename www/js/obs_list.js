@@ -114,7 +114,7 @@ function edit_obs(id_obs) {
                 console.log('SELECT observation error: ' + error.message);
             });
 
-            tx.executeSql('SELECT * FROM photo where id_survey_data = ' + id_obs + ';', [], function (tx, res) {
+            tx.executeSql('SELECT * FROM photo where id_surveydata = ' + id_obs + ';', [], function (tx, res) {
                 window.sessionStorage.setItem("photo_id",               res.rows.item(0).id);
                 window.sessionStorage.setItem("photo_compass",          res.rows.item(0).compass);
                 window.sessionStorage.setItem("photo_image",            res.rows.item(0).image);
