@@ -11,16 +11,12 @@ var obsform = {
             navigator.camera.getPicture(
                 function(imageData) {
                     $('#preview_text').remove();
-                    var image = document.getElementById('image');
-                    image.src = "data:image/jpeg;base64," + imageData;
-                    window.sessionStorage.setItem("photo_image", "data:image/jpeg;base64," + imageData);
+                    var format = "data:image/jpeg;base64,";
+                    document.getElementById('image').src = format + imageData;
+                    window.sessionStorage.setItem("photo_image", format + imageData);
                 },
                 function() {
-                    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                        $("#errorpopupdata>p").html("");
-                    }
-                    $("#errorpopupdata>p").append("<p><i class='fas fa-exclamation-circle'></i> Error - There are problems with the camera. Try to take the photo again or restart the app.");
-                    $('#errorpopupdata').modal('show');
+                    displayMessage("Error - There are problems with the camera. Try to take the photo again or restart the app.", function() {})                    
                 },
                 {quality:50, destinationType:Camera.DestinationType.DATA_URL, correctOrientation: true}
             );
@@ -57,11 +53,7 @@ $("#saveobs").click( function(e) {
         $("#OBS-form")[0].classList.add('was-validated');
     }
     if(!window.sessionStorage.getItem("photo")) {
-        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-            $("#errorpopupdata>p").html("");
-        }
-        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - You cannot send an observation without attaching a photo.</p>");
-        $('#errorpopupdata').modal('show');
+        displayMessage("Error - You cannot send an observation without attaching a photo.", function () {});        
     }
     setWSitems();
     insert_OBS(getWSitems());
@@ -71,38 +63,18 @@ $("#saveobs").click( function(e) {
 function insert_OBS(obs) {
     db.transaction(function(tx) {
         var sqlstr = 
-            "INSERT INTO surveydata(name, id_aoi, id_tree_species, id_crown_diameter, "
+            "REPLACE INTO surveydata(id, name, id_aoi, id_tree_species, id_crown_diameter, "
             + "id_canopy_status, comment, longitude, latitude) "
-            + "VALUES('" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
+            + "VALUES(" + obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
             + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ");";
-
-        if (window.sessionStorage.getItem("edit_mode")) {
-            if (window.sessionStorage.getItem("edit_mode") == "t") {
-                var sqlstr =
-                    "REPLACE INTO surveydata(id, name, id_aoi, id_tree_species, id_crown_diameter, "
-                    + "id_canopy_status, comment, longitude, latitude) "
-                    + "VALUES(" + obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
-                    + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ");";
-            }
-        }
 
         tx.executeSql(sqlstr, [],
             function(tx, results) {
                 var obsid = results.insertId;
 
                 var sql =
-                    "INSERT INTO photo(id_survey_data, compass, image) "
-                    + "VALUES(" + obsid + "," + obs.compass + ",'" + obs.photo + "');";
-
-                if (window.sessionStorage.getItem("edit_mode")) {
-                    if (window.sessionStorage.getItem("edit_mode") == "t") {
-                        var pid = window.sessionStorage.getItem('photo_id');
-                        var sql =
-                            "REPLACE INTO photo(id, id_survey_data, compass, image) "
-                            + "VALUES(" + pid + "," + obsid + "," + obs.compass + ",'" + obs.photo + "');";
-                        window.sessionStorage.removeItem("edit_mode");
-                    }
-                }
+                    "REPLACE INTO photo(id, id_surveydata, compass, image) "
+                    + "VALUES(" + obs.photo.id + "," + obsid + "," + obs.photo.compass + ",'" + obs.photo.image + "');";
 
                 tx.executeSql(sql, [],
                     function(tx, res) {
@@ -123,11 +95,7 @@ function insert_OBS(obs) {
         );
     }, function(error) {
         console.log('Transaction SURVEYDATA ERROR: ' + error.message);
-        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-            $("#errorpopupdata>p").html("");
-        }
-        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to store the survey data.</p>");
-        $('#errorpopup').modal('show');
+        displayMessage("Error - It was not possible to store the survey data.",function () {});
     }, function() {
         clearWSitems();
         window.location = 'obs_list.html';
@@ -153,24 +121,38 @@ function setWSitems() {
 }
 
 function getWSitems() {
-    var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', compass:'', photo:''};
+    var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', photo:''};
     obs.name =              window.sessionStorage.getItem("obs_name");
     obs.comment =           window.sessionStorage.getItem("obs_comment");
     obs.id_tree_species =   window.sessionStorage.getItem("obs_id_tree_species");
     obs.id_crown_diameter = window.sessionStorage.getItem("obs_id_crown_diameter");
     obs.id_canopy_status =  window.sessionStorage.getItem("obs_id_canopy_status");
     obs.latitude =          window.sessionStorage.getItem("obs_latitude");
-    obs.longitude =         window.sessionStorage.getItem("obs_longitude");
-    obs.compass =           window.sessionStorage.getItem("photo_compass");
+    obs.longitude =         window.sessionStorage.getItem("obs_longitude");    
     obs.id_aoi =            window.sessionStorage.getItem("id_aoi");
-    var id_obs = window.sessionStorage.getItem("obs_id");
-    if ((id_obs !== null) && (id_obs != '')) {
-        obs.id = id_obs;
+    obs.id =                window.sessionStorage.getItem("obs_id");    
+
+    if ((obs.pid === null) && (obs.pid == '')) {
+        obs.pid = "NULL";
     }
-    if ((obs.compass === null) || (obs.compass == '')) {
-        obs.compass = 0.0;
+    if ((obs.id === null) && (obs.id == '')) {
+        obs.id = "NULL";
     }
-    obs.photo = window.sessionStorage.getItem("photo_image");
+
+    var photo = {id:'', id_obs:'', compass:'', photo:''};
+    photo.id =              window.sessionStorage.getItem("photo_id");    
+    photo.image =           window.sessionStorage.getItem("photo_image");   
+    photo.compass =         window.sessionStorage.getItem("photo_compass");   
+
+    if ((photo.id === null) || (photo.id == '')) {
+        photo.id = "NULL";
+    }
+    if ((photo.compass === null) || (photo.compass == '')) {
+        photo.compass = 0.0;
+    }
+    
+    obs.photo = photo;
+    
     return obs;
 }
 

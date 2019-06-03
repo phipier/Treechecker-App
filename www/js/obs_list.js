@@ -84,164 +84,7 @@ var listObs = {
     onOffline: function() {
         $('#sidebarCollapse').hide();
     },
-    syncObservations: function() {
-        var token = window.sessionStorage.getItem("token");
-        db.transaction(function (tx) {
-            tx.executeSql('SELECT * FROM surveydata;', [], function (tx, res) {
-                for(var x = 0; x < res.rows.length; x++) {
-                    var obs_id = res.rows.item(x).id;
-                    var obs_name = res.rows.item(x).name;
-                    var obs_comment = res.rows.item(x).comment;
-                    var obs_id_tree_species = res.rows.item(x).id_tree_species;
-                    var obs_id_crown_diameter = res.rows.item(x).id_crown_diameter;
-                    var obs_id_canopy_status = res.rows.item(x).id_canopy_status;
-                    var obs_latitude = res.rows.item(x).latitude;
-                    var obs_longitude = res.rows.item(x).longitude;
-                    var idaoi = res.rows.item(x).id_aoi;
-
-                    var data = '{"name" :"' + obs_name
-                               + '", "tree_specie":"' + obs_id_tree_species
-                               + '", "crown_diameter":"' + obs_id_crown_diameter
-                               + '", "canopy_status":"' + obs_id_canopy_status
-                               + '", "comment":"' + obs_comment
-                               + '", "latitude":"' + obs_latitude
-                               + '", "longitude":"' + obs_longitude
-                               + '"}';
-
-                    $.ajax({
-                        type: 'POST',
-                        crossDomain: true,
-                        url: SERVERURL + '/api/aois/' + idaoi + '/observations/',
-                        headers: {
-                            "Authorization": "JWT " + token,
-                            "Content-Type": "application/json",
-                            "cache-control": "no-cache"
-                        },
-                        processData: false,
-                        data: data,
-                        success: function(r) {
-                            var remote_id_obs = $.parseJSON(r).key;
-                            tx.executeSql('SELECT * FROM photo;', [], function (tx, res) {
-                                for(var x = 0; x < res.rows.length; x++) {
-                                    var photo_id_survey_data = res.rows.item(x).id_survey_data;
-                                    var photo_compass = res.rows.item(x).compass;
-                                    var photo_image = res.rows.item(x).image;
-
-                                    var data = '{"survey_data" :"' + photo_id_survey_data
-                                               + '", "compass":"' + photo_compass
-                                               + '", "image":"' + photo_image
-                                               + '"}';
-
-                                    $.ajax({
-                                        type: 'POST',
-                                        crossDomain: true,
-                                        url: SERVERURL + '/api/images/',
-                                        headers: {
-                                            "Authorization": "JWT " + token,
-                                            "Content-Type": "application/json",
-                                            "cache-control": "no-cache"
-                                        },
-                                        processData: false,
-                                        data: data,
-                                        success: function(res) {
-                                            window.plugins.spinnerDialog.hide();
-                                            $('#sidebar').toggleClass('active');
-                                            $('.overlay').toggleClass('active');
-
-                                            db.transaction(function (tx) {
-                                                tx.executeSql('DELETE FROM surveydata;');
-                                                tx.executeSql('DELETE FROM photo;');
-                                                $('#ok_sent_success').click(function() {
-                                                    window.location = 'aoi_list.html';
-                                                });
-                                            }, function (error) {
-                                                console.log('observation del error: ' + error.message);
-                                            }, function () {
-                                                console.log('observation del ok');
-
-                                            });
-
-                                            if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
-                                                $("#successpopupdata>p").html("");
-                                            }
-                                            $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Remote database updated.</p>");
-                                            $('#successpopup').modal('show');
-                                        },
-                                        error: function(req, status, error) {
-                                            window.plugins.spinnerDialog.hide();
-                                            $('#sidebar').toggleClass('active');
-                                            $('.overlay').toggleClass('active');
-                                            if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                                                $("#errorpopupdata>p").html("");
-                                            }
-                                            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the remote DB.</p>");
-                                            $('#errorpopup').modal('show');
-                                        }
-                                    });
-                                }
-                            },
-                            function (tx, error) {
-                                console.log('SELECT photo error: ' + error.message);
-                            });
-
-                        }
-                        error: function(req, status, error) {
-                            window.plugins.spinnerDialog.hide();
-                            $('#sidebar').toggleClass('active');
-                            $('.overlay').toggleClass('active');
-                            if ($.parseJSON(req.responseText).detail == "Signature has expired.") {
-                                $.ajax({
-                                    type: 'POST',
-                                    crossDomain: true,
-                                    dataType: 'text',
-                                    url: SERVERURL + '/api-token-auth/',
-                                    data: {
-                                        email: window.sessionStorage.getItem("email"),
-                                        password: window.sessionStorage.getItem("password")
-                                    },
-                                    contentType: 'application/x-www-form-urlencoded',
-                                    success: function(r) {
-                                        window.plugins.spinnerDialog.hide();
-                                        $('#sidebar').toggleClass('active');
-                                        $('.overlay').toggleClass('active');
-                                        window.sessionStorage.setItem("token", $.parseJSON(r).token);
-                                        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                                            $("#errorpopupdata>p").html("");
-                                        }
-                                        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - Please try again to store the observation.</p>");
-                                        $('#errorpopup').modal('show');
-                                        $('#ok_sent_success').click(function() {
-                                            window.location = 'obs_list.html';
-                                        });
-                                    },
-                                    error: function(req, status, error) {
-                                        if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                                            $("#errorpopupdata>p").html("");
-                                        }
-                                        $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to add the observation to the remote DB. Try again later or check if there is internet connection.<br>" + req.responseText);
-                                        $('#errorpopup').modal('show');
-                                    }
-                                })
-                            } else {
-                                if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                                    $("#errorpopupdata>p").html("");
-                                }
-                                $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the remote DB.</p>");
-                                $('#errorpopup').modal('show');
-                            }
-                        }
-                    });
-                }
-            },
-            function (tx, error) {
-                console.log('SELECT obs error: ' + error.message);
-            });
-        }, function (error) {
-            console.log('transaction obs error: ' + error.message);
-        }, function () {
-            console.log('transaction obs ok');
-
-        });
+    syncObservations: function() {        
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -257,6 +100,7 @@ function onBackKeyDown() {
 function edit_obs(id_obs) {
     db.transaction(function (tx) {
             var query = 'SELECT * FROM surveydata where id = '+id_obs+';';
+
             tx.executeSql(query, [], function (tx, res) {                
                 window.sessionStorage.setItem("obs_id",                 res.rows.item(0).id);
                 window.sessionStorage.setItem("obs_name",               res.rows.item(0).name);
@@ -266,20 +110,19 @@ function edit_obs(id_obs) {
                 window.sessionStorage.setItem("obs_id_canopy_status",   res.rows.item(0).id_canopy_status);
                 window.sessionStorage.setItem("obs_latitude",           res.rows.item(0).latitude);
                 window.sessionStorage.setItem("obs_longitude",          res.rows.item(0).longitude);
-            },
-            function (tx, error) {
+            }, function (tx, error) {
                 console.log('SELECT observation error: ' + error.message);
             });
 
-            tx.executeSql('SELECT * FROM photo where id_survey_data = '+id_obs+';', [], function (tx, res) {
+            tx.executeSql('SELECT * FROM photo where id_survey_data = ' + id_obs + ';', [], function (tx, res) {
                 window.sessionStorage.setItem("photo_id",               res.rows.item(0).id);
                 window.sessionStorage.setItem("photo_compass",          res.rows.item(0).compass);
                 window.sessionStorage.setItem("photo_image",            res.rows.item(0).image);
                 window.location = 'obs_form.html';
-            },
-            function (tx, error) {
+            }, function (tx, error) {
                 console.log('SELECT photo error: ' + error.message);
             });
+
         }, function (error) {
             console.log('transaction observation_photo error: ' + error.message);
         }, function () {
