@@ -84,7 +84,51 @@ var listObs = {
     onOffline: function() {
         $('#sidebarCollapse').hide();
     },
-    syncObservations: function() {        
+    syncObservations: function() {
+        var token = window.sessionStorage.getItem("token");  
+        
+        var handleError = function(error_message) {
+            console.log("value promise : " + error_message);
+            // display message error_message
+            return new Promise.reject();      
+        };
+
+        var getObservations = function(resolve, reject) {
+            db.transaction(function (tx) {
+                tx.executeSql('SELECT * FROM surveydata;', [], function (tx, res) {       
+                    var a_obs = [];                        
+                    for(var x = 0; x < res.rows.length; x++) {
+                        var obs = {};
+                        obs.id                  = res.rows.item(x).id;
+                        obs.name                = res.rows.item(x).name;
+                        obs.comment             = res.rows.item(x).comment;
+                        obs.id_tree_species     = res.rows.item(x).id_tree_species;
+                        obs.id_crown_diameter   = res.rows.item(x).id_crown_diameter;
+                        obs.id_canopy_status    = res.rows.item(x).id_canopy_status;
+                        obs.latitude            = res.rows.item(x).latitude;
+                        obs.longitude           = res.rows.item(x).longitude;
+                        obs.id_aoi              = res.rows.item(x).id_aoi;
+                        a_obs.push(obs);
+                    }
+                    resolve(a_obs);
+                },
+                function (tx, error) {
+                    console.log('EXEC SQL : SELECT obs error: ' + error.message);
+                    reject(error.message);
+                });            
+            },
+            function (tx, error) {
+                console.log('TRANSAC : SELECT obs error: ' + error.message);
+                reject(error.message);
+            });
+        };
+
+        new Promise(getObservations).then(function(value) {
+            console.log("value promise : " + value);           
+        }, handleError(value));
+
+        console.log("blabla")
+
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {

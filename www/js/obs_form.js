@@ -123,8 +123,8 @@ function setWSitems() {
 
 function getWSitems() {
     
-    var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', photo:''};
-    
+    //var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', photo:''};
+    var obs = {};
     obs.name =              window.sessionStorage.getItem("obs_name");
     obs.comment =           window.sessionStorage.getItem("obs_comment");
     obs.id_tree_species =   window.sessionStorage.getItem("obs_id_tree_species");
@@ -135,20 +135,20 @@ function getWSitems() {
     obs.id_aoi =            window.sessionStorage.getItem("id_aoi");
     obs.id =                window.sessionStorage.getItem("obs_id");    
 
-    if ((obs.id === null) || (obs.id == '')) {
+    if ((obs.id == null) || (obs.id == '')) {
         obs.id = "NULL";
     }
 
-    var photo = {id:'', id_obs:'', compass:'', image:''};
-
+    //var photo = {id:'', id_obs:'', compass:'', image:''};
+    var photo = {};
     photo.id =              window.sessionStorage.getItem("photo_id");    
     photo.image =           window.sessionStorage.getItem("photo_image");   
     photo.compass =         window.sessionStorage.getItem("photo_compass");   
 
-    if ((photo.id === null) || (photo.id == '')) {
+    if ((photo.id == null) || (photo.id == '')) {
         photo.id = "NULL";
     }
-    if ((photo.compass === null) || (photo.compass == '')) {
+    if ((photo.compass == null) || (photo.compass == '')) {
         photo.compass = 0.0;
     }
     
