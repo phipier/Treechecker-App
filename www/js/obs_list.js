@@ -90,7 +90,7 @@ var listObs = {
         var handleError = function(error_message) {
             console.log("value promise : " + error_message);
             // display message error_message
-            return new Promise.reject();      
+            return Promise.reject(error_message);      
         };
 
         var getObservations = function(resolve, reject) {
@@ -123,12 +123,114 @@ var listObs = {
             });
         };
 
-        new Promise(getObservations).then(function(value) {
-            console.log("value promise : " + value);           
-        }, handleError(value));
+        var sendObservation = function (obs) {
+            return new Promise(function(resolve, reject) {
+                var data = '{"name" :"' + obs.name
+                                + '", "tree_specie":"'      + obs.id_tree_species
+                                + '", "crown_diameter":"'   + obs.id_crown_diameter
+                                + '", "canopy_status":"'    + obs.id_canopy_status
+                                + '", "comment":"'          + obs.comment
+                                + '", "latitude":"'         + obs.latitude
+                                + '", "longitude":"'        + obs.longitude
+                                + '"}';
+                $.ajax({
+                    type: 'POST',
+                    crossDomain: true,
+                    url: SERVERURL + '/api/aois/' + obs.id_aoi + '/observations/',
+                    headers: {
+                        "Authorization": "JWT " + token,
+                        "Content-Type": "application/json",
+                        "cache-control": "no-cache"
+                    },
+                    processData: false,
+                    data: data,
+                    success: r => {                        
+                        resolve({id:r.key, lid:obs.id});
+                    },
+                    error: function(req, status, error) {                        
+                        reject(error);                        
+                    }
+                });
+            });
+        };
 
-        console.log("blabla")
+        var sendPhotoforObs = function(obs) {
 
+            return new Promise(function(resolve, reject) {
+
+                db.transaction(function (tx) {                
+                    tx.executeSql('SELECT * FROM photo where id_surveydata = ' + obs.lid + ';', [], function (tx, res) {
+
+                        // TO DO : make this loop async
+                        for(var x = 0; x < res.rows.length; x++) {
+                            var photo = {};
+                            photo.id_surveydata     = res.rows.item(x).id_surveydata;
+                            photo.compass           = res.rows.item(x).compass;
+                            photo.image             = res.rows.item(x).image;
+
+                            var data = '{"survey_data" :"'  + obs.id
+                                    + '", "compass":"'      + photo.compass
+                                    + '", "image":"'        + photo.image
+                                    + '"}';
+
+                            $.ajax({
+                                type: 'POST',
+                                crossDomain: true,
+                                url: SERVERURL + '/api/images/',
+                                headers: {
+                                    "Authorization": "JWT " + token,
+                                    "Content-Type": "application/json",
+                                    "cache-control": "no-cache"
+                                },
+                                processData: false,
+                                data: data,
+                                success: function(res) {   
+                                    console.log("resolve");                                 
+                                    resolve(res);
+                                },
+                                error: function(req, status, error) {     
+                                    console.log("reject");                               
+                                    reject(error.message);                                                            
+                                }
+                            });
+                        }
+                    }, function (tx, error) {
+                        console.log('SELECT photo error: ' + error.message);
+                    });
+                });
+            });
+        }    
+
+        new Promise(getObservations)
+        .then((observations) => {
+            console.log("sending observations ... ");  
+            console.log(observations);
+            var sendObs = observations.map(obs => sendObservation(obs));
+            return Promise.all(sendObs);                
+        }, (value) => {handleError(value);})
+        .then((serverids) => {
+            console.log("sending photos ... ");
+            console.log(serverids);  
+            var sendPhotos = serverids.map(serverid => sendPhotoforObs(serverid));
+            return Promise.all(sendPhotos);
+        }, (value) => {handleError(value);})
+        .then((values) => {
+            console.log("DONE");  
+            console.log(values);
+            displayMessage("Remote database updated.",()=>{});   
+            console.log("deleting obs and photos ... ")               
+        }, (value) => {
+            displayMessage("Error - It was not possible to update the remote DB.",()=>{});
+            handleError(value);
+        })
+        .catch(function(error) {
+            console.log(error);            
+        })
+        .finally(function() { 
+            $('#sidebar').toggleClass('active');
+            $('.overlay').toggleClass('active');
+            console.log("finally");
+        });
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -183,6 +285,14 @@ function delete_obs(id_obs) {
         console.log('Transaction delete obs ERROR: ' + error.message);
     }, function() {
         console.log('deleted obs table OK');
+    });
+    db.transaction(function(tx) {        
+        var sqlstr = "DELETE FROM photo WHERE id_surveydata = " + id_obs + ";";
+        tx.executeSql(sqlstr);
+    }, function(error) {
+        console.log('Transaction delete photo ERROR: ' + error.message);
+    }, function() {
+        console.log('deleted photo table OK');
     });
 }
 
