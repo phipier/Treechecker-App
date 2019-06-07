@@ -70,6 +70,31 @@ function cancel_AOI() {
     }    
 }
 
+function exit_AOI(success, message) {
+    stopButtonSpinners();    
+    if (success) { 
+
+        var OKfunction = function() {
+            $("#messagepopup").modal("hide"); 
+            clearWSitems();           
+            window.location = 'aoi_list.html';
+        }
+        l_message = "AOI created."               
+
+    } else {
+
+        var OKfunction = function() {               
+            $("#messagepopup").modal("hide");        
+            // delete AOI from remote DB and local DB;
+            var id_aoi = window.sessionStorage.getItem("id_aoi");
+            delete_aoi_fromDB(id_aoi);
+            clearWSitems();
+        }
+        l_message = message;
+    }
+    displayMessage(l_message, OKfunction);
+}
+
 $("#selectarea").click( function(e) {
     e.preventDefault();
     window.sessionStorage.setItem("aoiname",$("#InputAOIname").val());
@@ -176,30 +201,6 @@ function clearWSitems() {
     window.sessionStorage.removeItem("bbox_ymax");
 }
 
-function exit_AOI(success, message) {
-    stopButtonSpinners();    
-    if (success) { 
-
-        var OKfunction = function() {
-            $("#messagepopup").modal("hide"); 
-            clearWSitems();           
-            window.location = 'aoi_list.html';
-        }
-        l_message = "AOI created."               
-
-    } else {
-
-        var OKfunction = function() {               
-            $("#messagepopup").modal("hide");        
-            // delete AOI from remote DB and local DB;
-            clearWSitems();
-            delete_aoi_fromDB(window.sessionStorage.getItem("id_aoi"));
-        }
-        l_message = message;
-    }
-
-    displayMessage(l_message, OKfunction);
-}
 
 function stopButtonSpinners() {
     $("#saveaoi #loadingspinner").remove();

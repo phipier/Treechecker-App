@@ -1,5 +1,6 @@
 document.addEventListener('deviceready', loadMap, false);
 
+var LayerDefinitions;
 var marker;
 var mymap;
 var geojsonLayer;
@@ -27,6 +28,8 @@ var customControl =  L.Control.extend({
 
 function loadMap() {
     document.addEventListener("backbutton", onBackKeyDown, false);
+
+    LayerDefinitions = JSON.parse(window.sessionStorage.getItem("wms_url"));
 
     mymap = L.map('mapid');
 
@@ -100,16 +103,16 @@ function initLayers() {
     controlLayers.addBaseLayer(osm, LayerDefinitions.osm.layerName);
 }
 
-function addOfflineLayers(baseURL) {
+function addOfflineLayers(baseURL) { 
     var id_AOI = window.sessionStorage.getItem("id_aoi");
-    for(let layerName of LayerDefinitions.downloadables) {
-        console.log("Adding " + layerName);
-        var layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layerName + "/{z}/{x}/{y}.png", {maxZoom: 20, maxNativeZoom: 19});      
-        mymap.addLayer(layer);        
+    for(let layer of LayerDefinitions.DL_WMS) {         
+        console.log("Adding " + layer.name);
+        var ll_layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layer.name + "/{z}/{x}/{y}.png", {maxZoom: 20, maxNativeZoom: 19});      
+        mymap.addLayer(ll_layer);        
         if(controlLayers)
-            controlLayers.addOverlay(layer, layerName);
+            controlLayers.addOverlay(ll_layer, layer.name);
         else
-            overlays[layerName] = layer;
+            overlays[layer.name] = ll_layer;
     }
 }
 

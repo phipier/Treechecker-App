@@ -1,31 +1,30 @@
+var areaSelect;
+var LayerDefinitions;
+
 document.addEventListener('deviceready', loadMap, false);
 
-var areaSelect;
-
 function loadMap() {
+
+    LayerDefinitions = JSON.parse(window.sessionStorage.getItem("wms_url"));
+    
     var map = L.map('mapid')  //.setView([39.701, -7.69], 10);
+    
+    for(let baselayer of LayerDefinitions.BASE_WMS) { 
+        L.tileLayer(        baselayer.url, {
+            attribution:    baselayer.attribution,
+            maxZoom:        baselayer.maxZoom
+        }).addTo(map);
+    }
 
-    var osm = LayerDefinitions.osm;
-    L.tileLayer(        osm.url, {
-        attribution:    osm.attribution,
-        maxZoom:        osm.maxZoom
-    }).addTo(map);
-
-    var ortholayer = LayerDefinitions.jrcOrthophotosWMS;
-    var l_ortho = L.tileLayer.wms(    ortholayer.url, {
-        layers:         ortholayer.layers,
-        transparent:    ortholayer.transparent,
-        format:         ortholayer.format,
-        maxZoom:        ortholayer.maxZoom
-    }).addTo(map);
-
-    var pointlayer = LayerDefinitions.jrcGeometriesWMS;
-    L.tileLayer.wms(    pointlayer.url, {
-        layers:         pointlayer.layers,
-        transparent:    pointlayer.transparent,
-        format:         pointlayer.format,
-        maxZoom:        pointlayer.maxZoom
-    }).addTo(map);
+    for(let WMSlayer of LayerDefinitions.DL_WMS) {        
+        L.tileLayer.wms(    
+            WMSlayer.url, {
+            layers:         WMSlayer.layers,
+            transparent:    WMSlayer.transparent,
+            format:         WMSlayer.format,
+            maxZoom:        WMSlayer.maxZoom
+        }).addTo(map);
+    }
 
     var ymin = window.sessionStorage.getItem("bbox_ymin");
     var ymax = window.sessionStorage.getItem("bbox_ymax");

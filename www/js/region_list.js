@@ -54,13 +54,18 @@ function loadRegions() {
                 + '<h5>' + res.rows.item(x).name + '</h5>'
                 + '<a id="idreg'+res.rows.item(x).id+'" href="#" class="btn button button-navbar m-2"><i class="fas fa-door-open fa-2x white"></i></a>'
                 + '</li>';
+                window.sessionStorage.setItem("wms_url_"+res.rows.item(x).id, res.rows.item(x).wms_url);
             }
             html += "</ul>";
             $("#listregions-page").html(html);
             $("[id^=idreg]").click(function(e) {
                 e.preventDefault();
+                
                 var id_region = this.id.substring(5);
                 window.sessionStorage.setItem("id_region", id_region);
+                var wms_url = JSON.parse(window.sessionStorage.getItem("wms_url_"+id_region));
+                window.sessionStorage.setItem("wms_url", JSON.stringify(wms_url));
+
                 window.location = 'aoi_list.html';
                 return false;
             });

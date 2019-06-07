@@ -47,7 +47,7 @@ function downloadTiles(id_AOI, bbox) {
                         if (this.status == 200 && tile_downloading) {      
                             var blob = new Blob([this.response], { type: 'image/png' });
                             window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
-                                if (tile_downloading) {                                
+                                if (!AOI_cancel) {                                
                                     console.log("fileName: "+fileName);
                                     createPath(dirEntry, dirPath, function(dirTileEntry) {
                                         saveFile(dirTileEntry, blob, filePath);                                    
@@ -136,7 +136,7 @@ function deleteFile(fileName) {
 
 function saveFile(dirEntry, fileData, fileName) {
     dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
-        if (tile_downloading) { writeFile(fileEntry, fileData); } else {return}
+        if (!AOI_cancel) { writeFile(fileEntry, fileData); } else {return}
     }, function (fileError) {
         console.log("Failed save to file: " + fileError);       
     });
@@ -283,6 +283,7 @@ const getTileBbox = (x, y, zoom) => {
 };
 
 function getTileDownloadURLs(bbox) {
+    var LayerDefinitions = JSON.parse(window.sessionStorage.getItem("wms_url"));
     var minZoom = 2;
     var maxZoom = 19;
     var fetchQueue = [];
@@ -295,8 +296,7 @@ function getTileDownloadURLs(bbox) {
         for(var x=xMin; x <= xMax; ++x) {
             for(var y=yMin; y <= yMax; ++y) {
                 var tileBbox = getTileBbox(x, y, zoom).join(',')
-                for(let layerName of LayerDefinitions.downloadables) {
-                    const layer = LayerDefinitions[layerName];
+                for(let layer of LayerDefinitions.DL_WMS) {                    
                     const urlBase = layer.url;
                     const wmsLayerName = layer.layers;
                     const format = layer.format;
@@ -308,7 +308,7 @@ function getTileDownloadURLs(bbox) {
                     var wmsParams = `REQUEST=GetMap&VERSION=${version}&SERVICE=WMS&SRS=${epsg}&WIDTH=${width}&HEIGHT=${height}&LAYERS=${wmsLayerName}&STYLES=&FORMAT=${format}&TRANSPARENT=${transparent}&BBOX=${tileBbox}`;
                     var url = `${urlBase}${wmsParams}`;
         
-                    fetchQueue.push({url: url, x: x, y: y, z: zoom, layerName: layerName});
+                    fetchQueue.push({url: url, x: x, y: y, z: zoom, layerName: wmsLayerName});
                 }
             }
         }

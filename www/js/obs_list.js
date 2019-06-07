@@ -161,7 +161,7 @@ var listObs = {
                 db.transaction(function (tx) {                
                     tx.executeSql('SELECT * FROM photo where id_surveydata = ' + obs.lid + ';', [], function (tx, res) {
 
-                        // TO DO : make this loop async
+                        // TODO : make this loop synchronous?
                         for(var x = 0; x < res.rows.length; x++) {
                             var photo = {};
                             photo.id_surveydata     = res.rows.item(x).id_surveydata;
@@ -199,12 +199,32 @@ var listObs = {
                     });
                 });
             });
-        }    
+        } 
+        
+        /*
+        function delay() {
+            return new Promise(resolve => setTimeout(resolve, 300));
+        }
+        
+        async function delayedLog(item) {
+        // notice that we can await a function
+        // that returns a promise
+        await delay();
+        console.log(item);
+        }
+        */
 
-        new Promise(getObservations)
+        new Promise(getObservations)        
         .then((observations) => {
             console.log("sending observations ... ");  
             console.log(observations);
+            /*async function processArray(array) {
+                for (const item of array) {
+                    await delayedLog(item);
+                }
+                console.log('Done!');
+            }*/
+            // return processArray(array)
             var sendObs = observations.map(obs => sendObservation(obs));
             return Promise.all(sendObs);                
         }, (value) => {handleError(value);})
@@ -217,8 +237,11 @@ var listObs = {
         .then((values) => {
             console.log("DONE");  
             console.log(values);
-            displayMessage("Remote database updated.",()=>{});   
+            displayMessage("Remote database updated.",()=>{});
+            
+            // TODO 
             console.log("deleting obs and photos ... ")               
+
         }, (value) => {
             displayMessage("Error - It was not possible to update the remote DB.",()=>{});
             handleError(value);

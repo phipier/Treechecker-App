@@ -17,22 +17,13 @@ function update_regions() {
                 db.transaction(function(tx) {
                     var sqlstr = "REPLACE INTO geographicalzone("
                     + "id, name, layer_name, wms_url, proj, image_url, x_min, x_max, y_min, y_max) "
-                    + "VALUES("+val.key+",'"+val.name+"','layer_name','wms_url','proj'"+",'"+val.image_url
+                    + "VALUES("+val.key+",'"+val.name+"','"+val.layer_name+"','"+val.wms_url+"','proj','"+val.image_url
                     + "',"+val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+")";
-
                     tx.executeSql(sqlstr);                            
                 }, function(error) {
-                    if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                        $("#errorpopupdata>p").html("");
-                    }
-                    $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to update the DB.</p>");
-                    $('#errorpopup').modal('show');
+                    displayMessage("It was not  possible to update the DB. " + error.message,()=>{});
                 }, function() {
-                    if(document.getElementById("successpopupdata").getElementsByTagName('p').length > 0) {
-                        $("#successpopupdata>p").html("");
-                    }
-                    $("#successpopupdata").prepend("<p><i class='fas fa-smile'></i> Database updated.</p>");
-                    $('#successpopup').modal('show');
+                    displayMessage("Database updated.",()=>{});
                 });
             });
             loadRegions();
@@ -42,11 +33,7 @@ function update_regions() {
         },
         error : function(req, status, error) {
             window.plugins.spinnerDialog.hide();
-            if(document.getElementById("errorpopupdata").getElementsByTagName('p').length > 0) {
-                $("#errorpopupdata>p").html("");
-            }
-            $("#errorpopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - No connection to the DB.</p>");
-            $('#errorpopup').modal('show');
+            displayMessage("It was not possible to connect to server. " + error.message,()=>{});
             $('#sidebar').toggleClass('active');
             $('.overlay').toggleClass('active');
         }

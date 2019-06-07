@@ -8,6 +8,8 @@ function openDb() {
 
 function createTables() {
     var sqlstr; 
+    //sqlstr = "DROP TABLE IF EXISTS geographicalzone;"
+    //runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS geographicalzone (id integer primary key, name varchar(255) not null, layer_name varchar(255) not null, wms_url varchar(255) not null, proj varchar(255) not null, image_url varchar(255) not null, x_min double precision not null, x_max double precision not null, y_min double precision not null, y_max double precision not null);"
     runSQL(sqlstr);
     //sqlstr = "DROP TABLE IF EXISTS aoi;"
@@ -16,10 +18,8 @@ function createTables() {
     runSQL(sqlstr);    
     sqlstr = "CREATE TABLE IF NOT EXISTS surveydata (id integer primary key, name varchar(255) not null, id_tree_species integer not null REFERENCES treespecies(id) ON UPDATE CASCADE, id_crown_diameter integer not null REFERENCES crowndiameter(id) ON UPDATE CASCADE, id_canopy_status integer not null REFERENCES canopystatus(id) ON UPDATE CASCADE, comment text, id_aoi integer not null REFERENCES aoi(id) ON UPDATE CASCADE, longitude double precision not null, latitude double precision not null);"
     runSQL(sqlstr);
-
     //sqlstr = "DROP TABLE IF EXISTS photo;"
     //runSQL(sqlstr);
-
     sqlstr = "CREATE TABLE IF NOT EXISTS photo (id integer primary key, id_surveydata integer not null REFERENCES surveydata(id) ON UPDATE CASCADE, compass double precision, image text not null);"
     runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS treespecies (id integer primary key, name varchar(100) not null);"
