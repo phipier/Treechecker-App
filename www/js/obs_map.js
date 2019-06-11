@@ -1,9 +1,8 @@
 document.addEventListener('deviceready', loadMap, false);
 
-var LayerDefinitions;
 var marker;
 var mymap;
-var geojsonLayer;
+var gjson_layer;
 var overlays;
 
 var customControl =  L.Control.extend({
@@ -29,7 +28,14 @@ var customControl =  L.Control.extend({
 function loadMap() {
     document.addEventListener("backbutton", onBackKeyDown, false);
 
-    LayerDefinitions = JSON.parse(window.sessionStorage.getItem("wms_url"));
+    var LayerDefinitions    = JSON.parse(   window.sessionStorage.getItem("wms_url"));
+    var id_AOI              =               window.sessionStorage.getItem("id_aoi");
+    var obs_latitude        =               window.sessionStorage.getItem("obs_latitude");
+    var obs_longitude       =               window.sessionStorage.getItem("obs_longitude");
+    var obs_id              =               window.sessionStorage.getItem("obs_id"); 
+    if ((obs_id == null)  || (obs_id == '')) {
+        obs_id = "NULL";
+    }
 
     mymap = L.map('mapid');
 
@@ -53,12 +59,16 @@ function loadMap() {
 
     addMapControls();
     //initLayers();
-    addOfflineLayers();        
-    //addMarkers(json.obs); 
+    addOfflineWMSLayers(id_AOI, LayerDefinitions);
+    addMyObservations(id_AOI, obs_id);
 
     mymap.on('click', (e) => {
         createMarker(e.latlng);
     });
+
+    if ((obs_latitude != null) & (obs_longitude != null)) {
+        createMarker(L.latLng(obs_latitude, obs_longitude));
+    }
 }
 
 function createMarker(latlng_pos) {
@@ -68,9 +78,7 @@ function createMarker(latlng_pos) {
         marker.on('dragend', function(event){
             var marker = event.target;
             var position = marker.getLatLng();
-            //marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
             marker.setLatLng(position ,{draggable:'true'});
-            //mymap.panTo(new L.LatLng(position.lat, position.lng));
             mymap.panTo(position);
         });
         mymap.addLayer(marker);
@@ -103,17 +111,118 @@ function initLayers() {
     controlLayers.addBaseLayer(osm, LayerDefinitions.osm.layerName);
 }
 
-function addOfflineLayers(baseURL) { 
-    var id_AOI = window.sessionStorage.getItem("id_aoi");
+function addOfflineWMSLayers(id_AOI, LayerDefinitions) {     
     for(let layer of LayerDefinitions.DL_WMS) {         
         console.log("Adding " + layer.name);
         var ll_layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layer.name + "/{z}/{x}/{y}.png", {maxZoom: 20, maxNativeZoom: 19});      
-        mymap.addLayer(ll_layer);        
+        mymap.addLayer(ll_layer);
         if(controlLayers)
             controlLayers.addOverlay(ll_layer, layer.name);
         else
             overlays[layer.name] = ll_layer;
     }
+}
+
+function buildSurveyDataPopup(data) {
+    var container = L.DomUtil.create('div');
+    container.innerHTML = `<b>${data.name}</b><br><b>Species:&nbsp</b>${data.species}<br><b>Diameter:&nbsp</b>${data.diameter}`;
+    //var btn = L.DomUtil.create('i', 'fa fa-info-circle fa-2x centered', container);
+    //L.DomEvent.on(btn, 'click', () => {
+    //    viewElement(data.id)
+    //});
+    return container;  
+}
+
+function addMyObservations(id_aoi, id_obs) {
+
+    const geojson = {  
+        "type": "FeatureCollection",
+        "features": []  
+    };
+
+    db.transaction(function (tx) {
+
+        var query = 'SELECT s.id AS id, s.name AS name, t.name AS treespe, c.name AS diameter, s.longitude, s.latitude '
+                    +   'FROM surveydata AS s '
+                    +   'INNER JOIN treespecies     AS t    on t.id = s.id_tree_species '
+                    +   'INNER JOIN crowndiameter   AS c    on c.id = s.id_crown_diameter '
+                    +   'where s.id_aoi = ' + id_aoi;                    
+        if (id_obs != "NULL") { query += ' AND s.id != ' + id_obs; }
+        query += ';'
+
+        tx.executeSql(query, [], function (tx, res) {
+            var WFS_json = '{"type": "FeatureCollection","features": [';
+            for(var x = 0; x < res.rows.length; x++) {
+                const item = res.rows.item(x);
+                const geojsonPoint = {    
+                    "type": "Feature",
+                    "geometry": {
+                    "type": "Point",
+                    "coordinates": [item.longitude, item.latitude]
+                    },
+                    "properties": {
+                        "popup":    buildSurveyDataPopup({"id":item.id,"name":item.name,"species":item.treespe,"diameter":item.diameter}),
+                        "id":       item.id,
+                        "name":     item.name
+                    }    
+                };  
+                geojson.features.push(geojsonPoint);
+            }     
+            
+            if(gjson_layer != null) {
+                controlLayers.removeLayer(gjson_layer);
+                mymap.removeLayer(gjson_layer);
+            }
+
+            var gjsonMarkerOptions = {
+                radius: 8,
+                fillColor: "#ff7800",
+                color: "#000",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            };
+
+            var greenIcon = L.icon({
+                iconUrl: 'file:///android_asset/www/lib/images/marker-red-small.png',
+                //shadowUrl: 'leaf-shadow.png',
+            
+                iconSize:     [40, 40], // size of the icon
+                //shadowSize:   [50, 64], // size of the shadow
+                iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location
+                //shadowAnchor: [4, 62],  // the same for the shadow
+                popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+            });
+
+            gjson_layer = L.geoJSON(geojson, {
+                    pointToLayer: function (feature, latlng) {
+                        //return L.circleMarker(latlng, gjsonMarkerOptions);
+                        return L.marker(latlng, {icon: greenIcon});
+                        //return L.marker(latlng);
+                    },
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(feature.properties.popup);
+                    }
+                }
+            );
+        
+            mymap.addLayer(gjson_layer);
+
+            wfs_label = "my observations";
+            if(controlLayers)
+                controlLayers.addOverlay(gjson_layer, wfs_label);
+            else
+                overlays[wfs_label] = gjson_layer;   
+
+        },
+        function (tx, error) {
+            console.log('SELECT error: ' + error.message);
+        });
+    }, function (error) {
+        console.log('transaction error: ' + error.message);
+    }, function () {
+        console.log('transaction ok');
+    });    
 }
 
 function addMapControls() {
@@ -140,56 +249,3 @@ $("#cancellocation").click(function(e) {
     window.location = 'obs_form.html';   
     return false; 
 } );
-
-/* Could be useful to show all observations on same map for a given AOI 
-
-function addMarkers(data) {
-
-    const geojson = {  
-      "type": "FeatureCollection",
-      "features": []  
-    };
-  
-    for(let index in data) {  
-        const point = data[index];
-        const geojsonPoint = {    
-            "type": "Feature",
-            "geometry": {
-            "type": "Point",
-            "coordinates": [point.position.longitude, point.position.latitude]
-            },
-            "properties": {
-            "popup": buildSurveyDataPopup(point),
-            "id": point.key
-            }    
-        };  
-        geojson.features.push(geojsonPoint);  
-    }
-
-    if(geojsonLayer != null) {
-        controlLayers.removeLayer(geojsonLayer);
-        mymap.removeLayer(geojsonLayer);
-    }
-
-    geojsonLayer = L.geoJSON(geojson, {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng);
-        },
-        onEachFeature: function (feature, layer) {
-            layer.bindPopup(feature.properties.popup);
-        }
-    });    
-    geojsonLayer.addTo(mymap);
-    controlLayers.addOverlay(geojsonLayer, 'Own data');
-}
-
-function buildSurveyDataPopup(data) {
-    var container = L.DomUtil.create('div');
-    container.innerHTML = `<h2>${data.name}</h2><p><b>Specie:</b>${data.tree_specie.name}</p><p><b>Diameter:</b>${data.crown_diameter.name}</p>`;
-    var btn = L.DomUtil.create('i', 'fa fa-info-circle fa-2x centered', container);
-    L.DomEvent.on(btn, 'click', () => {
-        viewElement(data.key)
-    });
-    return container;  
-}
-*/

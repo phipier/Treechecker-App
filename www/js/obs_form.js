@@ -122,8 +122,7 @@ function setWSitems() {
 }
 
 function getWSitems() {
-    
-    //var obs = {id:'', id_aoi:'', name:'', comment:'', id_tree_species:'', id_crown_diameter:'', id_canopy_status:'', latitude:'', longitude:'', photo:''};
+
     var obs = {};
     obs.name =              window.sessionStorage.getItem("obs_name");
     obs.comment =           window.sessionStorage.getItem("obs_comment");
@@ -139,7 +138,6 @@ function getWSitems() {
         obs.id = "NULL";
     }
 
-    //var photo = {id:'', id_obs:'', compass:'', image:''};
     var photo = {};
     photo.id =              window.sessionStorage.getItem("photo_id");    
     photo.image =           window.sessionStorage.getItem("photo_image");   

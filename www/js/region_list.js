@@ -49,8 +49,7 @@ function loadRegions() {
         tx.executeSql(query, [], function (tx, res) {
             var html = '<ul class="list-group">';
             for(var x = 0; x < res.rows.length; x++) {
-                html += '<li class="list-group-item">'                 
-                //+ '<img id="img-card" class="card-img-top" src="img/' + res.rows.item(x).image_url + '" alt="Image">'
+                html += '<li class="list-group-item">'                                 
                 + '<h5>' + res.rows.item(x).name + '</h5>'
                 + '<a id="idreg'+res.rows.item(x).id+'" href="#" class="btn button button-navbar m-2"><i class="fas fa-door-open fa-2x white"></i></a>'
                 + '</li>';
@@ -59,8 +58,7 @@ function loadRegions() {
             html += "</ul>";
             $("#listregions-page").html(html);
             $("[id^=idreg]").click(function(e) {
-                e.preventDefault();
-                
+                e.preventDefault();                
                 var id_region = this.id.substring(5);
                 window.sessionStorage.setItem("id_region", id_region);
                 var wms_url = JSON.parse(window.sessionStorage.getItem("wms_url_"+id_region));

@@ -298,7 +298,7 @@ function getTileDownloadURLs(bbox) {
                 var tileBbox = getTileBbox(x, y, zoom).join(',')
                 for(let layer of LayerDefinitions.DL_WMS) {                    
                     const urlBase = layer.url;
-                    const wmsLayerName = layer.layers;
+                    const wmsLayerName = layer.name;
                     const format = layer.format;
                     const transparent = layer.transparent;
                     const epsg = layer.crs;
