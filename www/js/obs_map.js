@@ -185,8 +185,7 @@ function addMyObservations(id_aoi, id_obs) {
 
             var greenIcon = L.icon({
                 iconUrl: 'file:///android_asset/www/lib/images/marker-red-small.png',
-                //shadowUrl: 'leaf-shadow.png',
-            
+                //shadowUrl: 'leaf-shadow.png',            
                 iconSize:     [40, 40], // size of the icon
                 //shadowSize:   [50, 64], // size of the shadow
                 iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location
@@ -205,6 +204,33 @@ function addMyObservations(id_aoi, id_obs) {
                     }
                 }
             );
+
+            /* Change icon size depending on Zoom level
+            
+            var ar_icon_1 = ...;
+            var ar_icon_2 = ...;
+            var ar_icon_1_double_size = ...;
+            var ar_icon_2_double_size = ...;
+
+
+            map.on('zoomend', function() {
+                var currentZoom = map.getZoom();
+                if (currentZoom > 12) {
+                    all_testptLayer.eachLayer(function(layer) {
+                        if (layer.feature.properties.num < 0.5)
+                            return layer.setIcon(ar_icon_1);
+                        else if (feature.properties.num < 1.0)
+                            return layer.setIcon(ar_icon_2);
+                    });
+                } else {
+                    all_testptLayer.eachLayer(function(layer) {
+                        if (layer.feature.properties.num < 0.5)
+                            return layer.setIcon(ar_icon_1_double_size);
+                        else if (feature.properties.num < 1.0)
+                            return layer.setIcon(ar_icon_2_double_size);
+                    });
+                }
+            } */
         
             mymap.addLayer(gjson_layer);
 

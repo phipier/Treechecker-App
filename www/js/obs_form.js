@@ -12,11 +12,10 @@ var obsform = {
                 function(imageData) {
                     $('#preview_text').remove();
                     var format = "data:image/jpeg;base64,";
-                    document.getElementById('image').src = format + imageData;
-                    window.sessionStorage.setItem("photo_image", format + imageData);
+                    document.getElementById('image').src = format + imageData;                    
                 },
                 function() {
-                    displayMessage("Error - There are problems with the camera. Try to take the photo again or restart the app.", function() {})                    
+                    displayMessage("Picture canceled", function() {})                    
                 },
                 {quality:50, destinationType:Camera.DestinationType.DATA_URL, correctOrientation: true}
             );
@@ -52,7 +51,7 @@ $("#saveobs").click( function(e) {
     } else {
         $("#OBS-form")[0].classList.add('was-validated');
     }
-    var l_image = window.sessionStorage.getItem("photo");
+    var l_image = window.sessionStorage.getItem("photo_image");
     if ((l_image === null) || (l_image == '')) {
         displayMessage("Error - You cannot send an observation without attaching a photo.", function () {});
     }   
@@ -69,8 +68,7 @@ function insert_OBS(obs) {
             + "VALUES(" + obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
             + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ");";
 
-        tx.executeSql(sqlstr, [],
-            function(tx, results) {
+        tx.executeSql(sqlstr, [], function(tx, results) {
                 var obsid = results.insertId;
 
                 var sql =
@@ -87,11 +85,6 @@ function insert_OBS(obs) {
                 );
             }, function(error) {
                 console.log('ExecuteSQL surveydata ERROR: ' + error.message);
-            }, function() {
-                console.log("survey data stored");
-            },
-            function(tx, error) {
-                console.log('ExecuteSQL Surveydata error: ' + error.message);
             }
         );
     }, function(error) {
@@ -119,6 +112,7 @@ function setWSitems() {
     window.sessionStorage.setItem("obs_latitude",           $("#Inputlatitude").val().trim());
     window.sessionStorage.setItem("obs_longitude",          $("#Inputlongitude").val().trim());
     window.sessionStorage.setItem("photo_compass",          $("#Inputcompass").val().trim());
+    window.sessionStorage.setItem("photo_image",            $("#image").src);
 }
 
 function getWSitems() {

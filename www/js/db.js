@@ -24,6 +24,8 @@ function createTables() {
     //runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS photo (id integer primary key, id_surveydata integer not null REFERENCES surveydata(id) ON UPDATE CASCADE, compass double precision, image text not null);"
     runSQL(sqlstr);
+    //sqlstr = "DROP TABLE IF EXISTS treespecies;"
+    //runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS treespecies (id integer primary key, name varchar(100) not null);"
     runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS crowndiameter (id integer primary key, name varchar(100) not null);"
