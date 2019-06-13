@@ -1,30 +1,50 @@
 var areaSelect;
 var LayerDefinitions;
+var overlays;
+var baseMaps;
+var mymap;
+var controlLayers;
 
-document.addEventListener('deviceready', loadMap, false);
+document.addEventListener('deviceready', loadmap, false);
 
-function loadMap() {
+function loadmap() {
 
     LayerDefinitions = JSON.parse(window.sessionStorage.getItem("wms_url"));
     
-    var map = L.map('mapid')  //.setView([39.701, -7.69], 10);
+    mymap = L.map('mapid');
+
+    overlays = {};
+    baseMaps = {};
+
+    addMapControls();
     
     for(let baselayer of LayerDefinitions.BASE_WMS) { 
-        L.tileLayer(        baselayer.url, {
-            attribution:    baselayer.attribution,
-            maxZoom:        baselayer.maxZoom
-        }).addTo(map);
+        var ll_baselayer = L.tileLayer(          baselayer.url, {
+                                attribution:    baselayer.attribution,
+                                maxZoom:        Number(baselayer.maxZoom)            
+        });
+        ll_baselayer.addTo(mymap);        
+        if(controlLayers)
+            controlLayers.addBaseLayer(ll_baselayer, baselayer.layerName);
+        else
+            baseMaps[layer.name] = ll_layer;
     }
 
     for(let WMSlayer of LayerDefinitions.DL_WMS) {        
-        L.tileLayer.wms(    
+        var ll_layer = L.tileLayer.wms(    
             WMSlayer.url, {
             layers:         WMSlayer.layers,
             transparent:    WMSlayer.transparent,
             format:         WMSlayer.format,
-            maxZoom:        WMSlayer.maxZoom
-        }).addTo(map);
-    }
+            maxZoom:        Number(WMSlayer.maxZoom)//,
+            //maxNativeZoom:  WMSlayer.maxNativeZoom
+        });
+        ll_layer.addTo(mymap);
+        if(controlLayers)
+            controlLayers.addOverlay(ll_layer, WMSlayer.name);
+        else
+            overlays[layer.name] = ll_layer;
+    }    
 
     var ymin = window.sessionStorage.getItem("bbox_ymin");
     var ymax = window.sessionStorage.getItem("bbox_ymax");
@@ -35,18 +55,18 @@ function loadMap() {
         var corner1 = L.latLng(Number(window.sessionStorage.getItem("bbox_ymin")), Number(window.sessionStorage.getItem("bbox_xmin")));
         var corner2 = L.latLng(Number(window.sessionStorage.getItem("bbox_ymax")), Number(window.sessionStorage.getItem("bbox_xmax")));
         var bounds = L.latLngBounds(corner1, corner2);
-        map.fitBounds(bounds);
+        mymap.fitBounds(bounds);
     } else {
-        map.setView([39.701, -7.69], 10);
+        mymap.setView([39.701, -7.69], 10);
         // get bbox from response to GetCapabilities request ...
-        //map.fitBounds(l_ortho.getBounds());
+        //mymap.fitBounds(l_ortho.getBounds());
     }
 
     areaSelect = L.areaSelect({width:200, height:200});
     areaSelect.on("change", function() {
         var bounds = this.getBounds();        
     });
-    areaSelect.addTo(map);
+    areaSelect.addTo(mymap);    
 };
 
 $("#savearea").click( function(e) {
@@ -67,8 +87,14 @@ function onBackKeyDown() {
     window.location = "aoi_form.html";
 }
 
-$("#cancelarea").click(function(e) {
+function addMapControls() {
+    controlLayers = new L.control.layers(baseMaps, overlays, {sortLayers: true, hideSingleBase: false});
+    controlLayers.addTo(mymap);
+    L.control.scale().addTo(mymap);
+}
+
+/* $("#cancelarea").click(function(e) {
     e.preventDefault();         
     window.location = 'aoi_form.html';   
     return false; 
-} );
+} ); */

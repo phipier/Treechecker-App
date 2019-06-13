@@ -116,7 +116,6 @@ function setWSitems() {
 }
 
 function getWSitems() {
-
     var obs = {};
     obs.name =              window.sessionStorage.getItem("obs_name");
     obs.comment =           window.sessionStorage.getItem("obs_comment");
