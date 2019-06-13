@@ -52,21 +52,13 @@ function loadMap() {
 
     addMapControls();
 
-<<<<<<< HEAD
-=======
-    //mymap.on('load', (e) => {
->>>>>>> f9c668344c82c2e172773e78f63a2f0ecf3c8463
     bbox = window.sessionStorage.getItem("bbox");
     var corner1 = L.latLng(Number(window.sessionStorage.getItem("bbox_ymin")), Number(window.sessionStorage.getItem("bbox_xmin")));
     var corner2 = L.latLng(Number(window.sessionStorage.getItem("bbox_ymax")), Number(window.sessionStorage.getItem("bbox_xmax")));
     var bounds = L.latLngBounds(corner1, corner2);
     mymap.fitBounds(bounds);
-<<<<<<< HEAD
     L.rectangle(bounds, {color: 'blue', fillOpacity: 0}).addTo(mymap);
-=======
-    //var bounds = [[53.912257, 27.581640], [53.902257, 27.561640]];
-    L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(map);
->>>>>>> f9c668344c82c2e172773e78f63a2f0ecf3c8463
+
     
     //initLayers();
     addOfflineWMSLayers(id_AOI, LayerDefinitions);
@@ -124,11 +116,8 @@ function initLayers() {
 function addOfflineWMSLayers(id_AOI, LayerDefinitions) {     
     for(let layer of LayerDefinitions.DL_WMS) {         
         console.log("Adding " + layer.name);
-<<<<<<< HEAD
         var ll_layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layer.name + "/{z}/{x}/{y}.png", {maxZoom: Number(layer.maxZoom), maxNativeZoom: Number(layer.maxNativeZoom)});      
-=======
-        var ll_layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layer.name + "/{z}/{x}/{y}.png", {maxZoom: layer.maxZoom, maxNativeZoom: layer.maxNativeZoom});      
->>>>>>> f9c668344c82c2e172773e78f63a2f0ecf3c8463
+
         mymap.addLayer(ll_layer);
         if(controlLayers)
             controlLayers.addOverlay(ll_layer, layer.name);
