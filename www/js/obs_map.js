@@ -49,15 +49,17 @@ function loadMap() {
     geojsonLayer = null;
     overlays = {};
 
+    addMapControls();
+
     //mymap.on('load', (e) => {
     bbox = window.sessionStorage.getItem("bbox");
-
     var corner1 = L.latLng(Number(window.sessionStorage.getItem("bbox_ymin")), Number(window.sessionStorage.getItem("bbox_xmin")));
     var corner2 = L.latLng(Number(window.sessionStorage.getItem("bbox_ymax")), Number(window.sessionStorage.getItem("bbox_xmax")));
     var bounds = L.latLngBounds(corner1, corner2);
     mymap.fitBounds(bounds);
-
-    addMapControls();
+    //var bounds = [[53.912257, 27.581640], [53.902257, 27.561640]];
+    L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(map);
+    
     //initLayers();
     addOfflineWMSLayers(id_AOI, LayerDefinitions);
     addMyObservations(id_AOI, obs_id);
@@ -106,7 +108,7 @@ function centerMapOnCurrentPosition() {
 }
 
 function initLayers() {
-    var osm = new L.TileLayer(LayerDefinitions.osm.url, {maxZoom: 20, maxNativeZoom: 19, attribution: LayerDefinitions.osm.attribution});
+    var osm = new L.TileLayer(LayerDefinitions.osm.url, {maxZoom: 22, maxNativeZoom: 19, attribution: LayerDefinitions.osm.attribution});
     mymap.addLayer(osm);
     controlLayers.addBaseLayer(osm, LayerDefinitions.osm.layerName);
 }
@@ -114,7 +116,7 @@ function initLayers() {
 function addOfflineWMSLayers(id_AOI, LayerDefinitions) {     
     for(let layer of LayerDefinitions.DL_WMS) {         
         console.log("Adding " + layer.name);
-        var ll_layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layer.name + "/{z}/{x}/{y}.png", {maxZoom: 20, maxNativeZoom: 19});      
+        var ll_layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layer.name + "/{z}/{x}/{y}.png", {maxZoom: layer.maxZoom, maxNativeZoom: layer.maxNativeZoom});      
         mymap.addLayer(ll_layer);
         if(controlLayers)
             controlLayers.addOverlay(ll_layer, layer.name);
@@ -255,6 +257,7 @@ function addMapControls() {
     controlLayers = new L.control.layers({}, overlays, {sortLayers: true, hideSingleBase: true});
     controlLayers.addTo(mymap);
     mymap.addControl(new customControl());
+    L.control.scale().addTo(mymap);
 }
   
 $("#savelocation").click(function(e) {
@@ -270,8 +273,8 @@ $("#savelocation").click(function(e) {
     }
 } );
 
-$("#cancellocation").click(function(e) {
+/* $("#cancellocation").click(function(e) {
     e.preventDefault();         
     window.location = 'obs_form.html';   
     return false; 
-} );
+} ); */

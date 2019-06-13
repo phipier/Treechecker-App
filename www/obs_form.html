@@ -21,6 +21,23 @@
 <div class="forms">
     <form id="OBS-form" novalidate>
         <div class="form-group">
+            <div class="d-inline">
+                <a id="selectposition" href="#" class="btn button">Select location on map</a>
+                <br><span>or provide coordinates (in decimal degrees):</span><br>
+            </div>
+            <label for="Inputlatitude">Latitude</label>
+            <input class="form-control" id="Inputlatitude" placeholder="Enter latitude" onkeypress="return isNumberKey(event)" required>
+            <div class="invalid-feedback">
+                Please provide a latitude for the position of this observation.
+            </div>
+            <label for="Inputlongitude">Longitude</label>
+            <input class="form-control" id="Inputlongitude" placeholder="Enter longitude" onkeypress="return isNumberKey(event)" required>
+            <div class="invalid-feedback">
+                Please provide a longitude for the position of this observation.
+            </div>
+        </div>
+        <hr>
+        <div class="form-group">
             <label for="InputOBSname">Name</label>
             <input type="text" class="form-control" id="InputOBSname" aria-describedby="emailHelp" placeholder="Enter name" required>
             <div class="invalid-feedback">
@@ -47,24 +64,7 @@
                 <option value="" disabled selected>select canopy status</option>
             </select>
         </div>
-        <hr>
-        <div class="form-group">
-            <div class="d-inline">
-                <a id="selectposition" href="#" class="btn button">Select location on map</a>
-                <br><span>or provide coordinates:</span><br>
-            </div>
-            <label for="Inputlatitude">Latitude</label>
-            <input class="form-control" id="Inputlatitude" placeholder="Enter latitude" onkeypress="return isNumberKey(event)" required>
-            <div class="invalid-feedback">
-                Please provide a latitude for the position of this observation.
-            </div>
-            <label for="Inputlongitude">Longitude</label>
-            <input class="form-control" id="Inputlongitude" placeholder="Enter longitude" onkeypress="return isNumberKey(event)" required>
-            <div class="invalid-feedback">
-                Please provide a longitude for the position of this observation.
-            </div>
-        </div>
-        <hr>
+        <hr>        
         <div class="form-group">
             <label for="Inputcompass">Compass</label>
             <input class="form-control" id="Inputcompass" placeholder="Enter compass value"><!--required-->            

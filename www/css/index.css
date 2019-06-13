@@ -191,7 +191,7 @@ html, #mapid, #login-page {
 #mapid {
     width:100%;
     height:100%;
-    background-color:green;
+    background-color:rgb(108, 109, 108);
 }
 
 #button-wrapper {
@@ -201,6 +201,14 @@ html, #mapid, #login-page {
     width:100%;
 }
 
+.right-align {
+    float: right;
+}
+
+/* .leaflet-container {
+    background-color:rgb(151, 144, 144);
+}
+ */
 .progress-bar {
     background-color:green !important;
 }
