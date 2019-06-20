@@ -19,7 +19,11 @@ function update_regions() {
                     + "id, name, layer_name, wms_url, proj, image_url, x_min, x_max, y_min, y_max) "
                     + "VALUES("+val.key+",'"+val.name+"','"+val.layer_name+"','"+val.wms_url+"','proj','"+val.image_url
                     + "',"+val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+")";
-                    tx.executeSql(sqlstr);                            
+                    tx.executeSql(sqlstr, [], function (tx, res) {                    
+                        console.log("success");                  
+                    }, function (tx, error) {
+                        console.log("error in db request: REPLACE INTO geographicalzone " + error.message)
+                    });
                 }, function(error) {
                     displayMessage("It was not  possible to update the DB. " + error.message,()=>{});
                 }, function() {
@@ -50,8 +54,12 @@ function update_treespecies() {
     success : function(reg) {
       $.each(reg, function(key, val) {
           db.transaction(function(tx) {                    
-              var sqlstr = "INSERT INTO treespecies(id, name) VALUES("+val.key+",'"+val.name+"')";
-              tx.executeSql(sqlstr);                            
+              var sqlstr = "REPLACE INTO treespecies(id, name) VALUES("+val.key+",'"+val.name+"')";
+              tx.executeSql(sqlstr, [], function (tx, res) {                    
+                console.log("success");                  
+            }, function (tx, error) {
+                console.log("error in db request: INSERT INTO treespecies " + error.message)
+            });                            
           }, function(error) {
               console.log('Transaction ERROR: ' + error.message);
           }, function() {
@@ -75,8 +83,12 @@ function update_crowndiameter() {
     success : function(reg) {
       $.each(reg, function(key, val) {
           db.transaction(function(tx) {                    
-              var sqlstr = "INSERT INTO crowndiameter(id, name) VALUES("+val.key+",'"+val.name+"')";
-              tx.executeSql(sqlstr);                            
+              var sqlstr = "REPLACE INTO crowndiameter(id, name) VALUES("+val.key+",'"+val.name+"')";
+              tx.executeSql(sqlstr, [], function (tx, res) {                    
+                console.log("success");                  
+            }, function (tx, error) {
+                console.log("error in db request: INSERT INTO crown diameters " + error.message)
+            });                                                 
           }, function(error) {
               console.log('Transaction ERROR: ' + error.message);
           }, function() {
@@ -100,8 +112,12 @@ function update_canopystatus() {
       success : function(reg) {
         $.each(reg, function(key, val) {
             db.transaction(function(tx) {
-                var sqlstr = "INSERT INTO canopystatus(id, name) VALUES("+val.key+",'"+val.name+"')";
-                tx.executeSql(sqlstr);
+                var sqlstr = "REPLACE INTO canopystatus(id, name) VALUES("+val.key+",'"+val.name+"')";
+                tx.executeSql(sqlstr, [], function (tx, res) {                    
+                    console.log("success");                  
+                }, function (tx, error) {
+                    console.log("error in db request: INSERT INTO canopy status " + error.message)
+                });                     
             }, function(error) {
                 console.log('Transaction ERROR: ' + error.message);
             }, function() {

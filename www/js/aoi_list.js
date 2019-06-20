@@ -74,10 +74,10 @@ var listAOI = {
             window.sessionStorage.setItem("id_aoi", "");
             window.sessionStorage.setItem("aoiname", "");
 
-            window.sessionStorage.setItem("bbox_ymin", "39.784352364601");
-            window.sessionStorage.setItem("bbox_ymax", "39.783579888405");
-            window.sessionStorage.setItem("bbox_xmin", "-7.6377547801287");
-            window.sessionStorage.setItem("bbox_xmax", "-7.63670469529");
+            // window.sessionStorage.setItem("bbox_ymin", "39.784352364601");
+            // window.sessionStorage.setItem("bbox_ymax", "39.783579888405");
+            // window.sessionStorage.setItem("bbox_xmin", "-7.6377547801287");
+            // window.sessionStorage.setItem("bbox_xmax", "-7.63670469529");
  
             window.location = 'aoi_form.html';
             return false;

@@ -53,7 +53,7 @@ function loadRegions() {
                 + '<h5>' + res.rows.item(x).name + '</h5>'
                 + '<a id="idreg'+res.rows.item(x).id+'" href="#" class="btn button button-navbar m-2"><i class="fas fa-door-open fa-2x white"></i></a>'
                 + '</li>';
-                window.sessionStorage.setItem("wms_url_"+res.rows.item(x).id, res.rows.item(x).wms_url);
+                //window.sessionStorage.setItem("wms_url_"+res.rows.item(x).id, res.rows.item(x).wms_url);
             }
             html += "</ul>";
             $("#listregions-page").html(html);
@@ -61,10 +61,23 @@ function loadRegions() {
                 e.preventDefault();                
                 var id_region = this.id.substring(5);
                 window.sessionStorage.setItem("id_region", id_region);
-                var wms_url = JSON.parse(window.sessionStorage.getItem("wms_url_"+id_region));
-                window.sessionStorage.setItem("wms_url", JSON.stringify(wms_url));
-
-                window.location = 'aoi_list.html';
+                var query = 'SELECT * FROM geographicalzone where id = ' + id_region + ';';
+                db.transaction(function (tx) {
+                    tx.executeSql(query, [], function (tx, res) {                    
+                        window.sessionStorage.setItem("wms_url",  res.rows.item(0).wms_url); //JSON.stringify(res.rows.item(0).wms_url));     
+                        window.sessionStorage.setItem("reg_xmin", res.rows.item(0).x_min);
+                        window.sessionStorage.setItem("reg_xmax", res.rows.item(0).x_max);
+                        window.sessionStorage.setItem("reg_ymin", res.rows.item(0).y_min);
+                        window.sessionStorage.setItem("reg_ymax", res.rows.item(0).y_max);           
+                        window.location = 'aoi_list.html';                    
+                    }, function (tx, error) {console.log("error in db request: SELECT geographicalzone where id")});
+                },
+                function (error) {
+                    console.log('Transaction error : ' + error.message);
+                },
+                function () {
+                    console.log('transaction ok');
+                }); 
                 return false;
             });
             window.plugins.spinnerDialog.hide();

@@ -116,7 +116,7 @@ function initLayers() {
 function addOfflineWMSLayers(id_AOI, LayerDefinitions) {     
     for(let layer of LayerDefinitions.DL_WMS) {         
         console.log("Adding " + layer.name);
-        var ll_layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layer.name + "/{z}/{x}/{y}.png", {maxZoom: Number(layer.maxZoom), maxNativeZoom: Number(layer.maxNativeZoom)});      
+        var ll_layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layer.layers + "/{z}/{x}/{y}.png", {maxZoom: Number(layer.maxZoom), maxNativeZoom: Number(layer.maxNativeZoom)});      
 
         mymap.addLayer(ll_layer);
         if(controlLayers)
