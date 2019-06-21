@@ -68,7 +68,8 @@ function loadMap() {
         createMarker(e.latlng);
     });
 
-    if ((obs_latitude != null) & (obs_longitude != null)) {
+    // if position coordinate exist then create marker on map 
+    if ((obs_latitude) & (obs_longitude)) {
         createMarker(L.latLng(obs_latitude, obs_longitude));
     }
 }
@@ -270,7 +271,7 @@ $("#savelocation").click(function(e) {
         window.location = 'obs_form.html';   
         return false;
     } else {
-        alert("Please click on the map to select a location");
+        displayMessage("Please click on the map (or GPS icon) to select a location.",()=>{});
     }
 } );
 

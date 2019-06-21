@@ -322,9 +322,9 @@ function delete_obs(id_obs) {
 $("#addOBS").click(function(e) {
     e.preventDefault();
     window.sessionStorage.setItem("obs_id", "");
-    window.sessionStorage.setItem("obs_name", "myobstest");
-    window.sessionStorage.setItem("obs_latitude", "39.784352364601");
-    window.sessionStorage.setItem("obs_longitude", "-7.6377547801287");
+    //window.sessionStorage.setItem("obs_name", "myobstest");
+    //window.sessionStorage.setItem("obs_latitude", "39.784352364601");
+    //window.sessionStorage.setItem("obs_longitude", "-7.6377547801287");
 
     window.sessionStorage.setItem("updating","false");
     window.location = 'obs_form.html';

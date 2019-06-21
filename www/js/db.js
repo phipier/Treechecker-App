@@ -8,9 +8,9 @@ function openDb() {
 
 function createTables() {
     var sqlstr; 
-    //sqlstr = "DROP TABLE IF EXISTS geographicalzone;"
-    //runSQL(sqlstr);
-    sqlstr = "CREATE TABLE IF NOT EXISTS geographicalzone (id integer primary key, name varchar(255) not null, layer_name varchar(255) not null, wms_url varchar(255) not null, proj varchar(255) not null, image_url varchar(255) not null, x_min double precision not null, x_max double precision not null, y_min double precision not null, y_max double precision not null);"
+    sqlstr = "DROP TABLE IF EXISTS geographicalzone;"
+    runSQL(sqlstr);
+    sqlstr = "CREATE TABLE IF NOT EXISTS geographicalzone (id integer primary key, name varchar(255) not null, wms_url varchar(255) not null, x_min double precision not null, x_max double precision not null, y_min double precision not null, y_max double precision not null);"
     runSQL(sqlstr);
     //sqlstr = "DROP TABLE IF EXISTS aoi;"
     //runSQL(sqlstr);

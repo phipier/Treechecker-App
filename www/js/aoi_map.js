@@ -50,11 +50,11 @@ function loadmap() {
 
     addMapControls();
     
-    var aoi_ymin = window.sessionStorage.getItem("bbox_ymin");var aoi_ymax = window.sessionStorage.getItem("bbox_ymax");
-    var aoi_xmin = window.sessionStorage.getItem("bbox_xmin");var aoi_xmax = window.sessionStorage.getItem("bbox_xmax");
+    var aoi_ymin = Number(window.sessionStorage.getItem("bbox_ymin"));var aoi_ymax = Number(window.sessionStorage.getItem("bbox_ymax"));
+    var aoi_xmin = Number(window.sessionStorage.getItem("bbox_xmin"));var aoi_xmax = Number(window.sessionStorage.getItem("bbox_xmax"));
     
-    var reg_ymin = window.sessionStorage.getItem("reg_ymin");var reg_ymax = window.sessionStorage.getItem("reg_ymax");
-    var reg_xmin = window.sessionStorage.getItem("reg_xmin");var reg_xmax = window.sessionStorage.getItem("reg_xmax");
+    var reg_ymin = Number(window.sessionStorage.getItem("reg_ymin"));var reg_ymax = Number(window.sessionStorage.getItem("reg_ymax"));
+    var reg_xmin = Number(window.sessionStorage.getItem("reg_xmin"));var reg_xmax = Number(window.sessionStorage.getItem("reg_xmax"));
     
     if ((aoi_ymin) && (aoi_ymax) && (aoi_xmin) && (aoi_xmax)) {
         var corner1 = L.latLng(Number(aoi_ymin), Number(aoi_xmin));
@@ -87,8 +87,8 @@ $("#savearea").click( function(e) {
     var bounds = areaSelect.getBounds();
     console.log("selected bounds: " + bounds); 
     
-    if (Math.abs(bounds.getSouthWest().lng-bounds.getNorthEast().lng < 0.005) && 
-        Math.abs(bounds.getNorthEast().lat-bounds.getSouthWest().lat < 0.005)) {
+    if ((Math.abs(bounds.getSouthWest().lng-bounds.getNorthEast().lng) < 0.02) && 
+        (Math.abs(bounds.getNorthEast().lat-bounds.getSouthWest().lat) < 0.02)) {
 
         window.sessionStorage.setItem("bbox_xmin", bounds.getSouthWest().lng); 
         window.sessionStorage.setItem("bbox_xmax", bounds.getNorthEast().lng); 

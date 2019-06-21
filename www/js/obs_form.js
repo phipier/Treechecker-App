@@ -12,7 +12,8 @@ var obsform = {
                 function(imageData) {
                     $('#preview_text').remove();
                     var format = "data:image/jpeg;base64,";
-                    document.getElementById('image').src = format + imageData;                    
+                    document.getElementById('image').src = format + imageData;   
+                    //$('#image').src = format + imageData;                  
                 },
                 function() {
                     displayMessage("Picture canceled", function() {})                    
@@ -112,7 +113,7 @@ function setWSitems() {
     window.sessionStorage.setItem("obs_latitude",           $("#Inputlatitude").val().trim());
     window.sessionStorage.setItem("obs_longitude",          $("#Inputlongitude").val().trim());
     window.sessionStorage.setItem("photo_compass",          $("#Inputcompass").val().trim());
-    window.sessionStorage.setItem("photo_image",            $("#image").src);
+    window.sessionStorage.setItem("photo_image",            document.getElementById('image').src);
 }
 
 function getWSitems() {
@@ -221,8 +222,7 @@ function init_form() {
         $("#Inputcompass").val(obs.photo.compass);
         if (obs.photo.image) {
             $('#preview_text').remove();
-            var image = document.getElementById('image');
-            image.src = obs.photo.image;
+            document.getElementById('image').src = obs.photo.image;
         }
         window.plugins.spinnerDialog.hide();
     });

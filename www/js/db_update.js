@@ -16,9 +16,8 @@ function update_regions() {
             $.each(reg, function(key, val) {
                 db.transaction(function(tx) {
                     var sqlstr = "REPLACE INTO geographicalzone("
-                    + "id, name, layer_name, wms_url, proj, image_url, x_min, x_max, y_min, y_max) "
-                    + "VALUES("+val.key+",'"+val.name+"','"+val.layer_name+"','"+val.wms_url+"','proj','"+val.image_url
-                    + "',"+val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+")";
+                    + "id, name, wms_url, y_min, x_min, y_max, x_max) "
+                    + "VALUES("+val.key+",'"+val.name+"','"+val.wms_url+"',"+val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+")";
                     tx.executeSql(sqlstr, [], function (tx, res) {                    
                         console.log("success");                  
                     }, function (tx, error) {
@@ -37,7 +36,7 @@ function update_regions() {
         },
         error : function(req, status, error) {
             window.plugins.spinnerDialog.hide();
-            displayMessage("It was not possible to connect to server. " + error.message,()=>{});
+            displayMessage("request to remote server failed. " + error.message,()=>{});
             $('#sidebar').toggleClass('active');
             $('.overlay').toggleClass('active');
         }

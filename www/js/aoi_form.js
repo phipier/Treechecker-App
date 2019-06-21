@@ -98,10 +98,10 @@ function exit_AOI(success, message) {
 $("#selectarea").click( function(e) {
     e.preventDefault();
     window.sessionStorage.setItem("aoiname",$("#InputAOIname").val());
-    window.sessionStorage.setItem("bbox_xmin", Number($("#Inputxmin").val())); 
-    window.sessionStorage.setItem("bbox_xmax", Number($("#Inputxmax").val())); 
-    window.sessionStorage.setItem("bbox_ymin", Number($("#Inputymin").val())); 
-    window.sessionStorage.setItem("bbox_ymax", Number($("#Inputymax").val()));
+    window.sessionStorage.setItem("bbox_xmin", $("#Inputxmin").val()); 
+    window.sessionStorage.setItem("bbox_xmax", $("#Inputxmax").val()); 
+    window.sessionStorage.setItem("bbox_ymin", $("#Inputymin").val()); 
+    window.sessionStorage.setItem("bbox_ymax", $("#Inputymax").val());
     window.location = 'aoi_map.html'; 
     return false;
 });
