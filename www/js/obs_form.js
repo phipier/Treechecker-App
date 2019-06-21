@@ -51,11 +51,7 @@ $("#saveobs").click( function(e) {
         return false;
     } else {
         $("#OBS-form")[0].classList.add('was-validated');
-    }
-    var l_image = window.sessionStorage.getItem("photo_image");
-    if ((l_image === null) || (l_image == '')) {
-        displayMessage("Error - You cannot send an observation without attaching a photo.", function () {});
-    }   
+    }    
     setWSitems();
     insert_OBS(getWSitems());
     return false;
