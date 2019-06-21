@@ -74,7 +74,7 @@ function insert_OBS(obs) {
 
                 var sql =
                     "REPLACE INTO photo(id, id_surveydata, compass, image) "
-                    + "VALUES(" + obs.photo.id + "," + obsid + "," + obs.photo.compass + ",'" + obs.photo.image + "');";
+                    + "VALUES(" + obs.photo.id + "," + obsid + "," + "NULL" + ",'" + obs.photo.image + "');";
 
                 tx.executeSql(sql, [],
                     function(tx, res) {
@@ -112,7 +112,7 @@ function setWSitems() {
     window.sessionStorage.setItem("obs_id_canopy_status",   $("#InputSelectStatus").children("option:selected").val());
     window.sessionStorage.setItem("obs_latitude",           $("#Inputlatitude").val().trim());
     window.sessionStorage.setItem("obs_longitude",          $("#Inputlongitude").val().trim());
-    window.sessionStorage.setItem("photo_compass",          $("#Inputcompass").val().trim());
+    //window.sessionStorage.setItem("photo_compass",          $("#Inputcompass").val().trim());
     window.sessionStorage.setItem("photo_image",            document.getElementById('image').src);
 }
 
@@ -135,14 +135,14 @@ function getWSitems() {
     var photo = {};
     photo.id =              window.sessionStorage.getItem("photo_id");    
     photo.image =           window.sessionStorage.getItem("photo_image");   
-    photo.compass =         window.sessionStorage.getItem("photo_compass");   
+    //photo.compass =         window.sessionStorage.getItem("photo_compass");   
 
-    if ((photo.id == null) || (photo.id == '')) {
+    if (!photo.id) {
         photo.id = "NULL";
     }
-    if ((photo.compass == null) || (photo.compass == '')) {
-        photo.compass = 0.0;
-    }
+    //if ((photo.compass == null) || (photo.compass == '')) {
+    //    photo.compass = 0.0;
+    //}
     
     obs.photo = photo;
     
@@ -159,7 +159,7 @@ function clearWSitems() {
     window.sessionStorage.removeItem("obs_latitude");
     window.sessionStorage.removeItem("obs_longitude");
     window.sessionStorage.removeItem("photo_id");
-    window.sessionStorage.removeItem("photo_compass");
+    //window.sessionStorage.removeItem("photo_compass");
     window.sessionStorage.removeItem("photo_image");
 }
 
@@ -219,7 +219,7 @@ function init_form() {
         $("#InputSelectStatus").val(obs.id_canopy_status);
         $("#Inputlatitude").val(obs.latitude);
         $("#Inputlongitude").val(obs.longitude);
-        $("#Inputcompass").val(obs.photo.compass);
+        //$("#Inputcompass").val(obs.photo.compass);
         if (obs.photo.image) {
             $('#preview_text').remove();
             document.getElementById('image').src = obs.photo.image;

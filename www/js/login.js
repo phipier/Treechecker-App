@@ -1,3 +1,6 @@
+var email;
+var password;
+
 var login = {
 
     // Login Page Constructor
@@ -17,8 +20,18 @@ var login = {
 
     // deviceready Event Handler
     onDeviceReady: function() {
+        email       = window.localStorage.getItem("trckl");
+        password    = window.localStorage.getItem("trckp");
+
+        $("#username").val(email);
+        $("#password").val(password);
+
         $('#log_in').click(function(event) {
             window.plugins.spinnerDialog.show();
+            
+            email       = $("#username").val();
+            password    = $("#password").val();
+
             $(this).attr('disabled', 'disabled');
             $.ajax({
                 type: 'POST',
@@ -26,20 +39,24 @@ var login = {
                 dataType: 'text',
                 url: SERVERURL + '/api-token-auth/',
                 data: {
-                    //email: $("#username").val(),
-                    //password: $("#password").val()
-                    email: 'pier@test.com',
-                    password: 'trEEchecker789'
+                    email:      email,
+                    password:   password
                 },
                 contentType: 'application/x-www-form-urlencoded',
                 success: function(tk) {
                     window.plugins.spinnerDialog.hide();
                     window.sessionStorage.setItem("token", $.parseJSON(tk).token);
-                    //window.sessionStorage.setItem("email", $("#username").val());
-                    //window.sessionStorage.setItem("password", $("#password").val());
-                    window.sessionStorage.setItem("email", 'pier@test.com');
-                    window.sessionStorage.setItem("password", 'trEEchecker789');
+                    
+                    email = $("#username").val();
+                    password = $("#password").val();
+
+                    window.localStorage.setItem("trckl", email);       
+                    window.localStorage.setItem("trckp", password); 
+                    window.sessionStorage.setItem("email", email);
+                    window.sessionStorage.setItem("password", password);
+
                     window.location = 'region_list.html';
+                    
                 },
                 error: function(req, status, error) {
                     if (status == "error") {
