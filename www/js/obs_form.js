@@ -70,7 +70,7 @@ function insert_OBS(obs) {
 
                 var sql =
                     "REPLACE INTO photo(id, id_surveydata, compass, image) "
-                    + "VALUES(" + obs.photo.id + "," + obsid + "," + "NULL" + ",'" + obs.photo.image + "');";
+                    + "VALUES(" + obs.photo.id + "," + obsid + "," + "0" + ",'" + obs.photo.image + "');";
 
                 tx.executeSql(sql, [],
                     function(tx, res) {

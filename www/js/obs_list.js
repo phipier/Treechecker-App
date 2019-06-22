@@ -95,7 +95,8 @@ var listObs = {
 
         var getObservations = function(resolve, reject) {
             db.transaction(function (tx) {
-                tx.executeSql('SELECT * FROM surveydata;', [], function (tx, res) {       
+                var id_aoi = window.sessionStorage.getItem("id_aoi");
+                tx.executeSql('SELECT * FROM surveydata where id_aoi = ' + id_aoi + ';', [], function (tx, res) {       
                     var a_obs = [];                        
                     for(var x = 0; x < res.rows.length; x++) {
                         var obs = {};
@@ -123,7 +124,7 @@ var listObs = {
             });
         };
 
-        var sendObservation = function (obs) {
+        var sendObservation = function (obs) {            
             return new Promise(function(resolve, reject) {
                 var data = '{"name" :"' + obs.name
                                 + '", "tree_specie":"'      + obs.id_tree_species
