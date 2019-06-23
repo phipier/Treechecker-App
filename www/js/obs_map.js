@@ -77,7 +77,11 @@ function loadMap() {
 function createMarker(latlng_pos) {
     if (marker == null) { 
         marker = new L.marker(latlng_pos, {draggable:'true'});
-        marker.setOpacity(0.7);
+        var icon = marker.options.icon;
+        icon.options.iconSize   = [40, 60];
+        icon.options.iconAnchor = [30, 60];
+        marker.setIcon(icon);
+        marker.setOpacity(0.8);
         marker.on('dragend', function(event){
             var marker = event.target;
             var position = marker.getLatLng();
@@ -96,16 +100,17 @@ function onBackKeyDown() {
 }
 
 function centerMapOnCurrentPosition() {
+    window.plugins.spinnerDialog.show(null, "Searching your position...");
     var onSuccess = function(position) {
         mymap.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
         createMarker(new L.LatLng(position.coords.latitude, position.coords.longitude));
+        window.plugins.spinnerDialog.hide();
     };
     function onError(error) {
-        //alert('code: '    + error.code    + '\n' +
-        //      'message: ' + error.message + '\n');
-        alert('Please make sure that GPS geolocation is on');
+        displayMessage('Could not get your position. Please make sure that GPS is on',()=>{});
+        window.plugins.spinnerDialog.hide();
     }
-    navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 1500, enableHighAccuracy: true});
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 10000, enableHighAccuracy: true});
 }
 
 function initLayers() {
@@ -187,20 +192,17 @@ function addMyObservations(id_aoi, id_obs) {
                 fillOpacity: 0.8
             };
 
-            var greenIcon = L.icon({
-                iconUrl: 'file:///android_asset/www/lib/images/marker-red-small.png',
-                //shadowUrl: 'leaf-shadow.png',            
-                iconSize:     [40, 40], // size of the icon
-                //shadowSize:   [50, 64], // size of the shadow
-                iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location
-                //shadowAnchor: [4, 62],  // the same for the shadow
+            var redIcon = L.icon({
+                iconUrl: 'file:///android_asset/www/lib/images/marker-red-small.png',                           
+                iconSize:     [40, 40], // size of the icon          
+                iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location  
                 popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
             });
 
             gjson_layer = L.geoJSON(geojson, {
                     pointToLayer: function (feature, latlng) {
                         //return L.circleMarker(latlng, gjsonMarkerOptions);
-                        return L.marker(latlng, {icon: greenIcon});
+                        return L.marker(latlng, {icon: redIcon});
                         //return L.marker(latlng);
                     },
                     onEachFeature: function (feature, layer) {

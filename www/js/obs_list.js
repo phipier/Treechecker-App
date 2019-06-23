@@ -5,7 +5,7 @@ var listObs = {
         document.addEventListener("offline", this.onOffline, false);        
     },
     onDeviceReady: function() {
-        //window.plugins.spinnerDialog.show(null, "loading survey data ...");
+        
         document.addEventListener("backbutton", onBackKeyDown, false);
         var id_aoi = window.sessionStorage.getItem("id_aoi");
 
@@ -73,7 +73,7 @@ var listObs = {
 
         $('#syncobs').on('click', function() {
             if ($('[id^=edit_idobs_]').length != 0) {
-                window.plugins.spinnerDialog.show();
+                window.plugins.spinnerDialog.show(null, "uploading survey data ...");
                 listObs.syncObservations();
             }
         });
@@ -84,9 +84,10 @@ var listObs = {
     onOffline: function() {
         $('#sidebarCollapse').hide();
     },
-    syncObservations: function() {
+    syncObservations: function() {        
+
         var token = window.sessionStorage.getItem("token");  
-        
+
         var handleError = function(error_message) {
             console.log("value promise : " + error_message);
             // display message error_message
@@ -124,6 +125,44 @@ var listObs = {
             });
         };
 
+        var deletePhotos = function(resolve, reject) {
+            return new Promise(function(resolve, reject) {
+                db.transaction(function (tx) {
+                    var id_aoi = window.sessionStorage.getItem("id_aoi");
+                    tx.executeSql('DELETE FROM photo where id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ');', [], function (tx, res) {       
+                        resolve();
+                    },
+                    function (tx, error) {
+                        console.log('EXEC SQL : DELETE photos error: ' + error.message);
+                        reject(error.message);
+                    });  
+                },
+                function (tx, error) {
+                    console.log('TRANSAC : DELETE photos error: ' + error.message);
+                    reject(error.message);
+                }); 
+            });
+        };
+
+        var deleteObservations = function(resolve, reject) {
+            return new Promise(function(resolve, reject) {
+                db.transaction(function (tx) {
+                    var id_aoi = window.sessionStorage.getItem("id_aoi");
+                    tx.executeSql('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';', [], function (tx, res) {       
+                        resolve();
+                    },
+                    function (tx, error) {
+                        console.log('EXEC SQL : DELETE observations error: ' + error.message);
+                        reject(error.message);
+                    });  
+                },
+                function (tx, error) {
+                    console.log('TRANSAC : DELETE observations error: ' + error.message);
+                    reject(error.message);
+                }); 
+            });
+        };
+
         var sendObservation = function (obs) {            
             return new Promise(function(resolve, reject) {
                 var data = '{"name" :"' + obs.name
@@ -156,9 +195,7 @@ var listObs = {
         };
 
         var sendPhotoforObs = function(obs) {
-
             return new Promise(function(resolve, reject) {
-
                 db.transaction(function (tx) {                
                     tx.executeSql('SELECT * FROM photo where id_surveydata = ' + obs.lid + ';', [], function (tx, res) {
 
@@ -228,23 +265,35 @@ var listObs = {
             // return processArray(array)
             var sendObs = observations.map(obs => sendObservation(obs));
             return Promise.all(sendObs);                
-        }, (value) => {handleError(value);})
+        }, (value) => {handleError(value);})        
         .then((serverids) => {
             console.log("sending photos ... ");
             console.log(serverids);  
             var sendPhotos = serverids.map(serverid => sendPhotoforObs(serverid));
             return Promise.all(sendPhotos);
         }, (value) => {handleError(value);})
-        .then((values) => {
-            console.log("DONE");  
+/*         .then((values) => {
+            console.log("photos sent.");  
             console.log(values);
-            displayMessage("Remote database updated.",()=>{});
-            
-            // TODO 
-            console.log("deleting obs and photos ... ")               
-
+            console.log("deleting photos ... ")             
+            return deletePhotos();
         }, (value) => {
             displayMessage("Error - It was not possible to update the remote DB.",()=>{});
+            handleError(value);
+        }) */
+        .then(() => {
+            console.log("photos sent");
+            console.log("deleting obs ... ")             
+            return deleteObservations();
+        }, (value) => {
+            displayMessage("Error - It was not possible to delete photos.",()=>{});
+            handleError(value);
+        })
+        .then(() => {
+            console.log("observations deleted");
+            displayMessage("Remote database updated.",()=>{});                          
+        }, (value) => {
+            displayMessage("Error - It was not possible to delete observations.",()=>{});
             handleError(value);
         })
         .catch(function(error) {
@@ -254,6 +303,9 @@ var listObs = {
             $('#sidebar').toggleClass('active');
             $('.overlay').toggleClass('active');
             console.log("finally");
+            window.plugins.spinnerDialog.hide();
+            displayMessage("observations uploaded.",()=>{});       
+            window.location = "obs_list.html";
         });
     },
     // Update DOM on a Received Event

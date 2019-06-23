@@ -11,8 +11,7 @@ var listRegions = {
     // Bind any cordova events here. Common events are:
     // 'pause', 'resume', etc.
     onDeviceReady: function() {
-        window.plugins.spinnerDialog.show();
-
+        
         createTables();
 
         loadRegions();
@@ -25,6 +24,7 @@ var listRegions = {
         $('#update').on('click', function() {
             window.plugins.spinnerDialog.show();
             update();
+            loadRegions();
         });
     },
 
@@ -45,6 +45,7 @@ listRegions.initialize();
 
 function loadRegions() {
     db.transaction(function (tx) {
+        window.plugins.spinnerDialog.show();
         var query = 'SELECT * FROM geographicalzone';
         tx.executeSql(query, [], function (tx, res) {
             var html = '<ul class="list-group">';
@@ -58,6 +59,8 @@ function loadRegions() {
             html += "</ul>";
             $("#listregions-page").html(html);
             $("[id^=idreg]").click(function(e) {
+                window.plugins.spinnerDialog.show();
+
                 e.preventDefault();                
                 var id_region = this.id.substring(5);
                 window.sessionStorage.setItem("id_region", id_region);
@@ -68,26 +71,31 @@ function loadRegions() {
                         window.sessionStorage.setItem("reg_xmin", res.rows.item(0).x_min);
                         window.sessionStorage.setItem("reg_xmax", res.rows.item(0).x_max);
                         window.sessionStorage.setItem("reg_ymin", res.rows.item(0).y_min);
-                        window.sessionStorage.setItem("reg_ymax", res.rows.item(0).y_max);           
+                        window.sessionStorage.setItem("reg_ymax", res.rows.item(0).y_max);  
+                        window.plugins.spinnerDialog.hide();
                         window.location = 'aoi_list.html';                    
                     }, function (tx, error) {console.log("error in db request: SELECT geographicalzone where id")});
                 },
                 function (error) {
                     console.log('Transaction error : ' + error.message);
+                    window.plugins.spinnerDialog.hide();
                 },
                 function () {
                     console.log('transaction ok');
+                    window.plugins.spinnerDialog.hide();
                 }); 
                 return false;
-            });
-            window.plugins.spinnerDialog.hide();
+            });            
         },
         function (tx, error) {
             console.log('SELECT error: ' + error.message);
+            window.plugins.spinnerDialog.hide();
         });
     }, function (error) {
         console.log('transaction error: ' + error.message);
+        window.plugins.spinnerDialog.hide();
     }, function () {
         console.log('transaction ok');
+        window.plugins.spinnerDialog.hide();
     });
 }
