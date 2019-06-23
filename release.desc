@@ -1,0 +1,24 @@
+
+#### build APK:
+
+treechecker-app$ cordova build --release android
+
+#### build key:
+
+# keytool -genkey -v -keystore <keystoreName>.keystore -alias <Keystore AliasName> -keyalg <Key algorithm> -keysize <Key size> -validity <Key Validity in Days>
+
+treechecker-app/platforms/android/app/build/outputs/apk/release$ keytool -genkey -v -keystore Treechecker-mobileapps.keystore -alias Treechecker-mobileapps -keyalg RSA -keysize 2048 -validity 10000
+
+
+#### Sign the apk:
+
+#jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore <keystorename> <Unsigned APK file> <Keystore Alias name>
+
+treechecker-app/platforms/android/app/build/outputs/apk/release$ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore Treechecker-mobileapps.keystore app-release-unsigned.apk Treechecker-mobileapps
+
+### optimize the apk:
+
+sudo apt install zipalign
+
+zipalign -v 4 app-release-unsigned.apk Treechecker.apk
+

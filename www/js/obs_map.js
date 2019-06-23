@@ -79,7 +79,7 @@ function createMarker(latlng_pos) {
         marker = new L.marker(latlng_pos, {draggable:'true'});
         var icon = marker.options.icon;
         icon.options.iconSize   = [40, 60];
-        icon.options.iconAnchor = [30, 60];
+        icon.options.iconAnchor = [20, 60];
         marker.setIcon(icon);
         marker.setOpacity(0.8);
         marker.on('dragend', function(event){
