@@ -1,0 +1,18 @@
+{
+    "android": {
+        "debug": {
+            "keystore": "../Treechecker-mobileapps.keystore",
+            "storePassword": "trEEcheckerJRC2019",
+            "alias": "Treechecker-mobileapps",
+            "password" : "trEEcheckerJRC2019",
+            "keystoreType": ""
+        },
+        "release": {
+            "keystore": "../Treechecker-mobileapps.keystore",
+            "storePassword": "trEEcheckerJRC2019",
+            "alias": "Treechecker-mobileapps",
+            "password" : "trEEcheckerJRC2019",
+            "keystoreType": ""
+        }
+    }
+}

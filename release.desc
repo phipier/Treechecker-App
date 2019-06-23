@@ -2,6 +2,8 @@
 #### build APK:
 
 treechecker-app$ cordova build --release android
+cordova build --debug android --buildconfig=build.json --device
+cordova build --release android --buildconfig=build.json --device
 
 #### build key:
 
