@@ -21,7 +21,7 @@
     <form id="AOI-form" novalidate>
         <div class="form-group">
             <label for="InputAOIname">Name</label>
-            <input type="name" class="form-control" id="InputAOIname" aria-describedby="emailHelp" placeholder="Enter AOI name" required>
+            <input type="name" class="form-control" id="InputAOIname" pattern="^[a-z|A-Z]+$" aria-describedby="emailHelp" placeholder="Enter AOI name" required>
             <div class="invalid-feedback">
                 Please provide a name for the AOI.
             </div>
@@ -35,13 +35,25 @@
                 <label for="InputforceRedld">Force tiles re-download</label-->
             </div>            
             <label for="Inputxmin">longitude min</label>
-            <input type="bbox" class="form-control" id="Inputxmin" placeholder="Enter longitude min" onkeypress="return isNumberKey(event)" required>
+            <input type="bbox" class="form-control" id="Inputxmin" pattern="^-?([1][0-7][0-9]|[1-9][0-9]|[0-9])(\.\d*)?$" title="decimal degrees (-180 to 180)"  placeholder="Enter longitude min" onkeypress="return isNumberKey(event)" required>
+            <div class="invalid-feedback">
+                Please provide a longitude min in decimal degrees (-180 to 180)
+            </div>
             <label for="Inputxmax">longitude max</label>
-            <input type="bbox" class="form-control" id="Inputxmax" placeholder="Enter longitude max" onkeypress="return isNumberKey(event)" required>
+            <input type="bbox" class="form-control" id="Inputxmax" pattern="^-?([1][0-7][0-9]|[1-9][0-9]|[0-9])(\.\d*)?$" title="decimal degrees (-180 to 180)"  placeholder="Enter longitude max" onkeypress="return isNumberKey(event)" required>
+            <div class="invalid-feedback">
+                Please provide a longitude max in decimal degrees (-180 to 180)
+            </div>
             <label for="Inputymax">latitude min</label>
-            <input type="bbox" class="form-control" id="Inputymax" placeholder="Enter latitude min" onkeypress="return isNumberKey(event)" required>
+            <input type="bbox" class="form-control" id="Inputymax" pattern="^-?([1-8][0-9]|[0-9])(\.\d*)?$" title="decimal degrees (-90 to 90)" placeholder="Enter latitude min" onkeypress="return isNumberKey(event)" required>
+            <div class="invalid-feedback">
+                Please provide a latitude min in decimal degrees (-90 to 90)
+            </div>
             <label for="Inputymin">latitude max</label>
-            <input type="bbox" class="form-control" id="Inputymin" placeholder="Enter latitude max" onkeypress="return isNumberKey(event)" required>            
+            <input type="bbox" class="form-control" id="Inputymin" pattern="^-?([1-8][0-9]|[0-9])(\.\d*)?$" title="decimal degrees (-90 to 90)" placeholder="Enter latitude max" onkeypress="return isNumberKey(event)" required>            
+            <div class="invalid-feedback">
+                Please provide a latitude min in decimal degrees (-90 to 90)
+            </div>
             <!--small id="bboxhelp" class="form-text text-muted">boundaries in WSG84, format is xmin:xmax:ymin:ymax</small-->
         </div>
         <hr>

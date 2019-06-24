@@ -137,9 +137,7 @@ function add_AOI(aoiname, bbox) {
             data: aoi_data,
             success : function(val) { 
                 window.sessionStorage.setItem("id_aoi",val.key);             
-                insert_AOI(val, id_region);
-                // download tiles            
-                downloadTiles(val.key, bbox);
+                insert_AOI(val, bbox, id_region);
             },
             error : function(req, status, error) {
                 if ($.parseJSON(req.responseText).detail == "Signature has expired.") {
@@ -172,7 +170,7 @@ function add_AOI(aoiname, bbox) {
     }
 }
 
-function insert_AOI(val, id_region) {
+function insert_AOI(val, bbox, id_region) {
     db.transaction(function(tx) {
         var sqlstr = 
             "REPLACE INTO aoi(id, name, x_min, x_max, y_min, y_max, geographical_zone_id) "
@@ -180,7 +178,12 @@ function insert_AOI(val, id_region) {
             +           val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+ ","
             +           id_region+")";
 
-        tx.executeSql(sqlstr);
+        tx.executeSql(sqlstr, [], function (tx, res) {            
+            downloadTiles(val.key, bbox);
+        },
+        function (tx, error) {
+            console.log('REPLACE INTO aoi error: ' + error.message);
+        });      
 
     }, function(error) {
         if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {

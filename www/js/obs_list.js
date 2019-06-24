@@ -15,10 +15,14 @@ var listObs = {
                     var html = '<ul class="list-group">';
                     for(var x = 0; x < res.rows.length; x++) {
                         var id_obs = res.rows.item(x).id;
-                        html += '<li class="list-group-item">'
-                        + '<h5>' + res.rows.item(x).name + '</h5>'
-                        + '<a id="edit_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-edit fa-2x white"></i></a>'
-                        + '<a id="dele_idobs_'+id_obs+'" class="btn button button-navbar m-2"><i class="fas fa-trash fa-2x white"></i></a>'
+                        html += '<li class="list-group-item" py-2>'
+                        + '<div class="obstitle alignleft">'
+                        +   '<h5>' + res.rows.item(x).name + '</h5>'
+                        + '</div>'
+                        + '<div class="alignright">'
+                        +   '<a id="edit_idobs_'+id_obs+'" class="btn button button-listitem m-2"><i class="fas fa-edit fa-2x white"></i></a>'
+                        +   '<a id="dele_idobs_'+id_obs+'" class="btn button button-listitem m-2"><i class="fas fa-trash fa-2x white"></i></a>'
+                        + '</div>'
                         + '</li>';
                     }
                     html += "</ul>";
@@ -272,7 +276,7 @@ var listObs = {
             var sendPhotos = serverids.map(serverid => sendPhotoforObs(serverid));
             return Promise.all(sendPhotos);
         }, (value) => {handleError(value);})
-/*         .then((values) => {
+         .then((values) => {
             console.log("photos sent.");  
             console.log(values);
             console.log("deleting photos ... ")             
@@ -280,7 +284,7 @@ var listObs = {
         }, (value) => {
             displayMessage("Error - It was not possible to update the remote DB.",()=>{});
             handleError(value);
-        }) */
+        }) 
         .then(() => {
             console.log("photos sent");
             console.log("deleting obs ... ")             

@@ -26,25 +26,25 @@
                 <br><span>or provide coordinates (in decimal degrees):</span><br>
             </div>
             <label for="Inputlatitude">Latitude</label>
-            <input class="form-control" id="Inputlatitude" placeholder="Enter latitude" onkeypress="return isNumberKey(event)" required>
+            <input class="form-control" id="Inputlatitude" pattern="^-?([1-8][0-9]|[0-9])(\.\d*)?$" title="decimal degrees (-90 to 90)" placeholder="Enter latitude" required>
             <div class="invalid-feedback">
-                Please provide a latitude.
+                Please provide a latitude in decimal degrees (-90 to 90)
             </div>
             <label for="Inputlongitude">Longitude</label>
-            <input class="form-control" id="Inputlongitude" placeholder="Enter longitude" onkeypress="return isNumberKey(event)" required>
+            <input class="form-control" id="Inputlongitude" pattern="^-?([1][0-7][0-9]|[1-9][0-9]|[0-9])(\.\d*)?$" title="decimal degrees (-180 to 180)"  placeholder="Enter longitude" onkeypress="return isNumberKey(event)" required>
             <div class="invalid-feedback">
-                Please provide a longitude.
+                Please provide a longitude in decimal degrees (-180 to 180)
             </div>
         </div>
         <hr>
         <div class="form-group">
             <label for="InputOBSname">Name</label>
-            <input type="text" class="form-control" id="InputOBSname" aria-describedby="emailHelp" placeholder="Enter name" required>
+            <input type="text" class="form-control" id="InputOBSname"  pattern="^[a-z|A-Z|0-9]+$" aria-describedby="emailHelp" placeholder="Enter name" required>
             <div class="invalid-feedback">
-                Please provide a name for this observation.
+                Please provide a name for this observation (letters/numbers only, no space).
             </div>
             <label for="InputOBScomment">Comment</label>
-            <input type="text" class="form-control" id="InputOBScomment" aria-describedby="emailHelp" placeholder="Enter comment" required>
+            <input type="text" class="form-control" id="InputOBScomment"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="Enter comment" required>
             <div class="invalid-feedback">
                 Please provide a comment for this observation.
             </div>

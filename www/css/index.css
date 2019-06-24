@@ -104,6 +104,24 @@ h1 {
     font-size:16px;
 }
 
+.button-listitem {
+    background-color:#8BC34A;   
+    padding:10px 15px;
+    font-size:12px;
+}
+
+.alignleft {
+    float: left;    
+}
+
+.obstitle {
+    padding: 15px;  
+}
+
+.alignright {
+    float: right;   
+}
+
 .button-bottom {
     margin-top:50px;
 }

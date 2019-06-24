@@ -46,8 +46,7 @@ function loadMap() {
             console.error(e);
     });
 
-    controlLayers = null;
-    geojsonLayer = null;
+    controlLayers = {};
     overlays = {};
 
     addMapControls();
@@ -58,10 +57,11 @@ function loadMap() {
     var bounds = L.latLngBounds(corner1, corner2);
     mymap.fitBounds(bounds);
     L.rectangle(bounds, {color: 'blue', fillOpacity: 0}).addTo(mymap);
-
     
     //initLayers();
+    addOnlineWMSLayers(LayerDefinitions);
     addOfflineWMSLayers(id_AOI, LayerDefinitions);
+    
     addMyObservations(id_AOI, obs_id);
 
     mymap.on('click', (e) => {
@@ -126,9 +126,40 @@ function addOfflineWMSLayers(id_AOI, LayerDefinitions) {
 
         mymap.addLayer(ll_layer);
         if(controlLayers)
-            controlLayers.addOverlay(ll_layer, layer.name);
+            controlLayers.addOverlay(ll_layer, "Offline_"+layer.name);
         else
-            overlays[layer.name] = ll_layer;
+            overlays[layer.name] = "Offline_"+ll_layer;
+    }
+}
+
+function addOnlineWMSLayers(LayerDefinitions) {     
+    for(let baselayer of LayerDefinitions.BASE_WMS) { 
+        var ll_baselayer = L.tileLayer(         baselayer.url, {
+                                attribution:    baselayer.attribution,
+                                maxZoom:        Number(baselayer.maxZoom)            
+        });
+        ll_baselayer.addTo(mymap);
+        if(controlLayers)
+            controlLayers.addBaseLayer(ll_baselayer, baselayer.layerName);
+        else
+            baseMaps[baselayer.name] = ll_baselayer;
+    }
+
+    for(let WMSlayer of LayerDefinitions.DL_WMS) {
+        var ll_layer = L.tileLayer.wms(    
+            WMSlayer.url, {
+                layers:         WMSlayer.layers,
+                transparent:    WMSlayer.transparent,
+                format:         WMSlayer.format,
+                maxZoom:        Number(WMSlayer.maxZoom)//,
+                //maxNativeZoom:  WMSlayer.maxNativeZoom
+        });
+        ll_layer.addTo(mymap);
+
+        if(controlLayers)
+            controlLayers.addOverlay(ll_layer, "Online_"+WMSlayer.name);
+        else
+            overlays["Online_"+WMSlayer.name] = ll_layer;
     }
 }
 
@@ -183,14 +214,14 @@ function addMyObservations(id_aoi, id_obs) {
                 mymap.removeLayer(gjson_layer);
             }
 
-            var gjsonMarkerOptions = {
+            /* var gjsonMarkerOptions = {
                 radius: 8,
                 fillColor: "#ff7800",
                 color: "#000",
                 weight: 1,
                 opacity: 1,
                 fillOpacity: 0.8
-            };
+            }; */
 
             var redIcon = L.icon({
                 iconUrl: 'file:///android_asset/www/lib/images/marker-red-small.png',                           
@@ -258,7 +289,7 @@ function addMyObservations(id_aoi, id_obs) {
 }
 
 function addMapControls() {
-    controlLayers = new L.control.layers({}, overlays, {sortLayers: true, hideSingleBase: true});
+    controlLayers = new L.control.layers({}, overlays, {sortLayers: false, hideSingleBase: false});
     controlLayers.addTo(mymap);
     mymap.addControl(new customControl());
     L.control.scale().addTo(mymap);

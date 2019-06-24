@@ -10,8 +10,8 @@ function openDb() {
 function createTables() {
     
     var sqlstr; 
-    sqlstr = "DROP TABLE IF EXISTS geographicalzone;"
-    runSQL(sqlstr);
+    //sqlstr = "DROP TABLE IF EXISTS geographicalzone;"
+    //runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS geographicalzone "
             + "(id integer primary key, name varchar(255) not null, wms_url varchar(255) not null, "
             + "x_min double precision not null, x_max double precision not null, "
@@ -29,8 +29,8 @@ function createTables() {
             + "owner_id integer);"
 
     runSQL(sqlstr);   
-    sqlstr = "DROP TABLE IF EXISTS surveydata;"
-    runSQL(sqlstr); 
+    //sqlstr = "DROP TABLE IF EXISTS surveydata;"
+    //runSQL(sqlstr); 
     sqlstr = "CREATE TABLE IF NOT EXISTS surveydata"
             + " (id integer primary key, name varchar(255) not null,"
             + " id_tree_species integer not null        REFERENCES treespecies(id)      ON UPDATE CASCADE, "
@@ -41,16 +41,16 @@ function createTables() {
             + " latitude double precision not null);"
 
     runSQL(sqlstr);
-    sqlstr = "DROP TABLE IF EXISTS photo;"
-    runSQL(sqlstr);
+    //sqlstr = "DROP TABLE IF EXISTS photo;"
+    //runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS photo "
             +   "(id integer primary key, "
             +   "id_surveydata integer not null REFERENCES surveydata(id) ON DELETE CASCADE, "
             +   "compass double precision, image text not null);"
 
     runSQL(sqlstr);
-    sqlstr = "DROP TABLE IF EXISTS treespecies;"
-    runSQL(sqlstr);
+    //sqlstr = "DROP TABLE IF EXISTS treespecies;"
+    //runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS treespecies (id integer primary key, name varchar(100) not null);"
     runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS crowndiameter (id integer primary key, name varchar(100) not null);"
