@@ -15,14 +15,12 @@ var listObs = {
                     var html = '<ul class="list-group">';
                     for(var x = 0; x < res.rows.length; x++) {
                         var id_obs = res.rows.item(x).id;
-                        html += '<li class="list-group-item" py-2>'
-                        + '<div class="obstitle alignleft">'
-                        +   '<h5>' + res.rows.item(x).name + '</h5>'
-                        + '</div>'
-                        + '<div class="alignright">'
-                        +   '<a id="edit_idobs_'+id_obs+'" class="btn button button-listitem m-2"><i class="fas fa-edit fa-2x white"></i></a>'
-                        +   '<a id="dele_idobs_'+id_obs+'" class="btn button button-listitem m-2"><i class="fas fa-trash fa-2x white"></i></a>'
-                        + '</div>'
+                        html += '<li class="list-group-item d-flex align-items-center py-1">'
+                        + '<div class="mr-auto p-1"><h5>' + res.rows.item(x).name + '</h5></div>'                       
+                        +   '<div class="p-1"><a id="edit_idobs_'+id_obs+'" class="btn button button-listitem">'
+                        +       '<i class="fas fa-edit fa-2x white"></i></a></div>'
+                        +   '<div class="p-1"><a id="dele_idobs_'+id_obs+'" class="btn button button-listitem">'
+                        +       '<i class="fas fa-trash fa-2x white"></i></a></div>'
                         + '</li>';
                     }
                     html += "</ul>";
@@ -129,7 +127,7 @@ var listObs = {
             });
         };
 
-        var deletePhotos = function(resolve, reject) {
+        var deletePhotos = function() {
             return new Promise(function(resolve, reject) {
                 db.transaction(function (tx) {
                     var id_aoi = window.sessionStorage.getItem("id_aoi");
@@ -148,7 +146,7 @@ var listObs = {
             });
         };
 
-        var deleteObservations = function(resolve, reject) {
+        var deleteObservations = function() {
             return new Promise(function(resolve, reject) {
                 db.transaction(function (tx) {
                     var id_aoi = window.sessionStorage.getItem("id_aoi");

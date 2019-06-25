@@ -74,10 +74,10 @@ var listAOI = {
             window.sessionStorage.setItem("id_aoi", "");
             window.sessionStorage.setItem("aoiname", "");
 
-            // window.sessionStorage.setItem("bbox_ymin", "39.784352364601");
-            // window.sessionStorage.setItem("bbox_ymax", "39.783579888405");
-            // window.sessionStorage.setItem("bbox_xmin", "-7.6377547801287");
-            // window.sessionStorage.setItem("bbox_xmax", "-7.63670469529");
+            window.sessionStorage.removeItem("bbox_ymin");
+            window.sessionStorage.removeItem("bbox_ymax");
+            window.sessionStorage.removeItem("bbox_xmin");
+            window.sessionStorage.removeItem("bbox_xmax");
  
             window.location = 'aoi_form.html';
             return false;
@@ -99,21 +99,14 @@ function onBackKeyDown() {
 }
 
 function delete_aoi(id_aoi) {   
-
-    if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {
-        $("#messagepopupdata>p").html("");
-    }
-    var message = "All observations of this AOI will be deleted. Do you want to proceed anyway?";
-    $("#messagepopupdata").prepend("<p><i class='fas'></i> " + message + "</p>");
-    $('#messagepopup').modal('show');   
-    $("#ok_sent").click(function(){
-        $("#messagepopup").modal("hide");
-        delete_aoi_fromDB(id_aoi);        
-    });
-    $("#cancel_sent").click(function(){
-        $("#messagepopup").modal("hide");
-    });
-
+    displayMessage2("All observations of this AOI will be deleted. Do you want to proceed anyway?",
+        ()=>{
+            $("#messagepopup").modal("hide");
+            delete_aoi_fromDB(id_aoi);        
+        }),
+        ()=>{
+            $("#messagepopup").modal("hide");
+        }
 }
 
 /*  TO DO later ... not a priority

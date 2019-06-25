@@ -49,12 +49,19 @@ function createTables() {
             +   "compass double precision, image text not null);"
 
     runSQL(sqlstr);
-    //sqlstr = "DROP TABLE IF EXISTS treespecies;"
-    //runSQL(sqlstr);
-    sqlstr = "CREATE TABLE IF NOT EXISTS treespecies (id integer primary key, name varchar(100) not null);"
+
+    /* sqlstr = "DROP TABLE IF EXISTS treespecies;"
+    runSQL(sqlstr); */
+    sqlstr = "CREATE TABLE IF NOT EXISTS treespecies (id integer primary key, name varchar(100) not null UNIQUE);"
     runSQL(sqlstr);
-    sqlstr = "CREATE TABLE IF NOT EXISTS crowndiameter (id integer primary key, name varchar(100) not null);"
+/* 
+    sqlstr = "DROP TABLE IF EXISTS crowndiameter;"
+    runSQL(sqlstr); */
+    sqlstr = "CREATE TABLE IF NOT EXISTS crowndiameter (id integer primary key, name varchar(100) not null UNIQUE);"
     runSQL(sqlstr);
+/* 
+    sqlstr = "DROP TABLE IF EXISTS canopystatus;"
+    runSQL(sqlstr); */
     sqlstr = "CREATE TABLE IF NOT EXISTS canopystatus (id integer primary key, name varchar(100) not null);"
     runSQL(sqlstr);
 }
@@ -74,8 +81,46 @@ function runSQL(query) {
     });
 }
 
+function runSQL2(query) {
+    return new Promise(function(resolve, reject) {
+        db.transaction(function (tx) {       
+            tx.executeSql(query, [], function (tx, res) {            
+                resolve()
+            },
+            function (tx, error) {                
+                reject("transaction error " + error.message);
+            });
+        }, function (error) {
+            reject(error.message);
+        }, function () {            
+        });
+    });
+}
+
 function delete_aoi_fromDB(id_aoi) {
-    var token = window.sessionStorage.getItem("token");    
+
+    var handleError = function(value) {
+        console.log("error message : " + value); 
+        displayMessage("Error - "+value,()=>{});       
+        return Promise.reject(value);      
+    };
+
+    window.plugins.spinnerDialog.show("Deleting AOI ...");
+
+    runSQL2('DELETE FROM photo where id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ');')
+    .then(() => {                     
+        return runSQL2('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';');
+    }, (value) => {handleError(value);}) 
+    .then(() => {
+        return runSQL2('DELETE FROM aoi WHERE id = ' + id_aoi + ';');
+    }, (error) => {handleError(error);})          
+    .catch(function(error) {console.log(error);})
+    .finally(function() {        
+        window.plugins.spinnerDialog.hide();
+        displayMessage("AOI deleted.",()=>{window.location = "obs_list.html";});        
+    });
+}
+
     /* we want to keep the AOI in the remote DB 
     $.ajax({
         method : 'DELETE',
@@ -83,7 +128,8 @@ function delete_aoi_fromDB(id_aoi) {
         url : SERVERURL + '/api/aois/' + id_aoi,
         beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
         success : function(reg) {
-            console.log("DELETE AOI success.") */
+            console.log("DELETE AOI success.") 
+            
             db.transaction(function(tx) {
                 // add DB contraint on observation?
                 var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
@@ -97,7 +143,7 @@ function delete_aoi_fromDB(id_aoi) {
                 window.plugins.spinnerDialog.hide();    
                 window.location = 'aoi_list.html';
             });  
-        /* },
+         },
         error : function(req, status, error) {
             window.plugins.spinnerDialog.hide();
             console.log("could not delete AOI from remote server.");
@@ -107,4 +153,3 @@ function delete_aoi_fromDB(id_aoi) {
             console.log("DELETE AOI complete. " + textStatus);
         }
     });     */      
-}
