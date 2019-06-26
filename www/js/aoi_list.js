@@ -64,11 +64,6 @@ var listAOI = {
                 window.plugins.spinnerDialog.hide();              
             }
         );
-    },
-    onOnline: function() {
-        $('.add_aoi').show();
-        $('.edit_aoi').show();
-
         $("#addAOI").click( function(e) {
             e.preventDefault();
             window.sessionStorage.setItem("id_aoi", "");
@@ -83,8 +78,12 @@ var listAOI = {
             return false;
         });
     },
+    onOnline: function() {          
+        $('#addAOI').show();
+        $('.edit_aoi').show();
+    },
     onOffline: function() {
-        $('.add_aoi').hide();
+        $('#addAOI').hide();
         $('.edit_aoi').hide();
     },
     // Update DOM on a Received Event
