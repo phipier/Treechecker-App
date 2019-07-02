@@ -16,8 +16,11 @@ var listObs = {
                     for(var x = 0; x < res.rows.length; x++) {
                         var id_obs = res.rows.item(x).id;
                         html += '<li class="list-group-item d-flex align-items-center py-1">'
-                        + '<div class="mr-auto p-1"><h5>' + res.rows.item(x).name + '</h5></div>'                       
-                        +   '<div class="p-1"><a id="edit_idobs_'+id_obs+'" class="btn button button-listitem">'
+                        + '<div class="mr-auto p-1"><h5>' + res.rows.item(x).name + '</h5></div>';                        
+                        if (res.rows.item(x).uploaded === "1") {
+                            html += '<div class="p-1"><i class="fas fa-cloud-upload-alt fa-2x white"></i></div>'
+                        }
+                        html += '<div class="p-1"><a id="edit_idobs_'+id_obs+'" class="btn button button-listitem">'
                         +       '<i class="fas fa-edit fa-2x white"></i></a></div>'
                         +   '<div class="p-1"><a id="dele_idobs_'+id_obs+'" class="btn button button-listitem">'
                         +       '<i class="fas fa-trash fa-2x white"></i></a></div>'
@@ -73,11 +76,14 @@ var listObs = {
             $('.overlay').toggleClass('active');
         });
 
-        $('#syncobs').on('click', function() {
-            if ($('[id^=edit_idobs_]').length != 0) {
-                window.plugins.spinnerDialog.show(null, "uploading survey data ...");
-                listObs.syncObservations();
-            }
+        $('#syncobs').on('click', function() {            
+            window.plugins.spinnerDialog.show(null, "uploading survey data ...");
+            listObs.syncObservations();
+        });
+        
+        $('#deleteobs').on('click', function() {
+            window.plugins.spinnerDialog.show(null, "deleting survey data ...");
+            listObs.deleteOBS();
         });
     },
     onOnline: function() {
@@ -99,7 +105,7 @@ var listObs = {
         var getObservations = function(resolve, reject) {
             db.transaction(function (tx) {
                 var id_aoi = window.sessionStorage.getItem("id_aoi");
-                tx.executeSql('SELECT * FROM surveydata where id_aoi = ' + id_aoi + ';', [], function (tx, res) {       
+                tx.executeSql('SELECT * FROM surveydata where id_aoi = ' + id_aoi + ' and uploaded = 0;', [], function (tx, res) {       
                     var a_obs = [];                        
                     for(var x = 0; x < res.rows.length; x++) {
                         var obs = {};
@@ -127,44 +133,6 @@ var listObs = {
             });
         };
 
-        var deletePhotos = function() {
-            return new Promise(function(resolve, reject) {
-                db.transaction(function (tx) {
-                    var id_aoi = window.sessionStorage.getItem("id_aoi");
-                    tx.executeSql('DELETE FROM photo where id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ');', [], function (tx, res) {       
-                        resolve();
-                    },
-                    function (tx, error) {
-                        console.log('EXEC SQL : DELETE photos error: ' + error.message);
-                        reject(error.message);
-                    });  
-                },
-                function (tx, error) {
-                    console.log('TRANSAC : DELETE photos error: ' + error.message);
-                    reject(error.message);
-                }); 
-            });
-        };
-
-        var deleteObservations = function() {
-            return new Promise(function(resolve, reject) {
-                db.transaction(function (tx) {
-                    var id_aoi = window.sessionStorage.getItem("id_aoi");
-                    tx.executeSql('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';', [], function (tx, res) {       
-                        resolve();
-                    },
-                    function (tx, error) {
-                        console.log('EXEC SQL : DELETE observations error: ' + error.message);
-                        reject(error.message);
-                    });  
-                },
-                function (tx, error) {
-                    console.log('TRANSAC : DELETE observations error: ' + error.message);
-                    reject(error.message);
-                }); 
-            });
-        };
-
         var sendObservation = function (obs) {            
             return new Promise(function(resolve, reject) {
                 var data = '{"name" :"' + obs.name
@@ -186,13 +154,28 @@ var listObs = {
                     },
                     processData: false,
                     data: data,
-                    success: r => {                        
+                    success: r => {                                               
                         resolve({id:r.key, lid:obs.id});
                     },
                     error: function(req, status, error) {                        
                         reject(error);                        
                     }
                 });
+            }).then(function(values){
+                db.transaction(function (tx) {
+                    var id_aoi = window.sessionStorage.getItem("id_aoi");
+                    tx.executeSql('UPDATE surveydata SET uploaded = 1 where id = ' + values.lid + ';', [], function (tx, res) {       
+                        resolve(values);
+                    },
+                    function (tx, error) {
+                        console.log('EXEC SQL : UPDATE surveydata error: ' + error.message);
+                        reject(error.message);
+                    });  
+                },
+                function (tx, error) {
+                    console.log('TRANSAC : UPDATE surveydata  error: ' + error.message);
+                    reject(error.message);
+                });                 
             });
         };
 
@@ -240,7 +223,7 @@ var listObs = {
                 });
             });
         } 
-        
+       
         /*
         function delay() {
             return new Promise(resolve => setTimeout(resolve, 300));
@@ -273,24 +256,7 @@ var listObs = {
             console.log(serverids);  
             var sendPhotos = serverids.map(serverid => sendPhotoforObs(serverid));
             return Promise.all(sendPhotos);
-        }, (value) => {handleError(value);})
-         .then((values) => {
-            console.log("photos sent.");  
-            console.log(values);
-            console.log("deleting photos ... ")             
-            return deletePhotos();
-        }, (value) => {
-            displayMessage("Error - It was not possible to update the remote DB.",()=>{});
-            handleError(value);
-        }) 
-        .then(() => {
-            console.log("photos sent");
-            console.log("deleting obs ... ")             
-            return deleteObservations();
-        }, (value) => {
-            displayMessage("Error - It was not possible to delete photos.",()=>{});
-            handleError(value);
-        })
+        }, (value) => {handleError(value);})         
         .then(() => {
             console.log("observations deleted");
             displayMessage("Remote database updated.",()=>{});                          
@@ -310,6 +276,77 @@ var listObs = {
             window.location = "obs_list.html";
         });
     },
+
+    // Update DOM on a Received Event
+    deleteOBS: function(id) {
+
+        var deletePhotos = function() {
+            return new Promise(function(resolve, reject) {
+                db.transaction(function (tx) {
+                    var id_aoi = window.sessionStorage.getItem("id_aoi");
+                    tx.executeSql('DELETE FROM photo where id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ' and uploaded = 1);', [], function (tx, res) {       
+                        resolve();
+                    },
+                    function (tx, error) {
+                        console.log('EXEC SQL : DELETE photos error: ' + error.message);
+                        reject(error.message);
+                    });  
+                },
+                function (tx, error) {
+                    console.log('TRANSAC : DELETE photos error: ' + error.message);
+                    reject(error.message);
+                }); 
+            });
+        };
+
+        var deleteObservations = function() {
+            return new Promise(function(resolve, reject) {
+                db.transaction(function (tx) {
+                    var id_aoi = window.sessionStorage.getItem("id_aoi");
+                    tx.executeSql('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';', [], function (tx, res) {       
+                        resolve();
+                    },
+                    function (tx, error) {
+                        console.log('EXEC SQL : DELETE observations error: ' + error.message);
+                        reject(error.message);
+                    });  
+                },
+                function (tx, error) {
+                    console.log('TRANSAC : DELETE observations error: ' + error.message);
+                    reject(error.message);
+                }); 
+            });
+        };
+
+        deletePhotos().then(() => {
+            console.log("Photos deleted ... ")             
+            console.log("deleting obs ... ")             
+            return deleteObservations();
+        }, (value) => {
+            displayMessage("Error - It was not possible to delete photos.",()=>{});
+            handleError(value);
+        })
+        .then(() => {
+            console.log("observations deleted ... ") 
+        }, (value) => {
+            displayMessage("Error - It was not possible to delete observations.",()=>{});
+            handleError(value);
+        })
+        .catch(function(error) {
+            console.log(error);            
+        })
+        .finally(function() { 
+            $('#sidebar').toggleClass('active');
+            $('.overlay').toggleClass('active');
+            console.log("finally");
+            window.plugins.spinnerDialog.hide();
+            displayMessage("observations deleted.",()=>{});       
+            window.location = "obs_list.html";
+        });
+    },
+
+    }
+
     // Update DOM on a Received Event
     receivedEvent: function(id) {
     }
@@ -334,6 +371,7 @@ function edit_obs(id_obs) {
                 window.sessionStorage.setItem("obs_id_canopy_status",   res.rows.item(0).id_canopy_status);
                 window.sessionStorage.setItem("obs_latitude",           res.rows.item(0).latitude);
                 window.sessionStorage.setItem("obs_longitude",          res.rows.item(0).longitude);
+                window.sessionStorage.setItem("obs_uploaded",           res.rows.item(0).uploaded);
             }, function (tx, error) {
                 console.log('SELECT observation error: ' + error.message);
             });

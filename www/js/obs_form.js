@@ -61,9 +61,9 @@ function insert_OBS(obs) {
     db.transaction(function(tx) {
         var sqlstr = 
             "REPLACE INTO surveydata(id, name, id_aoi, id_tree_species, id_crown_diameter, "
-            + "id_canopy_status, comment, longitude, latitude) "
-            + "VALUES(" + obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
-            + obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ");";
+            + "id_canopy_status, comment, longitude, latitude, uploaded) "
+            + "VALUES(" +   obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
+            +               obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ",0);";
 
         tx.executeSql(sqlstr, [], function(tx, results) {
                 var obsid = results.insertId;
@@ -114,6 +114,7 @@ function setWSitems() {
 
 function getWSitems() {
     var obs = {};
+    obs.uploaded =          window.sessionStorage.getItem("obs_uploaded");
     obs.name =              window.sessionStorage.getItem("obs_name");
     obs.comment =           window.sessionStorage.getItem("obs_comment");
     obs.id_tree_species =   window.sessionStorage.getItem("obs_id_tree_species");
@@ -124,8 +125,14 @@ function getWSitems() {
     obs.id_aoi =            window.sessionStorage.getItem("id_aoi");
     obs.id =                window.sessionStorage.getItem("obs_id");    
 
-    if ((obs.id == null) || (obs.id == '')) {
+    if (!obs.id) {
         obs.id = "NULL";
+    }
+    if (!obs.id_tree_species) {
+        obs.id_tree_species = "NULL";
+    }
+    if (!obs.id_crown_diameter) {
+        obs.id_crown_diameter = "NULL";
     }
 
     var photo = {};
@@ -214,12 +221,13 @@ function init_form() {
         $("#InputSelectCrown").val(obs.id_crown_diameter);
         $("#InputSelectStatus").val(obs.id_canopy_status);
         $("#Inputlatitude").val(obs.latitude);
-        $("#Inputlongitude").val(obs.longitude);
+        $("#Inputlongitude").val(obs.longitude);        
         //$("#Inputcompass").val(obs.photo.compass);
         if (obs.photo.image) {
             $('#preview_text').remove();
             document.getElementById('image').src = obs.photo.image;
         }
+        if (obs.uploaded == "1") { $("#saveobs").hide(); }
         window.plugins.spinnerDialog.hide();
     });
 };

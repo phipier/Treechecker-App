@@ -33,12 +33,13 @@ function createTables() {
     //runSQL(sqlstr); 
     sqlstr = "CREATE TABLE IF NOT EXISTS surveydata"
             + " (id integer primary key, name varchar(255) not null,"
-            + " id_tree_species integer not null        REFERENCES treespecies(id)      ON UPDATE CASCADE, "
-            + " id_crown_diameter integer not null      REFERENCES crowndiameter(id)    ON UPDATE CASCADE, "
+            + " id_tree_species integer                 REFERENCES treespecies(id)      ON UPDATE CASCADE, "
+            + " id_crown_diameter integer               REFERENCES crowndiameter(id)    ON UPDATE CASCADE, "
             + " id_canopy_status integer not null       REFERENCES canopystatus(id)     ON UPDATE CASCADE, "
             + " comment text, id_aoi integer not null   REFERENCES aoi(id)              ON UPDATE CASCADE ON DELETE CASCADE, "
             + " longitude double precision not null, "
-            + " latitude double precision not null);"
+            + " latitude double precision not null,"
+            + " uploaded integer);"
 
     runSQL(sqlstr);
     //sqlstr = "DROP TABLE IF EXISTS photo;"
@@ -120,6 +121,8 @@ function delete_aoi_fromDB(id_aoi) {
         displayMessage("AOI deleted.",()=>{window.location = "obs_list.html";});        
     });
 }
+
+
 
     /* we want to keep the AOI in the remote DB 
     $.ajax({
