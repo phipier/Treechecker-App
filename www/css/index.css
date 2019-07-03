@@ -133,6 +133,10 @@ h1 {
     color: white;
 }
 
+.green {
+    color:#8BC34A;
+ }
+
 .trckapp-navbar {
     background-color:#8BC34A;
     min-height:64px;

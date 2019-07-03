@@ -41,7 +41,9 @@ function onBackKeyDown() {
 }
 
 function cancel_OBS() {
-    displayMessage("OBS creation/editing canceled.", function() {clearWSitems(); window.location = "obs_list.html";});
+    //displayMessage("OBS creation/editing canceled.", function() {clearWSitems(); window.location = "obs_list.html";});
+    clearWSitems(); 
+    window.location = "obs_list.html";
 }
 
 $("#saveobs").click( function(e) {
@@ -128,10 +130,10 @@ function getWSitems() {
     if (!obs.id) {
         obs.id = "NULL";
     }
-    if (!obs.id_tree_species) {
+    if (!obs.id_tree_species || obs.id_tree_species==="undefined") {
         obs.id_tree_species = "NULL";
     }
-    if (!obs.id_crown_diameter) {
+    if (!obs.id_crown_diameter || obs.id_crown_diameter==="undefined") {
         obs.id_crown_diameter = "NULL";
     }
 
@@ -162,8 +164,10 @@ function clearWSitems() {
     window.sessionStorage.removeItem("obs_latitude");
     window.sessionStorage.removeItem("obs_longitude");
     window.sessionStorage.removeItem("photo_id");
+    window.sessionStorage.removeItem("obs_uploaded");
     //window.sessionStorage.removeItem("photo_compass");
     window.sessionStorage.removeItem("photo_image");
+    
 }
 
 function init_form() {
@@ -227,7 +231,7 @@ function init_form() {
             $('#preview_text').remove();
             document.getElementById('image').src = obs.photo.image;
         }
-        if (obs.uploaded == "1") { $("#saveobs").hide(); }
+        if (obs.uploaded === "1") { $("#saveobs").hide(); }
         window.plugins.spinnerDialog.hide();
     });
 };

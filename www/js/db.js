@@ -28,7 +28,7 @@ function createTables() {
             + "geographical_zone_id integer not null REFERENCES geographicalzone(id), "
             + "owner_id integer);"
 
-    runSQL(sqlstr);   
+    //runSQL(sqlstr);   
     //sqlstr = "DROP TABLE IF EXISTS surveydata;"
     //runSQL(sqlstr); 
     sqlstr = "CREATE TABLE IF NOT EXISTS surveydata"
@@ -47,7 +47,14 @@ function createTables() {
     sqlstr = "CREATE TABLE IF NOT EXISTS photo "
             +   "(id integer primary key, "
             +   "id_surveydata integer not null REFERENCES surveydata(id) ON DELETE CASCADE, "
-            +   "compass double precision, image text not null);"
+            +   "compass double precision, image text not null, "
+            +   "comment);"
+
+    sqlstr = "CREATE TABLE IF NOT EXISTS photo_tmp "
+            +   "(id integer primary key, "
+            +   "id_surveydata integer not null REFERENCES surveydata(id), "
+            +   "compass double precision, image text not null, "
+            +   "comment);"
 
     runSQL(sqlstr);
 
@@ -99,60 +106,19 @@ function runSQL2(query) {
 }
 
 function delete_aoi_fromDB(id_aoi) {
-
     var handleError = function(value) {
         console.log("error message : " + value); 
         displayMessage("Error - "+value,()=>{});       
         return Promise.reject(value);      
     };
-
     window.plugins.spinnerDialog.show("Deleting AOI ...");
-
     runSQL2('DELETE FROM photo where id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ');')
-    .then(() => {                     
-        return runSQL2('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';');
-    }, (value) => {handleError(value);}) 
-    .then(() => {
-        return runSQL2('DELETE FROM aoi WHERE id = ' + id_aoi + ';');
-    }, (error) => {handleError(error);})          
-    .catch(function(error) {console.log(error);})
+    .then((res) => { return runSQL2('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';'); }, (value) => {handleError(value);}) 
+    .then((res) => { return runSQL2('DELETE FROM aoi WHERE id = ' + id_aoi + ';'); },            (value) => {handleError(value);}) 
+    .then((res) => { console.log("AOI deleted"); },                                              (error) => {handleError(error);})         
+    .catch(function(value) {console.log(value);})
     .finally(function() {        
         window.plugins.spinnerDialog.hide();
         displayMessage("AOI deleted.",()=>{window.location = "obs_list.html";});        
     });
 }
-
-
-
-    /* we want to keep the AOI in the remote DB 
-    $.ajax({
-        method : 'DELETE',
-        crossDomain : true,
-        url : SERVERURL + '/api/aois/' + id_aoi,
-        beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
-        success : function(reg) {
-            console.log("DELETE AOI success.") 
-            
-            db.transaction(function(tx) {
-                // add DB contraint on observation?
-                var sqlstr = "DELETE FROM aoi WHERE id = " + id_aoi + ";";
-                tx.executeSql(sqlstr);
-            }, function(error) {
-                console.log('Transaction delete aoi ERROR: ' + error.message);
-            }, function() {
-                console.log('deleted AOI');
-                // delete tiles from local storage
-                deleteTiles(id_aoi);                
-                window.plugins.spinnerDialog.hide();    
-                window.location = 'aoi_list.html';
-            });  
-         },
-        error : function(req, status, error) {
-            window.plugins.spinnerDialog.hide();
-            console.log("could not delete AOI from remote server.");
-        },
-        complete : function(xhr,textStatus) {
-            window.plugins.spinnerDialog.hide();
-            console.log("DELETE AOI complete. " + textStatus);
-        }
-    });     */      
