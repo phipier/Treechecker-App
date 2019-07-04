@@ -25,7 +25,7 @@ var listObs = {
                             html += '<div class="p-1"><a id="edit_idobs_'+id_obs+'" class="btn button button-listitem">'
                                     + '<i class="fas fa-edit fa-2x white"></i></a></div>'
                         }                        
-                        html += '<div class="p-1"><a id="dele_idobs_'+id_obs+'" class="btn button button-listitem">'
+                        html += '<div class="p-1"><a id="dele_idobs_'+id_obs+'" data-uploaded="'+res.rows.item(x).uploaded+'" class="btn button button-listitem">'
                             + '<i class="fas fa-trash fa-2x white"></i></a></div>'
                             + '</li>';
                     }
@@ -40,10 +40,21 @@ var listObs = {
                     });
                     $("[id^=dele_idobs_]").click(function(e) {
                         e.preventDefault(); 
-                        var id_obs = this.id.substring(11);                        
-                        delete_obs(id_obs);
-                        $(this).closest(".list-group-item").remove();
-                        return false; 
+                        var id_obs = this.id.substring(11);  
+                        if (this.dataset.uploaded=="0") { 
+                            displayMessage2("This observation was not uploaded. Are you sure you want to delete it?",
+                            ()=>{
+                                $("#messagepopup").modal("hide");
+                                delete_obs(id_obs);       
+                            }),
+                            ()=>{
+                                $("#messagepopup").modal("hide");
+                            }         
+                            //$(this).closest(".list-group-item").remove();
+                            return false;
+                        } else {
+                            delete_obs(id_obs);  
+                        }
                     });
                     window.plugins.spinnerDialog.hide();
                 },
@@ -87,7 +98,7 @@ var listObs = {
         $('#deleteObs').on('click', function() {
             window.plugins.spinnerDialog.show(null, "deleting survey data ...");
             var id_aoi = window.sessionStorage.getItem("id_aoi");
-            listObs.deleteOBS(id_aoi);
+            listObs.deleteOBS(id_aoi);            
         });
     },
     onOnline: function() {
@@ -162,29 +173,28 @@ var listObs = {
                     },
                     processData: false,
                     data: data,
-                    success: r => {                                               
-                        resolve({id:r.key, lid:obs.id});
+                    success: r => {      
+                        db.transaction(function (tx) {
+                            var id_aoi = window.sessionStorage.getItem("id_aoi");
+                            tx.executeSql('UPDATE surveydata SET uploaded = 1 where id = ' + obs.id + ';', [], function (tx, res) {       
+                                resolve({id:r.key, lid:obs.id});
+                            },
+                            function (tx, error) {
+                                console.log('EXEC SQL : UPDATE surveydata error: ' + error);
+                                reject(error);   
+                            });  
+                        },
+                        function (tx, error) {
+                            console.log('TRANSAC : UPDATE surveydata  error: ' + error);
+                            reject(error);   
+                        });                                                  
+                        
                     },
                     error: function(req, status, error) {                        
                         reject(error);                        
                     }
                 });
-            }).then(function(values){
-                db.transaction(function (tx) {
-                    var id_aoi = window.sessionStorage.getItem("id_aoi");
-                    tx.executeSql('UPDATE surveydata SET uploaded = 1 where id = ' + values.lid + ';', [], function (tx, res) {       
-                        return Promise.resolve(values);
-                    },
-                    function (tx, error) {
-                        console.log('EXEC SQL : UPDATE surveydata error: ' + error);
-                        return Promise.reject(error);
-                    });  
-                },
-                function (tx, error) {
-                    console.log('TRANSAC : UPDATE surveydata  error: ' + error.message);
-                    return Promise.reject(error);
-                });                 
-            });
+            })
         };
 
         var sendPhotoforObs = function(obs) {
@@ -371,21 +381,31 @@ function edit_obs(id_obs) {
 }
 
 function delete_obs(id_obs) {
-    db.transaction(function(tx) {        
-        var sqlstr = "DELETE FROM surveydata WHERE id = " + id_obs + ";";
-        tx.executeSql(sqlstr);
-    }, function(error) {
-        console.log('Transaction delete obs ERROR: ' + error.message);
-    }, function() {
-        console.log('deleted obs table OK');
-    });
-    db.transaction(function(tx) {        
-        var sqlstr = "DELETE FROM photo WHERE id_surveydata = " + id_obs + ";";
-        tx.executeSql(sqlstr);
-    }, function(error) {
-        console.log('Transaction delete photo ERROR: ' + error.message);
-    }, function() {
-        console.log('deleted photo table OK');
+    window.plugins.spinnerDialog.show("deleting observation ...");
+    var handleError = function(error_message) {
+        console.log("value promise : " + error_message);
+        // display message error_message
+        return Promise.reject(error_message);      
+    };
+    runSQL2("DELETE FROM surveydata WHERE id = " + id_obs + ";")
+    .then(() => {
+        console.log("observation deleted ... ");console.log("deleting obs ... ");             
+        return runSQL2("DELETE FROM photo WHERE id_surveydata = " + id_obs + ";");
+    }, (value) => {
+        displayMessage("Error - It was not possible to delete surveydata.",()=>{});
+        handleError(value);
+    })
+    .then(() => {console.log("photos deleted ... ")}, (value) => {
+        displayMessage("Error - It was not possible to delete photos.",()=>{});
+        handleError(value);
+    })
+    .catch(function(error) {
+        console.log(error);            
+    })
+    .finally(function() {        
+        console.log("finally - delete obs");
+        window.plugins.spinnerDialog.hide();      
+        window.location = "obs_list.html";
     });
 }
 
