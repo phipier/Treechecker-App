@@ -73,19 +73,14 @@ function cancel_AOI() {
 function exit_AOI(success, message) {
     stopButtonSpinners();    
     if (success) { 
-
-        var OKfunction = function() {
-            $("#messagepopup").modal("hide"); 
+        var OKfunction = function() {            
             clearWSitems();           
             window.location = 'aoi_list.html';
         }
         l_message = "AOI created."               
 
     } else {
-
-        var OKfunction = function() {               
-            $("#messagepopup").modal("hide");        
-            // delete AOI from remote DB and local DB;
+        var OKfunction = function() {            
             var id_aoi = window.sessionStorage.getItem("id_aoi");
             delete_aoi_fromDB(id_aoi);
             clearWSitems();
@@ -186,11 +181,7 @@ function insert_AOI(val, bbox, id_region) {
         });      
 
     }, function(error) {
-        if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {
-            $("#messagepopupdata>p").html("");
-        }
-        $("#messagepopupdata").prepend("<p><i class='fas fa-exclamation-circle'></i> Error - It was not possible to add the AOI to the local DB.</p>");
-        $('#messagepopup').modal('show');
+        displayMessage("Error - It was not possible to add the AOI to the local DB");
     }, function() {
         console.log('Populated database OK');
     });

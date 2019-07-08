@@ -44,7 +44,7 @@ var listObs = {
                         if (this.dataset.uploaded=="0") { 
                             displayMessage("This observation was not uploaded. Are you sure you want to delete it?",
                                             ()=>{delete_obs(id_obs);},
-                                            ()=>{$("#messagepopup").modal("hide");});      
+                                            ()=>{});      
                             //$(this).closest(".list-group-item").remove();
                             return false;
                         } else {

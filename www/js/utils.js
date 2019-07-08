@@ -12,8 +12,20 @@ function displayMessage(message, action_OK, action_cancel) {
         $("#messagepopupdata>p").html("");
     }
     $("#messagepopupdata").prepend("<p><i class='fas'></i> " + message + "</p>");
-    $('#messagepopup').modal('show');   
-    $("#ok_sent").click(()=>{action_OK();$("#messagepopup").modal("hide");});    
-    if (typeof action_cancel === 'undefined')   {$("#cancel_sent").hide();}
-    else                                        {$("#cancel_sent").click(()=>{action_cancel();$("#messagepopup").modal("hide");});}
+    $('#messagepopup').modal('show');
+
+    $("#ok_sent").click(()=>{
+        $("#messagepopup").modal("hide");
+        action_OK();
+    });    
+
+    if (typeof action_cancel === 'undefined')   
+        {   $("#cancel_sent").hide();}
+    else                                        
+        {   
+            $("#cancel_sent").click(()=>{  
+                $("#messagepopup").modal("hide");             
+                action_cancel();
+            });
+        }
 }
