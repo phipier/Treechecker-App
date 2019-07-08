@@ -27,8 +27,7 @@ function createTables() {
             + "is_deleted varchar(5) not null DEFAULT 'false', "
             + "geographical_zone_id integer not null REFERENCES geographicalzone(id), "
             + "owner_id integer);"
-
-    //runSQL(sqlstr);   
+    runSQL(sqlstr);   
     //sqlstr = "DROP TABLE IF EXISTS surveydata;"
     //runSQL(sqlstr); 
     sqlstr = "CREATE TABLE IF NOT EXISTS surveydata"
@@ -40,7 +39,6 @@ function createTables() {
             + " longitude double precision not null, "
             + " latitude double precision not null,"
             + " uploaded integer);"
-
     runSQL(sqlstr);
     //sqlstr = "DROP TABLE IF EXISTS photo;"
     //runSQL(sqlstr);
@@ -48,29 +46,35 @@ function createTables() {
             +   "(id integer primary key, "
             +   "id_surveydata integer not null REFERENCES surveydata(id) ON DELETE CASCADE, "
             +   "compass double precision, image text not null, "
-            +   "comment);"
+            +   "comment text);"
+    runSQL(sqlstr);
 
     sqlstr = "CREATE TABLE IF NOT EXISTS photo_tmp "
             +   "(id integer primary key, "
             +   "id_surveydata integer not null REFERENCES surveydata(id), "
             +   "compass double precision, image text not null, "
-            +   "comment);"
-
+            +   "comment text);"
     runSQL(sqlstr);
 
     /* sqlstr = "DROP TABLE IF EXISTS treespecies;"
-    runSQL(sqlstr); */
-    sqlstr = "CREATE TABLE IF NOT EXISTS treespecies (id integer primary key, name varchar(100) not null UNIQUE);"
+    runSQL(sqlstr);  */     
+    sqlstr = "CREATE TABLE IF NOT EXISTS treespecies "
+            + "(id integer primary key, "
+            + " name varchar(100) not null UNIQUE);"
     runSQL(sqlstr);
 /* 
     sqlstr = "DROP TABLE IF EXISTS crowndiameter;"
     runSQL(sqlstr); */
-    sqlstr = "CREATE TABLE IF NOT EXISTS crowndiameter (id integer primary key, name varchar(100) not null UNIQUE);"
+    sqlstr = "CREATE TABLE IF NOT EXISTS crowndiameter "
+            + "(id integer primary key, "
+            + "name varchar(100) not null UNIQUE);"
     runSQL(sqlstr);
 /* 
     sqlstr = "DROP TABLE IF EXISTS canopystatus;"
     runSQL(sqlstr); */
-    sqlstr = "CREATE TABLE IF NOT EXISTS canopystatus (id integer primary key, name varchar(100) not null);"
+    sqlstr = "CREATE TABLE IF NOT EXISTS canopystatus "
+            + "(id integer primary key, "
+            + "name varchar(100) not null);"
     runSQL(sqlstr);
 }
 
@@ -113,11 +117,11 @@ function delete_aoi_fromDB(id_aoi) {
     };
     window.plugins.spinnerDialog.show("Deleting AOI ...");
     runSQL2('DELETE FROM photo where id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ');')
-    .then((res) => { return runSQL2('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';'); }, (value) => {handleError(value);}) 
-    .then((res) => { return runSQL2('DELETE FROM aoi WHERE id = ' + id_aoi + ';'); },            (value) => {handleError(value);}) 
-    .then((res) => { console.log("AOI deleted"); },                                              (error) => {handleError(error);})         
+    .then((res) => { return runSQL2('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';'); }, (error) => {handleError(error);}) 
+    .then((res) => { return runSQL2('DELETE FROM aoi WHERE id = ' + id_aoi + ';'); },            (error) => {handleError(error);}) 
+    //.then((res) => { console.log("AOI deleted"); },                                              (error) => {handleError(error);})         
     .catch(function(value) {console.log(value);})
-    .finally(function() {        
+    .finally(function() {       
         window.plugins.spinnerDialog.hide();
         displayMessage("AOI deleted.",()=>{window.location = "obs_list.html";});        
     });

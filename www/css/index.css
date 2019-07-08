@@ -163,7 +163,7 @@ html, #mapid, #login-page {
 }
 
 #sidebar {
-    width:50%;
+    width:80%;
     height:100vh;
     margin-left:150%;
     position:fixed;
@@ -174,7 +174,7 @@ html, #mapid, #login-page {
 }
 
 #sidebar.active {
-    margin-left:50%;
+    margin-left:20%;
 }
 
 .listItem {

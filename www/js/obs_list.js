@@ -42,14 +42,9 @@ var listObs = {
                         e.preventDefault(); 
                         var id_obs = this.id.substring(11);  
                         if (this.dataset.uploaded=="0") { 
-                            displayMessage2("This observation was not uploaded. Are you sure you want to delete it?",
-                            ()=>{
-                                $("#messagepopup").modal("hide");
-                                delete_obs(id_obs);       
-                            }),
-                            ()=>{
-                                $("#messagepopup").modal("hide");
-                            }         
+                            displayMessage("This observation was not uploaded. Are you sure you want to delete it?",
+                                            ()=>{delete_obs(id_obs);},
+                                            ()=>{$("#messagepopup").modal("hide");});      
                             //$(this).closest(".list-group-item").remove();
                             return false;
                         } else {
@@ -90,15 +85,23 @@ var listObs = {
             $('.overlay').toggleClass('active');
         });
 
-        $('#syncobs').on('click', function() {            
+        $('#viewmap').on('click', function() {
+            window.sessionStorage.setItem("obslist", "True");
+            window.location = "obs_map.html";
+            return false;
+        });
+        
+        $('#syncobs').on('click', function() {          
             window.plugins.spinnerDialog.show(null, "uploading survey data ...");
             listObs.syncObservations();
+            return false;
         });
         
         $('#deleteObs').on('click', function() {
             window.plugins.spinnerDialog.show(null, "deleting survey data ...");
             var id_aoi = window.sessionStorage.getItem("id_aoi");
             listObs.deleteOBS(id_aoi);            
+            return false;
         });
     },
     onOnline: function() {
@@ -150,9 +153,6 @@ var listObs = {
 
         var sendObservation = function (obs) {            
             return new Promise(function(resolve, reject) {
-
-                obs.id_tree_species     =   String(obs.id_tree_species).toUpperCase()   === "NULL"?1:obs.id_tree_species;
-                obs.id_crown_diameter   =   String(obs.id_crown_diameter).toUpperCase() === "NULL"?1:obs.id_crown_diameter;
 
                 var data = '{"name" :"' + obs.name
                                 + '", "tree_specie":"'      + obs.id_tree_species

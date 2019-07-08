@@ -88,7 +88,7 @@ function insert_OBS(obs) {
         );
     }, function(error) {
         console.log('Transaction SURVEYDATA ERROR: ' + error.message);
-        displayMessage("Error - It was not possible to store the observation.",function () {});
+        displayMessage("Error - It was not possible to store the observation.",()=>{});
     }, function() {
         clearWSitems();
         window.location = 'obs_list.html';
@@ -131,10 +131,10 @@ function getWSitems() {
         obs.id = "NULL";
     }
     if (!obs.id_tree_species || obs.id_tree_species==="undefined") {
-        obs.id_tree_species = "NULL";
+        obs.id_tree_species = 5;
     }
     if (!obs.id_crown_diameter || obs.id_crown_diameter==="undefined") {
-        obs.id_crown_diameter = "NULL";
+        obs.id_crown_diameter = 18;
     }
 
     var photo = {};

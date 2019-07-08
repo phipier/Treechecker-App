@@ -28,12 +28,16 @@
     <nav id="sidebar">
         <div id="sliderLinks">
             <div class="listItem">
-                <i class="fas fa-sync-alt"></i>
+                <i class="fas fa-map-marked-alt"></i>
+                <span id="viewmap">View observations on map</span>
+            </div>
+            <div class="listItem">
+                <i class="fas fa-cloud-upload-alt"></i>
                 <span id="syncobs">Upload observations</span>
             </div>
             <div class="listItem">
                 <i class="fas fa-trash"></i>
-                <span id="deleteObs">Delete uploaded observations</span>
+                <span id="deleteObs">Delete observations</span>
             </div>
         </div>
     </nav>
@@ -69,6 +73,7 @@
             <div id="messagepopupdata" class="modal-body"></div>
             <div class="modal-footer">
                 <button id="ok_sent" type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+                <button id="cancel_sent" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>

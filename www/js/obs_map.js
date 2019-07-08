@@ -5,6 +5,7 @@ var mymap;
 var gjson_layer;
 var overlays;
 var controlLayers;
+var obslist;
 
 var customControl =  L.Control.extend({
     options: {
@@ -16,9 +17,9 @@ var customControl =  L.Control.extend({
       container.title = "Center map on current GPS position";
       container.style.backgroundColor = 'white';     
       container.style.backgroundImage = "url(file:///android_asset/www/lib/images/gps.png)";
-      container.style.backgroundSize = "30px 30px";
-      container.style.width = '30px';
-      container.style.height = '30px';
+      container.style.backgroundSize = "35px 35px";
+      container.style.width = '40px';
+      container.style.height = '40px';
       container.onclick = function(){
         centerMapOnCurrentPosition();
       }  
@@ -29,14 +30,15 @@ var customControl =  L.Control.extend({
 function loadMap() {
     document.addEventListener("backbutton", onBackKeyDown, false);
 
+    obslist                 =               window.sessionStorage.getItem("obslist") === "True"?true:false;
+    if (obslist) {$("#savelocation").hide();}
+
     var LayerDefinitions    = JSON.parse(   window.sessionStorage.getItem("wms_url"));
     var id_AOI              =               window.sessionStorage.getItem("id_aoi");
     var obs_latitude        =               window.sessionStorage.getItem("obs_latitude");
     var obs_longitude       =               window.sessionStorage.getItem("obs_longitude");
     var obs_id              =               window.sessionStorage.getItem("obs_id"); 
-    if ((obs_id == null)  || (obs_id == '')) {
-        obs_id = "NULL";
-    }
+    if (!obs_id) {obs_id = "NULL";}
 
     mymap = L.map('mapid');
 
@@ -64,13 +66,15 @@ function loadMap() {
     
     addMyObservations(id_AOI, obs_id);
 
-    mymap.on('click', (e) => {
-        createMarker(e.latlng);
-    });
+    if (!obslist) {
+        mymap.on('click', (e) => {
+            createMarker(e.latlng);
+        });
 
-    // if position coordinate exist then create marker on map 
-    if ((obs_latitude) & (obs_longitude)) {
-        createMarker(L.latLng(obs_latitude, obs_longitude));
+        // if position coordinates exist then create marker on map 
+        if ((obs_latitude) & (obs_longitude)) {
+            createMarker(L.latLng(obs_latitude, obs_longitude));
+        }
     }
 }
 
@@ -96,7 +100,8 @@ function createMarker(latlng_pos) {
 }
 
 function onBackKeyDown() {
-    window.location = "obs_form.html";
+    if (obslist) {window.location = "obs_list.html";window.sessionStorage.removeItem("obslist");} 
+    else {window.location = "obs_form.html";}
 }
 
 function centerMapOnCurrentPosition() {
@@ -110,7 +115,7 @@ function centerMapOnCurrentPosition() {
         displayMessage('Could not get your position. Please make sure that GPS is on',()=>{});
         window.plugins.spinnerDialog.hide();
     }
-    navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 10000, enableHighAccuracy: true});
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 15000, enableHighAccuracy: true});
 }
 
 function initLayers() {
@@ -165,7 +170,7 @@ function addOnlineWMSLayers(LayerDefinitions) {
 
 function buildSurveyDataPopup(data) {
     var container = L.DomUtil.create('div');
-    container.innerHTML = `<b>${data.name}</b><br><b>Species:&nbsp</b>${data.species}<br><b>Diameter:&nbsp</b>${data.diameter}`;
+    container.innerHTML = `<b>${data.name}</b><br><b>Status:&nbsp</b>${data.status}`;
     //var btn = L.DomUtil.create('i', 'fa fa-info-circle fa-2x centered', container);
     //L.DomEvent.on(btn, 'click', () => {
     //    viewElement(data.id)
@@ -182,10 +187,9 @@ function addMyObservations(id_aoi, id_obs) {
 
     db.transaction(function (tx) {
 
-        var query = 'SELECT s.id AS id, s.name AS name, t.name AS treespe, c.name AS diameter, s.longitude, s.latitude '
-                    +   'FROM surveydata AS s '
-                    +   'INNER JOIN treespecies     AS t    on t.id = s.id_tree_species '
-                    +   'INNER JOIN crowndiameter   AS c    on c.id = s.id_crown_diameter '
+        var query = 'SELECT s.*, cs.name as status '
+                    +   'FROM surveydata AS s '                  
+                    +   'INNER JOIN canopystatus    AS cs   on cs.id = s.id_canopy_status '
                     +   'where s.id_aoi = ' + id_aoi;                    
         if (id_obs != "NULL") { query += ' AND s.id != ' + id_obs; }
         query += ';'
@@ -201,13 +205,14 @@ function addMyObservations(id_aoi, id_obs) {
                     "coordinates": [item.longitude, item.latitude]
                     },
                     "properties": {
-                        "popup":    buildSurveyDataPopup({"id":item.id,"name":item.name,"species":item.treespe,"diameter":item.diameter}),
+                        "popup":    buildSurveyDataPopup({/*"id":item.id,*/"name":item.name,"status":item.status}),
                         "id":       item.id,
                         "name":     item.name
                     }    
                 };  
                 geojson.features.push(geojsonPoint);
-            }     
+            }   
+  
             
             if(gjson_layer != null) {
                 controlLayers.removeLayer(gjson_layer);
@@ -291,7 +296,7 @@ function addMyObservations(id_aoi, id_obs) {
 function addMapControls() {
     controlLayers = new L.control.layers({}, overlays, {sortLayers: false, hideSingleBase: false});
     controlLayers.addTo(mymap);
-    mymap.addControl(new customControl());
+    if (!obslist) {mymap.addControl(new customControl());}
     L.control.scale().addTo(mymap);
 }
   

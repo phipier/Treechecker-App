@@ -98,14 +98,14 @@ function onBackKeyDown() {
 }
 
 function delete_aoi(id_aoi) {   
-    displayMessage2("All observations of this AOI will be deleted. Do you want to proceed anyway?",
+    displayMessage("All observations of this AOI will be deleted. Do you want to proceed anyway?",
         ()=>{
             $("#messagepopup").modal("hide");
             delete_aoi_fromDB(id_aoi);        
-        }),
+        },
         ()=>{
             $("#messagepopup").modal("hide");
-        }
+        });
 }
 
 /*  TO DO later ... not a priority

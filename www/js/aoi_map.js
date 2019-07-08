@@ -2,7 +2,7 @@ var areaSelect;
 var LayerDefinitions;
 var overlays;
 var baseMaps;
-var mymap;
+var map;
 var controlLayers;
 
 document.addEventListener('deviceready', loadmap, false);
@@ -11,7 +11,7 @@ function loadmap() {
 
     LayerDefinitions = JSON.parse(window.sessionStorage.getItem("wms_url"));    
 
-    mymap = L.map('mapid');
+    map = L.map('mapid');
 
     overlays = {};
     baseMaps = {};
@@ -22,7 +22,7 @@ function loadmap() {
                                 attribution:    baselayer.attribution,
                                 maxZoom:        Number(baselayer.maxZoom)            
         });
-        ll_baselayer.addTo(mymap);   
+        ll_baselayer.addTo(map);   
 
         if(controlLayers)
             controlLayers.addBaseLayer(ll_baselayer, baselayer.layerName);
@@ -40,7 +40,7 @@ function loadmap() {
                 maxZoom:        Number(WMSlayer.maxZoom)//,
                 //maxNativeZoom:  WMSlayer.maxNativeZoom
         });
-        ll_layer.addTo(mymap);
+        ll_layer.addTo(map);
 
         if(controlLayers)
             controlLayers.addOverlay(ll_layer, WMSlayer.name);
@@ -64,21 +64,21 @@ function loadmap() {
         var corner1 = L.latLng(Number(reg_ymin), Number(reg_xmin));
         var corner2 = L.latLng(Number(reg_ymax), Number(reg_xmax));
         // get bbox from response to GetCapabilities request ...
-        //mymap.fitBounds(l_ortho.getBounds());
+        //map.fitBounds(l_ortho.getBounds());
     } else {
         var corner1 = L.latLng(43, 3);
         var corner2 = L.latLng(46, 6);
-        //mymap.setView([45, 5], 5);        
+        //map.setView([45, 5], 5);        
     }
 
     var bounds = L.latLngBounds(corner1, corner2);
-        mymap.fitBounds(bounds);
+        map.fitBounds(bounds);
 
-    areaSelect = L.areaSelect({width:200, height:200});
+    areaSelect = L.areaSelect({width:300, height:300});
     areaSelect.on("change", function() {
         var bounds = this.getBounds();        
     });
-    areaSelect.addTo(mymap);    
+    areaSelect.addTo(map);    
 
 };
 
@@ -111,9 +111,9 @@ function onBackKeyDown() {
 
 function addMapControls() {
     controlLayers = new L.control.layers(baseMaps, overlays, {sortLayers: true, hideSingleBase: false});
-    controlLayers.addTo(mymap);
+    controlLayers.addTo(map);
 
-    L.control.scale().addTo(mymap);
+    L.control.scale().addTo(map);
 }
 
 /* $("#cancelarea").click(function(e) {
