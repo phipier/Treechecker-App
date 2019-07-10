@@ -30,3 +30,9 @@ platforms/
 node_modules/
 plugins/
 
+.vscode/
+jsconfig.json
+typings/
+
+
+

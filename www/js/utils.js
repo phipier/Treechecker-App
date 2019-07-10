@@ -16,7 +16,9 @@ function displayMessage(message, action_OK, action_cancel) {
 
     $("#ok_sent").click(()=>{
         $("#messagepopup").modal("hide");
-        action_OK();
+        if (typeof action_OK !== 'undefined') {
+            action_OK();
+        }
     });    
 
     if (typeof action_cancel === 'undefined')   

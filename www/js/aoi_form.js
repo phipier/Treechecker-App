@@ -73,21 +73,18 @@ function cancel_AOI() {
 function exit_AOI(success, message) {
     stopButtonSpinners();    
     if (success) { 
-        var OKfunction = function() {            
-            clearWSitems();           
-            window.location = 'aoi_list.html';
-        }
-        l_message = "AOI created."               
-
+        displayMessage("AOI created.", ()=>{            
+                                            clearWSitems();           
+                                            window.location = 'aoi_list.html';
+                                        }); 
     } else {
-        var OKfunction = function() {            
-            var id_aoi = window.sessionStorage.getItem("id_aoi");
-            delete_aoi_fromDB(id_aoi);
-            clearWSitems();
-        }
-        l_message = message;
+        displayMessage(message, ()=>{            
+                                            var id_aoi = window.sessionStorage.getItem("id_aoi");
+                                            delete_aoi_fromDB(id_aoi);
+                                            clearWSitems();
+                                        });
     }
-    displayMessage(l_message, OKfunction);
+    
 }
 
 $("#selectarea").click( function(e) {
@@ -178,10 +175,11 @@ function insert_AOI(val, bbox, id_region) {
         },
         function (tx, error) {
             console.log('REPLACE INTO aoi error: ' + error.message);
+            exit_AOI(False, 'REPLACE INTO aoi error: ' + error)
         });      
 
-    }, function(error) {
-        displayMessage("Error - It was not possible to add the AOI to the local DB");
+    }, function(error) {       
+        exit_AOI(False, "Error - It was not possible to add the AOI to the local DB")
     }, function() {
         console.log('Populated database OK');
     });
