@@ -74,15 +74,15 @@ function exit_AOI(success, message) {
     stopButtonSpinners();    
     if (success) { 
         displayMessage("AOI created.", ()=>{            
-                                            clearWSitems();           
-                                            window.location = 'aoi_list.html';
-                                        }); 
+                        clearWSitems();           
+                        window.location = 'aoi_list.html';
+                    }); 
     } else {
         displayMessage(message, ()=>{            
-                                            var id_aoi = window.sessionStorage.getItem("id_aoi");
-                                            delete_aoi_fromDB(id_aoi);
-                                            clearWSitems();
-                                        });
+                        var id_aoi = window.sessionStorage.getItem("id_aoi");
+                        delete_aoi_fromDB(id_aoi);
+                        clearWSitems();
+                    });
     }
     
 }
