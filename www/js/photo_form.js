@@ -7,21 +7,15 @@ var photoform = {
         document.addEventListener("backbutton", onBackKeyDown, false);
         init_form();
 
-        $('#photo').on('click', function() {
-            navigator.camera.getPicture(
-                function(imageData) {
-                    $('#preview_text').remove();
-                    var format = "data:image/jpeg;base64,";
-                    document.getElementById('image').src = format + imageData;   
-                    //$('#image').src = format + imageData;                  
-                },
-                function() {
-                    displayMessage("Picture canceled", function() {})                    
-                },
-                {quality:50, destinationType:Camera.DestinationType.DATA_URL, correctOrientation: true}
-            );
-            return false;
-        });
+        window.addEventListener("deviceorientation", function(event) {
+            compassbearing = 360 - event.alpha;
+            $("#compassbearing").val(compassbearing);
+        }, true);
+
+        window.addEventListener("compassneedscalibration", function(event) {
+            alert('Your compass needs calibrating! Wave your device in a figure-eight motion');
+            event.preventDefault();
+        }, true);
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -58,13 +52,14 @@ $("#savephoto").click( function(e) {
     return false;
 });
 
-function insert_photo(photo,obsid) {
+function insert_photo(photo) {
     db.transaction(function(tx) {
-        var sql =
-            "REPLACE INTO photo_tmp(id, id_surveydata, compass, image) "
-            + "VALUES(" + photo.id + "," + obsid + "," + "0" + ",'" + photo.image + "');";
+        var obsid = window.sessionStorage.getItem("obs_id");
+        var sql = "REPLACE INTO photo (id, id_surveydata, compass, image) "
+            + "VALUES(" + photo.id + "," + obsid + "," + photo.compassbearing + ",'" + photo.image + "');";
         tx.executeSql(sql, [],
             function(tx, res) {
+                console.log('Photo inserted: ' + error.message);
                 window.sessionStorage.setItem("photo_id", res.insertId);
             },
             function(tx, error) {
@@ -80,17 +75,17 @@ function insert_photo(photo,obsid) {
 }
 
 function setWSitems() {
-    window.sessionStorage.setItem("photo_comment",            $("#InputPhotocomment").val().trim());
-    window.sessionStorage.setItem("photo_compassbearing",     $("#compassbearing").val().trim());
-    window.sessionStorage.setItem("photo_GPSbearing",         $("#GPSbearing").val().trim());
+    window.sessionStorage.setItem("photo_comment",          $("#InputPhotocomment").val().trim());
+    window.sessionStorage.setItem("photo_compassbearing",   $("#compassbearing").val().trim());
+    //window.sessionStorage.setItem("photo_GPSbearing",       $("#GPSbearing").val().trim());
     window.sessionStorage.setItem("photo_image",            document.getElementById('image').src);
 }
 
 function getWSitems() {
     var photo = {};
-    photo.comment =         window.sessionStorage.getItem("photo_comment");
+    photo.comment =           window.sessionStorage.getItem("photo_comment");
     photo.compassbearing =    window.sessionStorage.getItem("photo_compassbearing");
-    photo.GPSbearing =        window.sessionStorage.getItem("photo_GPSbearing");
+    //photo.GPSbearing =        window.sessionStorage.getItem("photo_GPSbearing");
     photo.image =             window.sessionStorage.getItem("photo_image");
    
     if (!photo.id) {
@@ -102,20 +97,20 @@ function getWSitems() {
 function clearWSitems() {        
     window.sessionStorage.removeItem("photo_comment");
     window.sessionStorage.removeItem("photo_compassbearing");
-    window.sessionStorage.removeItem("photo_GPSbearing");
+    //window.sessionStorage.removeItem("photo_GPSbearing");
     window.sessionStorage.removeItem("photo_image");    
 }
 
 function init_form() {  
     var obs = getWSitems();
-    var id_obs = obs.id;
+    var id_obs = window.sessionStorage.getItem("obs_id");
     $("#photo_comment")         .val(photo.comment);
     $("#photo_compassbearing")  .val(photo.compassbearing);
-    $("#photo_GPSbearing")      .val(photo.GPSbearing);
+    //$("#photo_GPSbearing")      .val(photo.GPSbearing);
     $("#photo_image")           .val(photo.image);
     if (photo.image) {
         $('#preview_text').remove();
-        document.getElementById('image').src = obs.photo.image;
+        document.getElementById('image').src = window.sessionStorage.getItem("photo_image"); 
     }    
     window.plugins.spinnerDialog.hide();
 };

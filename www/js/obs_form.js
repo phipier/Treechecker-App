@@ -8,12 +8,19 @@ var obsform = {
         init_form();
 
         $('#photo').on('click', function() {
+            e.preventDefault();
             navigator.camera.getPicture(
-                function(imageData) {
+                function(imageData) {                    
                     $('#preview_text').remove();
                     var format = "data:image/jpeg;base64,";
-                    document.getElementById('image').src = format + imageData;   
-                    //$('#image').src = format + imageData;                  
+                    var src = format + imageData;                     
+
+                    window.sessionStorage.setItem("photo_id", "");
+                    window.sessionStorage.setItem("photo_comment", "");
+                    window.sessionStorage.setItem("photo_compassbearing", "");
+                    window.sessionStorage.setItem("photo_image", src);
+
+                    window.location = "photo_form.html";
                 },
                 function() {
                     displayMessage("Picture canceled", function() {})                    
@@ -22,6 +29,8 @@ var obsform = {
             );
             return false;
         });
+
+        
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -69,11 +78,8 @@ function insert_OBS(obs) {
 
         tx.executeSql(sqlstr, [], function(tx, results) {
                 var obsid = results.insertId;
-
-                var sql =
-                    "REPLACE INTO photo(id, id_surveydata, compass, image) "
-                    + "VALUES(" + obs.photo.id + "," + obsid + "," + "0" + ",'" + obs.photo.image + "');";
-
+                // necessary if new observation because field photo.id_surveydata is NULL
+                var sql = "UPDATE photo set id_surveydata = " + obsid + " where id_surveydata is NULL;"      
                 tx.executeSql(sql, [],
                     function(tx, res) {
                         window.sessionStorage.setItem("photo_id", res.insertId);
@@ -136,20 +142,6 @@ function getWSitems() {
     if (!obs.id_crown_diameter || obs.id_crown_diameter==="undefined") {
         obs.id_crown_diameter = 18;
     }
-
-    var photo = {};
-    photo.id =              window.sessionStorage.getItem("photo_id");    
-    photo.image =           window.sessionStorage.getItem("photo_image");   
-    //photo.compass =         window.sessionStorage.getItem("photo_compass");   
-
-    if (!photo.id) {
-        photo.id = "NULL";
-    }
-    //if ((photo.compass == null) || (photo.compass == '')) {
-    //    photo.compass = 0.0;
-    //}
-    
-    obs.photo = photo;
     
     return obs;
 }
@@ -166,11 +158,11 @@ function clearWSitems() {
     window.sessionStorage.removeItem("photo_id");
     window.sessionStorage.removeItem("obs_uploaded");
     //window.sessionStorage.removeItem("photo_compass");
-    window.sessionStorage.removeItem("photo_image");
-    
+    window.sessionStorage.removeItem("photo_image");    
 }
 
 function init_form() {
+    var obs = getWSitems();
     db.transaction(function (tx) {
         var query = 'SELECT * FROM treespecies;';
         tx.executeSql(query, [], function (tx, res) {
@@ -213,12 +205,27 @@ function init_form() {
         function (tx, error) {
             console.log('SELECT canopystatus error: ' + error.message);
         });
+        // status
+        var query = 'SELECT * FROM photo where id_surveydata' + (obs.id=="NULL" ? ' is NULL' : ' = ' + obs.id ) + ';';
+        tx.executeSql(query, [], function (tx, res) {
+            var html = "";
+            for(var x = 0; x < res.rows.length; x++) {
+                $('.carousel-inner').append(
+                    '<div class="carousel-item active">' 
+                    + ' <img class="d-block w-100"' 
+                    +   ' src="'            + res.rows.item(x).image    + '"'
+                    +   ' data-comment="'   + res.rows.item(x).comment  + '"'
+                    +   ' data-compass="'   + res.rows.item(x).compass  + '">'
+                    + ' </div>")');
+            }
+        },
+        function (tx, error) {
+            console.log('SELECT canopystatus error: ' + error.message);
+        });
     }, function (error) {
-        console.log('transaction treespecies error: ' + error.message);
+        console.log('transaction error: ' + error.message);
     }, function () {
-        console.log('transaction treespecies ok');
-        var obs = getWSitems();
-        var id_obs = obs.id;
+        console.log('transaction ok');
         $("#InputOBSname").val(obs.name);
         $("#InputOBScomment").val(obs.comment);
         $("#InputSelectSpecies").val(obs.id_tree_species);

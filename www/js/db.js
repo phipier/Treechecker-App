@@ -97,7 +97,7 @@ function runSQL2(query) {
     return new Promise(function(resolve, reject) {
         db.transaction(function (tx) {       
             tx.executeSql(query, [], function (tx, res) {            
-                resolve()
+                resolve(res)
             },
             function (tx, error) {                
                 reject("transaction error " + error.message);

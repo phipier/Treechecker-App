@@ -36,22 +36,21 @@
             <div id="content">
                 <div id="compass">
                     <p>
-                        <button id="compass" class="btn button">Get bearing (Point top of smartphone towards object)</button>
+                        <button id="compass" class="btn button">Keep compass bearing (Point top of smartphone towards object)</button>
                     </p>
-                    <label for="InputGPSbearing">Comment</label>
-                    <input type="text" class="form-control" id="InputGPSbearing"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="Enter comment">
+                    <!--label for="InputGPSbearing">GPS bearing</label>
+                    <input type="text" class="form-control" id="InputGPSbearing"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="GPS bearing">
                     <div class="invalid-feedback">
                         Please provide a bearing (0-360).
-                    </div>
-                    <label for="InputCompassbearing">Comment</label>
-                    <input type="text" class="form-control" id="InputCompassbearing"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="Enter comment">
+                    </div -->
+                    <label for="InputCompassbearing">Compass bearing</label>
+                    <input type="text" class="form-control" id="InputCompassbearing"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="Compass bearing">
                     <div class="invalid-feedback">
                         Please provide a bearing (0-360).
                     </div>
                 </div>
             </div>
         </div>
-        <br>
         <hr>
         <div class="form-group">
             <label for="InputPhotocomment">Comment</label>
@@ -82,6 +81,6 @@
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/db.js"></script>
 <script type="text/javascript" src="js/urls.js"></script>
-<script type="text/javascript" src="js/obs_form.js"></script>
+<script type="text/javascript" src="js/photo_form.js"></script>
 </body>
 </html>
