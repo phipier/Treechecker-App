@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; img-src 'self' data: content: https: http:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="lib/jquery-3.3.1.min.js"></script>
+    <script src="lib/popper.min.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
+    <script defer src="lib/font-awesome.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <title>TreeChecker</title>
+</head>
+<body>
+<nav class="navbar navbar-light" style="background-color:#8BC34A; min-height:64px;">
+    <font class="header">Photo</font>
+</nav>
+<div class="forms">
+    <form id="Photo-form" novalidate>
+        <div class="form-group">
+            <div id="content">
+                <div id="picture">
+                    <p>
+                        <button id="photo" class="btn button">Take photo</button>
+                    </p>
+                    <div id="taken-picture">
+                        <span id="preview_text">Image Preview</span>
+                        <img height="215" width="215" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" id="image"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div id="content">
+                <div id="compass">
+                    <p>
+                        <button id="compass" class="btn button">Get bearing (Point top of smartphone towards object)</button>
+                    </p>
+                    <label for="InputGPSbearing">Comment</label>
+                    <input type="text" class="form-control" id="InputGPSbearing"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="Enter comment">
+                    <div class="invalid-feedback">
+                        Please provide a bearing (0-360).
+                    </div>
+                    <label for="InputCompassbearing">Comment</label>
+                    <input type="text" class="form-control" id="InputCompassbearing"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="Enter comment">
+                    <div class="invalid-feedback">
+                        Please provide a bearing (0-360).
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <hr>
+        <div class="form-group">
+            <label for="InputPhotocomment">Comment</label>
+            <input type="text" class="form-control" id="InputPhotocomment"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="Enter comment">
+            <div class="invalid-feedback">
+                Please provide a comment for this photo.
+            </div>
+        </div>
+        <hr>
+        <a id="savephoto" href="#" class="btn button">Save</a>
+        <a id="cancelphoto" href="#" class="btn button">Cancel</a>
+        <br><br>
+    </form>
+</div>
+
+<div class="modal fade" id="messagepopup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="messagepopupdata" class="modal-body"></div>
+            <div class="modal-footer">
+                <button id="ok_sent" type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+                <button id="cancel_sent" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/db.js"></script>
+<script type="text/javascript" src="js/urls.js"></script>
+<script type="text/javascript" src="js/obs_form.js"></script>
+</body>
+</html>
