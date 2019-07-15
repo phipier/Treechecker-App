@@ -1,3 +1,5 @@
+var flag_measuring = false;
+
 var photoform = {    
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
@@ -7,15 +9,23 @@ var photoform = {
         document.addEventListener("backbutton", onBackKeyDown, false);
         init_form();
 
-        window.addEventListener("deviceorientation", function(event) {
-            compassbearing = 360 - event.alpha;
-            $("#compassbearing").val(compassbearing);
-        }, true);
+        $('#editphoto').on('click', function() {
+            //e.preventDefault();
+            navigator.camera.getPicture(
+                function(imageData) {                    
+                    $('#preview_text').remove();
+                    var format = "data:image/jpeg;base64,";
+                    var img_src = format + imageData;
+                    document.getElementById('image').src = img_src;
+                },
+                function() {
+                    displayMessage("Picture canceled", function() {})                    
+                },
+                {quality:50, destinationType:Camera.DestinationType.DATA_URL, correctOrientation: true}
+            );
+            return false;
+        });
 
-        window.addEventListener("compassneedscalibration", function(event) {
-            alert('Your compass needs calibrating! Wave your device in a figure-eight motion');
-            event.preventDefault();
-        }, true);
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -38,6 +48,33 @@ function cancel_Photo() {
     clearWSitems(); 
     window.location = "obs_form.html";
 }
+
+$("#btncompass").click(function(e) {
+    e.preventDefault();
+    if (!flag_measuring) 
+    {
+        flag_measuring = true
+        window.addEventListener("deviceorientation", function(event) {
+            compassbearing = 360 - event.alpha;
+            $("#InputCompassbearing").val(compassbearing);
+        }, true);
+
+        window.addEventListener("compassneedscalibration", function(event) {
+            alert('Your compass needs calibrating! Wave your device in a figure-eight motion');
+            event.preventDefault();
+        }, true);
+        $("#btncompass").text("Stop measuring");
+        $("#InputCompassbearing").prop('disabled', true);
+    }
+    else {
+        window.removeEventListener("deviceorientation"); 
+        window.removeEventListener("compassneedscalibration"); 
+        setWSitems();
+        $("#btncompass").text("Start measuring compass bearing"); 
+        $("#InputCompassbearing").prop('disabled', false);     
+    }
+    return false;
+});
 
 $("#savephoto").click( function(e) {
     e.preventDefault();    
@@ -75,8 +112,8 @@ function insert_photo(photo) {
 }
 
 function setWSitems() {
-    window.sessionStorage.setItem("photo_comment",          $("#InputPhotocomment").val().trim());
-    window.sessionStorage.setItem("photo_compassbearing",   $("#compassbearing").val().trim());
+    window.sessionStorage.setItem("photo_comment",          $("#InputPhotocomment").text().trim());
+    window.sessionStorage.setItem("photo_compassbearing",   $("#InputCompassbearing").val().trim());
     //window.sessionStorage.setItem("photo_GPSbearing",       $("#GPSbearing").val().trim());
     window.sessionStorage.setItem("photo_image",            document.getElementById('image').src);
 }
@@ -102,12 +139,11 @@ function clearWSitems() {
 }
 
 function init_form() {  
-    var obs = getWSitems();
+    var photo = getWSitems();
     var id_obs = window.sessionStorage.getItem("obs_id");
-    $("#photo_comment")         .val(photo.comment);
-    $("#photo_compassbearing")  .val(photo.compassbearing);
+    $("#InputPhotocomment")         .text(photo.comment);
+    $("#InputCompassbearing")       .val(photo.compassbearing);
     //$("#photo_GPSbearing")      .val(photo.GPSbearing);
-    $("#photo_image")           .val(photo.image);
     if (photo.image) {
         $('#preview_text').remove();
         document.getElementById('image').src = window.sessionStorage.getItem("photo_image"); 

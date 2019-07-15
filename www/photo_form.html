@@ -23,7 +23,7 @@
             <div id="content">
                 <div id="picture">
                     <p>
-                        <button id="photo" class="btn button">Take photo</button>
+                        <button id="editphoto" class="btn button">Edit photo</button>
                     </p>
                     <div id="taken-picture">
                         <span id="preview_text">Image Preview</span>
@@ -36,7 +36,7 @@
             <div id="content">
                 <div id="compass">
                     <p>
-                        <button id="compass" class="btn button">Keep compass bearing (Point top of smartphone towards object)</button>
+                        <button id="btncompass" class="btn button">Start measuring compass bearing (Point top of smartphone towards object)</button>
                     </p>
                     <!--label for="InputGPSbearing">GPS bearing</label>
                     <input type="text" class="form-control" id="InputGPSbearing"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="GPS bearing">
@@ -44,7 +44,7 @@
                         Please provide a bearing (0-360).
                     </div -->
                     <label for="InputCompassbearing">Compass bearing</label>
-                    <input type="text" class="form-control" id="InputCompassbearing"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="Compass bearing">
+                    <textarea type="text" class="form-control" id="InputCompassbearing"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="Compass bearing">
                     <div class="invalid-feedback">
                         Please provide a bearing (0-360).
                     </div>
@@ -54,7 +54,7 @@
         <hr>
         <div class="form-group">
             <label for="InputPhotocomment">Comment</label>
-            <input type="text" class="form-control" id="InputPhotocomment"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="Enter comment">
+            <textarea type="text" class="form-control"  rows="3" id="InputPhotocomment" aria-describedby="emailHelp" placeholder="Enter comment"></textarea>
             <div class="invalid-feedback">
                 Please provide a comment for this photo.
             </div>

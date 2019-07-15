@@ -8,12 +8,12 @@ var obsform = {
         init_form();
 
         $('#photo').on('click', function() {
-            e.preventDefault();
+            //e.preventDefault();
             navigator.camera.getPicture(
                 function(imageData) {                    
                     $('#preview_text').remove();
                     var format = "data:image/jpeg;base64,";
-                    var src = format + imageData;                     
+                    var src = format + imageData;                
 
                     window.sessionStorage.setItem("photo_id", "");
                     window.sessionStorage.setItem("photo_comment", "");
@@ -234,10 +234,10 @@ function init_form() {
         $("#Inputlatitude").val(obs.latitude);
         $("#Inputlongitude").val(obs.longitude);        
         //$("#Inputcompass").val(obs.photo.compass);
-        if (obs.photo.image) {
+/*         if (obs.photo.image) {
             $('#preview_text').remove();
             document.getElementById('image').src = obs.photo.image;
-        }
+        } */
         if (obs.uploaded === "1") { $("#saveobs").hide(); }
         window.plugins.spinnerDialog.hide();
     });
