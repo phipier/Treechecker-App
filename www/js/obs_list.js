@@ -345,7 +345,7 @@ function onBackKeyDown() {
     window.location = "aoi_list.html";
 }
 
-function edit_obs(id_obs) {
+/* function edit_obs(id_obs) {
     db.transaction(function (tx) {
             var query = 'SELECT * FROM surveydata where id = '+id_obs+';';
 
@@ -378,6 +378,43 @@ function edit_obs(id_obs) {
             console.log('transaction observation_photo ok');
         }
     );
+} */
+
+function edit_obs(id_obs) {
+    var err = false;
+    runSQL2('DELETE FROM photo where id_surveydata = NULL;')
+    .then(() => {    
+        console.log("photos deleted ... ");    
+        return runSQL2('SELECT * FROM surveydata where id = '+id_obs+';');
+    }, (value) => {
+        displayMessage("Error - It was not possible to delete photo.",()=>{});
+        handleError(value);
+    })
+    .then((res) => {        
+        window.sessionStorage.setItem("obs_id",                 res.rows.item(0).id);
+        window.sessionStorage.setItem("obs_name",               res.rows.item(0).name);
+        window.sessionStorage.setItem("obs_comment",            res.rows.item(0).comment);
+        window.sessionStorage.setItem("obs_id_tree_species",    res.rows.item(0).id_tree_species);
+        window.sessionStorage.setItem("obs_id_crown_diameter",  res.rows.item(0).id_crown_diameter);
+        window.sessionStorage.setItem("obs_id_canopy_status",   res.rows.item(0).id_canopy_status);
+        window.sessionStorage.setItem("obs_latitude",           res.rows.item(0).latitude);
+        window.sessionStorage.setItem("obs_longitude",          res.rows.item(0).longitude);
+        window.sessionStorage.setItem("obs_uploaded",           res.rows.item(0).uploaded);
+    }, (value) => {
+        displayMessage("Error - It was not possible to select obs.",()=>{});
+        handleError(value);
+    })
+    .catch(function(error) {
+        err = true;
+        console.log("error - edit obs");
+        console.log(error);            
+    })
+    .finally(function() {        
+        console.log("finally - edit obs");
+        window.plugins.spinnerDialog.hide();      
+        if (!err) {window.location = "obs_form.html"};
+    });
+    
 }
 
 function delete_obs(id_obs) {

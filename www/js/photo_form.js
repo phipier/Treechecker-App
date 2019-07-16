@@ -53,7 +53,7 @@ $("#btncompass").click(function(e) {
     e.preventDefault();
     if (!flag_measuring) 
     {
-        flag_measuring = true
+        flag_measuring = true;
         window.addEventListener("deviceorientation", function(event) {
             compassbearing = 360 - event.alpha;
             $("#InputCompassbearing").val(compassbearing);
@@ -67,6 +67,7 @@ $("#btncompass").click(function(e) {
         $("#InputCompassbearing").prop('disabled', true);
     }
     else {
+        flag_measuring = false;
         window.removeEventListener("deviceorientation"); 
         window.removeEventListener("compassneedscalibration"); 
         setWSitems();
@@ -90,14 +91,43 @@ $("#savephoto").click( function(e) {
 });
 
 function insert_photo(photo) {
-    db.transaction(function(tx) {
-        var obsid = window.sessionStorage.getItem("obs_id");
+    var err = false;
+    runSQL2("REPLACE INTO photo (id, id_surveydata, compass, image) "
+    + "VALUES(" + photo.id + "," + photo.obsid + "," + photo.compassbearing + ",'" + photo.image + "');")
+    .then(() => {    
+        console.log("replace in photo table done ... ");    
+        return runSQL2('DELETE FROM photo where id_surveydata = NULL;');
+    }, (value) => {
+        displayMessage("Error - It was not possible to delete photo.",()=>{});
+        handleError(value);
+    })
+    .then((res) => {        
+        console.log("OK - photos deleted");
+    }, (value) => {
+        displayMessage("Error - It was not possible to delete photos",()=>{});
+        handleError(value);
+    })
+    .catch(function(error) {
+        console.log("error - edit obs");
+        console.log(error);      
+        err = true;      
+    })
+    .finally(function() {        
+        console.log("finally - edit obs");
+        window.plugins.spinnerDialog.hide();      
+        if (!err) {window.location = "obs_form.html";}
+    });
+}
+
+/* 
+    db.transaction(function(tx) {        
         var sql = "REPLACE INTO photo (id, id_surveydata, compass, image) "
-            + "VALUES(" + photo.id + "," + obsid + "," + photo.compassbearing + ",'" + photo.image + "');";
+            + "VALUES(" + photo.id + "," + photo.obsid + "," + photo.compassbearing + ",'" + photo.image + "');";
         tx.executeSql(sql, [],
             function(tx, res) {
-                console.log('Photo inserted: ' + error.message);
+                //console.log('Photo inserted');
                 window.sessionStorage.setItem("photo_id", res.insertId);
+                runSQL2('DELETE FROM photo where id_surveydata = NULL;')
             },
             function(tx, error) {
                 console.log('ExecuteSQL Photo error: ' + error.message);
@@ -109,7 +139,7 @@ function insert_photo(photo) {
     }, function() {
         cancel_Photo();
     });
-}
+} */
 
 function setWSitems() {
     window.sessionStorage.setItem("photo_comment",          $("#InputPhotocomment").text().trim());
@@ -124,10 +154,15 @@ function getWSitems() {
     photo.compassbearing =    window.sessionStorage.getItem("photo_compassbearing");
     //photo.GPSbearing =        window.sessionStorage.getItem("photo_GPSbearing");
     photo.image =             window.sessionStorage.getItem("photo_image");
+    photo.obsid =             window.sessionStorage.getItem("obs_id");
    
     if (!photo.id) {
         photo.id = "NULL";
     }    
+    if (!photo.obsid) {
+        photo.obsid = "NULL";
+    }
+
     return photo;
 }
 

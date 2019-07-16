@@ -82,7 +82,9 @@ function insert_OBS(obs) {
                 var sql = "UPDATE photo set id_surveydata = " + obsid + " where id_surveydata is NULL;"      
                 tx.executeSql(sql, [],
                     function(tx, res) {
-                        window.sessionStorage.setItem("photo_id", res.insertId);
+                        //window.sessionStorage.setItem("photo_id", res.insertId);
+                        clearWSitems();
+                        window.location = 'obs_list.html';
                     },
                     function(tx, error) {
                         console.log('ExecuteSQL Photo error: ' + error.message);
@@ -96,8 +98,7 @@ function insert_OBS(obs) {
         console.log('Transaction SURVEYDATA ERROR: ' + error.message);
         displayMessage("Error - It was not possible to store the observation.",()=>{});
     }, function() {
-        clearWSitems();
-        window.location = 'obs_list.html';
+
     });
 }
 
@@ -117,7 +118,7 @@ function setWSitems() {
     window.sessionStorage.setItem("obs_latitude",           $("#Inputlatitude").val().trim());
     window.sessionStorage.setItem("obs_longitude",          $("#Inputlongitude").val().trim());
     //window.sessionStorage.setItem("photo_compass",          $("#Inputcompass").val().trim());
-    window.sessionStorage.setItem("photo_image",            document.getElementById('image').src);
+    //window.sessionStorage.setItem("photo_image",            document.getElementById('image').src);
 }
 
 function getWSitems() {
@@ -158,7 +159,7 @@ function clearWSitems() {
     window.sessionStorage.removeItem("photo_id");
     window.sessionStorage.removeItem("obs_uploaded");
     //window.sessionStorage.removeItem("photo_compass");
-    window.sessionStorage.removeItem("photo_image");    
+    //window.sessionStorage.removeItem("photo_image");    
 }
 
 function init_form() {

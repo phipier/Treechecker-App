@@ -40,11 +40,11 @@ function createTables() {
             + " latitude double precision not null,"
             + " uploaded integer);"
     runSQL(sqlstr);
-    //sqlstr = "DROP TABLE IF EXISTS photo;"
-    //runSQL(sqlstr);
+    /*sqlstr = "DROP TABLE IF EXISTS photo;"
+    runSQL(sqlstr);*/
     sqlstr = "CREATE TABLE IF NOT EXISTS photo "
             +   "(id integer primary key, "
-            +   "id_surveydata integer not null REFERENCES surveydata(id) ON DELETE CASCADE, "
+            +   "id_surveydata integer REFERENCES surveydata(id) ON DELETE CASCADE, "
             +   "compass double precision, image text not null, "
             +   "comment text);"
     runSQL(sqlstr);
@@ -78,6 +78,12 @@ function createTables() {
     runSQL(sqlstr);
 }
 
+function handleError(value) {
+    console.log("error message : " + value); 
+    displayMessage("An error occured - " + value,()=>{});       
+    return Promise.reject(value);      
+};
+
 function runSQL(query) {
     db.transaction(function (tx) {       
         tx.executeSql(query, [], function (tx, res) {            
@@ -97,10 +103,10 @@ function runSQL2(query) {
     return new Promise(function(resolve, reject) {
         db.transaction(function (tx) {       
             tx.executeSql(query, [], function (tx, res) {            
-                resolve(res)
+                resolve(res);
             },
             function (tx, error) {                
-                reject("transaction error " + error.message);
+                reject(error.message);
             });
         }, function (error) {
             reject(error.message);
@@ -110,11 +116,6 @@ function runSQL2(query) {
 }
 
 function delete_aoi_fromDB(id_aoi) {
-    var handleError = function(value) {
-        console.log("error message : " + value); 
-        displayMessage("Error - "+value,()=>{});       
-        return Promise.reject(value);      
-    };
     window.plugins.spinnerDialog.show("Deleting AOI ...");
     runSQL2('DELETE FROM photo where id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ');')
     .then((res) => { return runSQL2('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';'); }, (error) => {handleError(error);}) 
