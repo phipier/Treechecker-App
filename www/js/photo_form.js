@@ -115,7 +115,7 @@ function insert_photo(photo) {
     .finally(function() {        
         console.log("finally - edit obs");
         window.plugins.spinnerDialog.hide();      
-        if (!err) {window.location = "obs_form.html";}
+        if (!err) {window.location = "obs_formg.html";}
     });
 }
 
