@@ -7,6 +7,7 @@ var obsform = {
         document.addEventListener("backbutton", onBackKeyDown, false);
         init_form();
 
+
         $('#photo').on('click', function() {
             //e.preventDefault();
             navigator.camera.getPicture(
@@ -15,11 +16,11 @@ var obsform = {
                     var format = "data:image/jpeg;base64,";
                     var src = format + imageData;                
 
+                    window.sessionStorage.setItem("photo_image", src);
                     window.sessionStorage.setItem("photo_id", "");
                     window.sessionStorage.setItem("photo_comment", "");
                     window.sessionStorage.setItem("photo_compassbearing", "");
-                    window.sessionStorage.setItem("photo_image", src);
-
+                    
                     window.location = "photo_form.html";
                 },
                 function() {
@@ -206,18 +207,23 @@ function init_form() {
         function (tx, error) {
             console.log('SELECT canopystatus error: ' + error.message);
         });
-        // status
+        // photos
         var query = 'SELECT * FROM photo where id_surveydata' + (obs.id=="NULL" ? ' is NULL' : ' = ' + obs.id ) + ';';
         tx.executeSql(query, [], function (tx, res) {
             var html = "";
             for(var x = 0; x < res.rows.length; x++) {
+                $('.carousel-indicators').append('<li data-target="#carouselphotos" data-slide-to="' + x + '" ' + ((x==0)?'class="active"':'') + '></li>');
                 $('.carousel-inner').append(
-                    '<div class="carousel-item active">' 
-                    + ' <img class="d-block w-100"' 
-                    +   ' src="'            + res.rows.item(x).image    + '"'
-                    +   ' data-comment="'   + res.rows.item(x).comment  + '"'
-                    +   ' data-compass="'   + res.rows.item(x).compass  + '">'
-                    + ' </div>")');
+                    '<div class="carousel-item ' + ((x==0)?'active':'') + '">' 
+                    +   ' <img class="d-block w-100 h-100"' 
+                        +   ' src="'            + res.rows.item(x).image    + '"'
+                        +   ' data-comment="'   + res.rows.item(x).comment  + '"'
+                        +   ' data-compass="'   + res.rows.item(x).compass  + '">'
+                    +   ' <div class="carousel-caption">'
+                    +       ((res.rows.item(x).compass)?' <h5>'   + Number(res.rows.item(x).compass).toFixed(1) + '&deg;</h5>':'')
+                    +       ((res.rows.item(x).comment)?' <p>'    + res.rows.item(x).comment  + '</p>':'')
+                    +   '</div>'
+                    +'</div>');
             }
         },
         function (tx, error) {
@@ -240,6 +246,7 @@ function init_form() {
             document.getElementById('image').src = obs.photo.image;
         } */
         if (obs.uploaded === "1") { $("#saveobs").hide(); }
-        window.plugins.spinnerDialog.hide();
+        $('#carouselphotos').carousel('pause');
+        //window.plugins.spinnerDialog.hide();
     });
 };

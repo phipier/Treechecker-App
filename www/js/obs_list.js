@@ -382,7 +382,7 @@ function onBackKeyDown() {
 
 function edit_obs(id_obs) {
     var err = false;
-    runSQL2('DELETE FROM photo where id_surveydata = NULL;')
+    runSQL2('DELETE FROM photo where id_surveydata is NULL;')
     .then(() => {    
         console.log("photos deleted ... ");    
         return runSQL2('SELECT * FROM surveydata where id = '+id_obs+';');
@@ -448,13 +448,28 @@ function delete_obs(id_obs) {
 
 $("#addOBS").click(function(e) {
     e.preventDefault();
-    window.sessionStorage.setItem("obs_id", "");
-    window.sessionStorage.setItem("obs_uploaded", "0");
-    //window.sessionStorage.setItem("obs_name", "myobstest");
-    //window.sessionStorage.setItem("obs_latitude", "39.784352364601");
-    //window.sessionStorage.setItem("obs_longitude", "-7.6377547801287");
-
-    window.sessionStorage.setItem("updating","false");
-    window.location = 'obs_form.html';
+    window.plugins.spinnerDialog.show();
+    var err = false;
+    runSQL2('DELETE FROM photo where id_surveydata is NULL;')
+    .then((res) => {        
+        window.sessionStorage.setItem("obs_id", "");
+        window.sessionStorage.setItem("obs_uploaded", "0");
+        window.sessionStorage.setItem("obs_name", "myobstest");
+        window.sessionStorage.setItem("obs_latitude", "39.784352364601");
+        window.sessionStorage.setItem("obs_longitude", "-7.6377547801287"); 
+    }, (value) => {
+        displayMessage("Error - It was not possible to delete photos.",()=>{});
+        handleError(value);
+    })
+    .catch(function(error) {
+        err = true;
+        console.log("error - add obs");
+        console.log(error);            
+    })
+    .finally(function() {        
+        console.log("finally - add obs");
+        window.plugins.spinnerDialog.hide();      
+        if (!err) {window.location = "obs_form.html"};
+    });
     return false;
 });
