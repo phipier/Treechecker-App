@@ -59,8 +59,8 @@ function createTables() {
             + " latitude double precision not null,"
             + " uploaded integer);"
     runSQL(sqlstr);
-    /*sqlstr = "DROP TABLE IF EXISTS photo;"
-    runSQL(sqlstr);*/
+    sqlstr = "DROP TABLE IF EXISTS photo;"
+    runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS photo "
             +   "(id integer primary key, "
             +   "id_surveydata integer REFERENCES surveydata(id) ON DELETE CASCADE, "
@@ -74,8 +74,6 @@ function createTables() {
             +   "compass double precision, image text not null, "
             +   "comment text);"
     runSQL(sqlstr);
-
-
 }
 
 function handleError(value) {

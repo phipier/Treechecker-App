@@ -5,9 +5,9 @@ var listObs = {
         document.addEventListener("offline", this.onOffline, false);        
     },
     onDeviceReady: function() {
-        
+        clearWSitems_obs();
         document.addEventListener("backbutton", onBackKeyDown, false);
-        var id_aoi = window.sessionStorage.getItem("id_aoi");
+        var id_aoi = window.sessionStorage.getItem("id_aoi");        
 
         db.transaction(function (tx) {
                 var query = 'SELECT * FROM surveydata where id_aoi = '+id_aoi+';';
@@ -382,6 +382,8 @@ function onBackKeyDown() {
 
 function edit_obs(id_obs) {
     var err = false;
+    var uploaded;
+    
     runSQL2('DELETE FROM photo where id_surveydata is NULL;')
     .then(() => {    
         console.log("photos deleted ... ");    
@@ -400,6 +402,7 @@ function edit_obs(id_obs) {
         window.sessionStorage.setItem("obs_latitude",           res.rows.item(0).latitude);
         window.sessionStorage.setItem("obs_longitude",          res.rows.item(0).longitude);
         window.sessionStorage.setItem("obs_uploaded",           res.rows.item(0).uploaded);
+        uploaded = res.rows.item(0).uploaded;
     }, (value) => {
         displayMessage("Error - It was not possible to select obs.",()=>{});
         handleError(value);
@@ -412,7 +415,10 @@ function edit_obs(id_obs) {
     .finally(function() {        
         console.log("finally - edit obs");
         window.plugins.spinnerDialog.hide();      
-        if (!err) {window.location = "obs_form.html"};
+        if (!err) {
+            if (uploaded === "1") {window.location = "obs_form.html"}
+            else                  {window.location = "obs_map.html"}        
+        };
     });
     
 }

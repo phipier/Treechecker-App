@@ -4,7 +4,7 @@ var obsform = {
     },
     onDeviceReady: function() {
         //window.plugins.spinnerDialog.show();
-        document.addEventListener("backbutton", onBackKeyDown, false);
+        //document.addEventListener("backbutton", onBackKeyDown, false);
         init_form();
 
         $('#photo').on('click', function() {
@@ -49,8 +49,8 @@ function onBackKeyDown() {
 
 function cancel_OBS() {
     //displayMessage("OBS creation/editing canceled.", function() {clearWSitems(); window.location = "obs_list.html";});
-    clearWSitems(); 
-    window.location = "obs_map.html";
+    //clearWSitems(); 
+    //window.location = "obs_map.html";
 }
 
 $("#saveobs").click( function(e) {
@@ -81,7 +81,6 @@ function insert_OBS(obs) {
                 tx.executeSql(sql, [],
                     function(tx, res) {
                         //window.sessionStorage.setItem("photo_id", res.insertId);
-                        clearWSitems();
                         window.location = 'obs_list.html';
                     },
                     function(tx, error) {
@@ -143,21 +142,6 @@ function getWSitems() {
     }
     
     return obs;
-}
-
-function clearWSitems() {        
-    window.sessionStorage.removeItem("obs_id");
-    window.sessionStorage.removeItem("obs_name");
-    window.sessionStorage.removeItem("obs_comment");
-    window.sessionStorage.removeItem("obs_id_tree_species");
-    window.sessionStorage.removeItem("obs_id_crown_diameter");
-    window.sessionStorage.removeItem("obs_id_canopy_status");
-    window.sessionStorage.removeItem("obs_latitude");
-    window.sessionStorage.removeItem("obs_longitude");
-    window.sessionStorage.removeItem("photo_id");
-    window.sessionStorage.removeItem("obs_uploaded");
-    //window.sessionStorage.removeItem("photo_compass");
-    //window.sessionStorage.removeItem("photo_image");    
 }
 
 function init_form() {
@@ -242,7 +226,12 @@ function init_form() {
             $('#preview_text').remove();
             document.getElementById('image').src = obs.photo.image;
         } */
-        if (obs.uploaded === "1") { $("#saveobs").hide(); }
+        if (obs.uploaded === "1") { 
+            $("#saveobs").hide();
+            $('#OBS-form input').attr('readonly', 'readonly');
+            $('#OBS-form textarea').attr('readonly', 'readonly'); 
+            $('#OBS-form select').attr('readonly', 'readonly');  
+        }
         $('#carouselphotos').carousel('pause');
         //window.plugins.spinnerDialog.hide();
     });

@@ -54,24 +54,22 @@ $("#btncompass").click(function(e) {
     if (!flag_measuring) 
     {
         flag_measuring = true;
-        window.addEventListener("deviceorientation", function(event) {
-            compassbearing = 360 - event.alpha;
-            $("#InputCompassbearing").val(compassbearing);
-        }, true);
 
-        window.addEventListener("compassneedscalibration", function(event) {
-            alert('Your compass needs calibrating! Wave your device in a figure-eight motion');
-            event.preventDefault();
-        }, true);
-        $("#btncompass").text("Stop measuring");
+        window.addEventListener("deviceorientationabsolute", getorientation, true);
+        window.addEventListener("compassneedscalibration", needscalibration, true);
+
+        //$("#btncompass").text("Stop measuring");
         $("#InputCompassbearing").prop('disabled', true);
     }
     else {
         flag_measuring = false;
-        window.removeEventListener("deviceorientation"); 
-        window.removeEventListener("compassneedscalibration"); 
+
+        window.removeEventListener("deviceorientationabsolute", getorientation, true);
+        window.removeEventListener("compassneedscalibration", needscalibration, true);
+
         setWSitems();
-        $("#btncompass").text("Start measuring compass bearing"); 
+
+        //$("#btncompass").text("Start measuring compass bearing"); 
         $("#InputCompassbearing").prop('disabled', false);     
     }
     return false;
@@ -90,22 +88,35 @@ $("#savephoto").click( function(e) {
     return false;
 });
 
+function getorientation(event) {
+    compassbearing = Number(360 - event.alpha).toFixed(1);
+
+/*     // lock the device orientation
+.orientation.lock('portrait')
+
+// unlock the orientation
+.orientation.unlock()
+
+// current orientation
+.orientation */
+
+    $("#InputCompassbearing").val(compassbearing);
+}
+
+function needscalibration(event) {
+    alert('Your compass needs calibrating! Wave your device in a figure-eight motion');
+    event.preventDefault();
+}
+
 function insert_photo(photo) {
     var err = false;
-    runSQL2("REPLACE INTO photo (id, id_surveydata, compass, image) "
-    + "VALUES(" + photo.id + "," + photo.obsid + "," + photo.compassbearing + ",'" + photo.image + "');")
-    .then(() => {    
-        console.log("replace in photo table done ... ");    
-        return runSQL2('DELETE FROM photo where id_surveydata = NULL;');
-    }, (value) => {
-        displayMessage("Error - It was not possible to delete photo.",()=>{});
-        handleError(value);
-    })
-    .then((res) => {        
-        console.log("OK - photos deleted");
-    }, (value) => {
-        displayMessage("Error - It was not possible to delete photos",()=>{});
-        handleError(value);
+
+    runSQL2("REPLACE INTO photo (id, id_surveydata, compass, image, comment) "
+    + "VALUES(" + photo.id + "," + photo.obsid + "," + photo.compassbearing + ",'" + photo.image + "','" + photo.comment + "');")   
+    .then((res) => {     
+        console.log("replace in photo table done ... ");
+    }, (value) => {       
+        handleError("It was not possible to replace photo - " + value);
     })
     .catch(function(error) {
         console.log("error - edit obs");

@@ -11,6 +11,7 @@ var listRegions = {
     // Bind any cordova events here. Common events are:
     // 'pause', 'resume', etc.
     onDeviceReady: function() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
         
         createTables();
 
@@ -42,6 +43,10 @@ var listRegions = {
 };
 
 listRegions.initialize();
+
+function onBackKeyDown() {
+    window.location = "login.html";
+}
 
 function loadRegions() {
     db.transaction(function (tx) {

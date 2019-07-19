@@ -25,6 +25,9 @@
                 <a id="selectposition" href="#" class="btn button">Select location on map</a>
                 <br><span>or provide coordinates (in decimal degrees):</span><br>
             </div> -->
+            <button id="selectposition" type="button" class="btn button"><i class="fas fa-map-marked-alt fa-2x"></i></button>
+            <br>
+       
             <label for="Inputlatitude">Latitude</label>
             <input class="form-control" id="Inputlatitude" pattern="^-?([1-8][0-9]|[0-9])(\.\d*)?$" title="decimal degrees (-90 to 90)" placeholder="Enter latitude" required>
             <div class="invalid-feedback">
@@ -95,8 +98,7 @@
     </form>
 </div>
 
-<button id="saveobs" type="button" class="btn button btn-circle btn-xl float"><i class="fas fa-check"></i>
-</button>
+<button id="saveobs" type="button" class="btn button btn-circle btn-xl float"><i class="fas fa-check"></i></button>
 
 <div class="modal fade" id="messagepopup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

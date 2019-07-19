@@ -1,5 +1,5 @@
-//const SERVERURL = 'http://10.0.2.2:8000';
-const SERVERURL = 'https://treechecker.pythonanywhere.com';
+const SERVERURL = 'http://10.0.2.2:8000';
+//const SERVERURL = 'https://treechecker.pythonanywhere.com';
 //const SERVERURL = 'http://192.168.43.148:8000';
 //const SERVERURL = 'https://treechecker.ies.jrc.it';
 

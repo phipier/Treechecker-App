@@ -293,7 +293,7 @@ html, #mapid, #login-page {
 
 #taken-picture {
     dislay:block;
-    border:2px solid black;
+    /* border:2px solid black; */
     width:215px;
     /* height:215px; */
     margin:0 auto;

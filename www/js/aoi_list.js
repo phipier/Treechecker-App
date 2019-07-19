@@ -7,6 +7,7 @@ var listAOI = {
 
     onDeviceReady: function() {
         document.addEventListener("backbutton", onBackKeyDown, false);
+        
         window.plugins.spinnerDialog.show();
         var id_region = window.sessionStorage.getItem("id_region");
 

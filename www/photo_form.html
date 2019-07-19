@@ -20,23 +20,22 @@
 <div class="forms">
     <form id="Photo-form" novalidate>
         <div class="form-group">
-            <div id="content">
-                <div id="picture">
-                    <p>
-                        <button id="editphoto" class="btn button">Edit photo</button>
-                    </p>
-                    <div id="taken-picture">
-                        <span id="preview_text">Image Preview</span>
-                        <img height="215" width="215" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" id="image"/>
-                    </div>
+            <div id="content" style="display:inline">                  
+                <!-- <button id="editphoto" class="btn button">Edit photo</button> -->                        
+                <div id="taken-picture">
+                    <span id="preview_text">Image Preview</span>
+                    <img width="215" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" id="image"/>
                 </div>
+                <button id="editphoto" type="button" class="btn button"><i class="fas fa-camera fa-2x"></i></button>
             </div>
         </div>
+        <hr>
         <div class="form-group">
             <div id="content">
                 <div id="compass">
                     <p>
-                        <button id="btncompass" class="btn button">Start measuring compass bearing (Point top of smartphone towards object)</button>
+                        <button id="btncompass" type="button" class="btn button"><i class="fas fa-compass fa-2x white"></i></button>
+                        <!-- <button id="btncompass" class="btn button">Start measuring compass bearing (Point top of smartphone towards object)</button> -->
                     </p>
                     <!--label for="InputGPSbearing">GPS bearing</label>
                     <input type="text" class="form-control" id="InputGPSbearing"  pattern='^[^"]+$' aria-describedby="emailHelp" placeholder="GPS bearing">
@@ -59,12 +58,10 @@
                 Please provide a comment for this photo.
             </div>
         </div>
-        <hr>
-        <a id="savephoto" href="#" class="btn button">Save</a>
-        <a id="cancelphoto" href="#" class="btn button">Cancel</a>
-        <br><br>
     </form>
 </div>
+
+<button id="savephoto" type="button" class="btn button btn-circle btn-xl float"><i id="iconsave" class="fas fa-check"></i></button>
 
 <div class="modal fade" id="messagepopup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

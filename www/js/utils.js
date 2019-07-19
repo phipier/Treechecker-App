@@ -31,3 +31,18 @@ function displayMessage(message, action_OK, action_cancel) {
             });
         }
 }
+
+function clearWSitems_obs() {        
+    window.sessionStorage.removeItem("obs_id");
+    window.sessionStorage.removeItem("obs_name");
+    window.sessionStorage.removeItem("obs_comment");
+    window.sessionStorage.removeItem("obs_id_tree_species");
+    window.sessionStorage.removeItem("obs_id_crown_diameter");
+    window.sessionStorage.removeItem("obs_id_canopy_status");
+    window.sessionStorage.removeItem("obs_latitude");
+    window.sessionStorage.removeItem("obs_longitude");
+    window.sessionStorage.removeItem("photo_id");
+    window.sessionStorage.removeItem("obs_uploaded");
+    //window.sessionStorage.removeItem("photo_compass");
+    //window.sessionStorage.removeItem("photo_image");    
+}
