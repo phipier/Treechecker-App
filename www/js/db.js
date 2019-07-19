@@ -8,7 +8,26 @@ function openDb() {
 };
 
 function createTables() {
-    
+    /* sqlstr = "DROP TABLE IF EXISTS treespecies;"
+    runSQL(sqlstr);  */     
+    sqlstr = "CREATE TABLE IF NOT EXISTS treespecies "
+            + "(id integer primary key, "
+            + " name varchar(100) not null UNIQUE);"
+    runSQL(sqlstr);
+    /* 
+    sqlstr = "DROP TABLE IF EXISTS crowndiameter;"
+    runSQL(sqlstr); */
+    sqlstr = "CREATE TABLE IF NOT EXISTS crowndiameter "
+            + "(id integer primary key, "
+            + "name varchar(100) not null UNIQUE);"
+    runSQL(sqlstr);
+    /* 
+    sqlstr = "DROP TABLE IF EXISTS canopystatus;"
+    runSQL(sqlstr); */
+    sqlstr = "CREATE TABLE IF NOT EXISTS canopystatus "
+            + "(id integer primary key, "
+            + "name varchar(100) not null);"
+    runSQL(sqlstr);
     var sqlstr; 
     //sqlstr = "DROP TABLE IF EXISTS geographicalzone;"
     //runSQL(sqlstr);
@@ -56,26 +75,7 @@ function createTables() {
             +   "comment text);"
     runSQL(sqlstr);
 
-    /* sqlstr = "DROP TABLE IF EXISTS treespecies;"
-    runSQL(sqlstr);  */     
-    sqlstr = "CREATE TABLE IF NOT EXISTS treespecies "
-            + "(id integer primary key, "
-            + " name varchar(100) not null UNIQUE);"
-    runSQL(sqlstr);
-/* 
-    sqlstr = "DROP TABLE IF EXISTS crowndiameter;"
-    runSQL(sqlstr); */
-    sqlstr = "CREATE TABLE IF NOT EXISTS crowndiameter "
-            + "(id integer primary key, "
-            + "name varchar(100) not null UNIQUE);"
-    runSQL(sqlstr);
-/* 
-    sqlstr = "DROP TABLE IF EXISTS canopystatus;"
-    runSQL(sqlstr); */
-    sqlstr = "CREATE TABLE IF NOT EXISTS canopystatus "
-            + "(id integer primary key, "
-            + "name varchar(100) not null);"
-    runSQL(sqlstr);
+
 }
 
 function handleError(value) {
@@ -112,18 +112,5 @@ function runSQL2(query) {
             reject(error.message);
         }, function () {            
         });
-    });
-}
-
-function delete_aoi_fromDB(id_aoi) {
-    window.plugins.spinnerDialog.show("Deleting AOI ...");
-    runSQL2('DELETE FROM photo where id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ');')
-    .then((res) => { return runSQL2('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';'); }, (error) => {handleError(error);}) 
-    .then((res) => { return runSQL2('DELETE FROM aoi WHERE id = ' + id_aoi + ';'); },            (error) => {handleError(error);}) 
-    //.then((res) => { console.log("AOI deleted"); },                                              (error) => {handleError(error);})         
-    .catch(function(value) {console.log(value);})
-    .finally(function() {       
-        window.plugins.spinnerDialog.hide();
-        displayMessage("AOI deleted.",()=>{window.location = "obs_list.html";});        
     });
 }

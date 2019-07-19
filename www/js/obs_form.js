@@ -3,10 +3,9 @@ var obsform = {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
     },
     onDeviceReady: function() {
-        window.plugins.spinnerDialog.show();
+        //window.plugins.spinnerDialog.show();
         document.addEventListener("backbutton", onBackKeyDown, false);
         init_form();
-
 
         $('#photo').on('click', function() {
             //e.preventDefault();
@@ -30,8 +29,6 @@ var obsform = {
             );
             return false;
         });
-
-        
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -40,11 +37,11 @@ var obsform = {
 
 obsform.initialize();
 
-$("#cancelobs").click( function(e) {
+/* $("#cancelobs").click( function(e) {
     e.preventDefault();
     cancel_OBS();
     return false;
-});
+}); */
 
 function onBackKeyDown() {
     cancel_OBS();
@@ -53,7 +50,7 @@ function onBackKeyDown() {
 function cancel_OBS() {
     //displayMessage("OBS creation/editing canceled.", function() {clearWSitems(); window.location = "obs_list.html";});
     clearWSitems(); 
-    window.location = "obs_list.html";
+    window.location = "obs_map.html";
 }
 
 $("#saveobs").click( function(e) {

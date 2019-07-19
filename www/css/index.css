@@ -98,6 +98,74 @@ h1 {
     font-size:16px;
 }
 
+.btn-circle.btn-xl {
+    width: 70px;
+    height: 70px;
+    padding: 10px 16px;
+    border-radius: 35px;
+    font-size: 24px;
+    line-height: 1.33;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
+}
+
+
+.button-bottom {
+    margin-top:50px;
+}
+
+.button-circle {
+    border-radius: 50%;
+}
+
+.white {
+    color: white;
+}
+
+.bgwhite {
+    background-color:#ebedf0;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color:#8BC34A;
+ }
+
+ .hide {
+     display:none;
+ }
+
+.float{
+    position:fixed;
+    z-index:9999;
+	bottom:30px;
+	right:20px;
+	box-shadow: 2px 2px 3px #999;
+}
+
+.float2{
+    position:fixed;
+    z-index:9999;
+	bottom:120px;
+	right:20px;
+	box-shadow: 2px 2px 3px #999;
+}
+
+.my-float{
+	margin-top:22px;
+}
+
 .button-navbar {
     background-color:#8BC34A;   
     padding:15px 20px;
@@ -121,21 +189,6 @@ h1 {
     float: right;   
 }
 
-.button-bottom {
-    margin-top:50px;
-}
-
-.button-circle {
-    border-radius: 50%;
-}
-
-.white {
-    color: white;
-}
-
-.green {
-    color:#8BC34A;
- }
 
 .trckapp-navbar {
     background-color:#8BC34A;

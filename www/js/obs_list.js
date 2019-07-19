@@ -469,7 +469,7 @@ $("#addOBS").click(function(e) {
     .finally(function() {        
         console.log("finally - add obs");
         window.plugins.spinnerDialog.hide();      
-        if (!err) {window.location = "obs_form.html"};
+        if (!err) {window.location = "obs_map.html"};
     });
     return false;
 });

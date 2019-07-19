@@ -9,6 +9,7 @@
     <script src="lib/jquery-3.3.1.min.js"></script>
     <script src="lib/popper.min.js"></script>
     <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/font-awesome.js"></script>
     <title>TreeChecker</title>
 </head>
 <body>
@@ -31,9 +32,7 @@
         <div class="form-group">
             <div class="d-inline">
                 <a id="selectarea" href="#" class="btn button">Select area on map</a>
-                <br><span> or provide coordinates:</span><br>                
-                <!--input class="form-check-input" type="checkbox" value="" id="InputforceRedld">
-                <label for="InputforceRedld">Force tiles re-download</label-->
+                <br><span> or provide coordinates:</span><br>
             </div>            
             <label for="Inputxmin">longitude min</label>
             <input type="bbox" class="form-control" id="Inputxmin" pattern="^-?([1][0-7][0-9]|[1-9][0-9]|[0-9])(\.\d*)?$" title="decimal degrees (-180 to 180)"  placeholder="Enter longitude min" onkeypress="return isNumberKey(event)" required>
@@ -55,19 +54,17 @@
             <div class="invalid-feedback">
                 Please provide a latitude min in decimal degrees (-90 to 90)
             </div>
-            <!--small id="bboxhelp" class="form-text text-muted">boundaries in WSG84, format is xmin:xmax:ymin:ymax</small-->
         </div>
         <hr>
-        <!-- button id="aoisavebtn" type="submit" class="btn btn-primary">save my AOI</button -->
-        <a id="saveaoi" href="#" class="btn button">Save</a>
-        <a id="cancelaoi" href="#" class="btn button">Cancel</a>        
-        <br><br>
-        <div class="progress">
+        <div class="progress" style="height:40px;">
             <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-            <!--style="min-width: 2em;"-->
         </div>
+        <hr>
     </form>
 </div>
+
+<button id="saveaoi" type="button" class="btn button btn-circle btn-xl float"><i id="iconsave" class="fas fa-check"></i></button>
+<button id="cancelaoi" type="button" class="btn button btn-circle btn-xl float2 bgwhite hide"><i id="iconcancel" class="fas fa-stop red"></i></button>
 
 <div class="modal fade" id="messagepopup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

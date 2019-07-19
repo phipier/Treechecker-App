@@ -101,7 +101,7 @@ function createMarker(latlng_pos) {
 
 function onBackKeyDown() {
     if (obslist) {window.location = "obs_list.html";window.sessionStorage.removeItem("obslist");} 
-    else {window.location = "obs_form.html";}
+    else {window.location = "obs_list.html";}
 }
 
 function centerMapOnCurrentPosition() {

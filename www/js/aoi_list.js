@@ -103,6 +103,19 @@ function delete_aoi(id_aoi) {
         ()=>{});
 }
 
+function delete_aoi_fromDB(id_aoi) {
+    window.plugins.spinnerDialog.show("Deleting AOI ...");
+    runSQL2('DELETE FROM photo where id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ');')
+    .then((res) => { return runSQL2('DELETE FROM surveydata where id_aoi = ' + id_aoi + ';'); }, (error) => {handleError(error);}) 
+    .then((res) => { return runSQL2('DELETE FROM aoi WHERE id = ' + id_aoi + ';'); },            (error) => {handleError(error);}) 
+    .then((res) => { console.log("AOI deleted"); },                                              (error) => {handleError(error);})         
+    .catch(function(value) {console.log(value);})
+    .finally(function() {       
+        window.plugins.spinnerDialog.hide();  
+        window.location = "aoi_list.html"     
+    });
+}
+
 /*  TO DO later ... not a priority
 function edit_aoi(id_aoi) {
     db.transaction(function (tx) {

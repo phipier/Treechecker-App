@@ -15,17 +15,21 @@
         <script src="lib/bootstrap.min.js"></script>
         <script src="lib/leaflet.js"></script>
         <script src="lib/leaflet-areaselect.js"></script>
+        <script src="lib/font-awesome.js"></script>
 
         <title>TreeChecker</title>
     </head>
     <body>
         <div id="map-wrapper">
             <div id="mapid"></div>
-            <div id="button-wrapper">                
+<!--             <div id="button-wrapper">                
                 <button id="savearea" class="btn button right-align">OK</button>
-                <!--button id="cancelarea" class="btn button">Cancel</button-->
-            </div> 
+                button id="cancelarea" class="btn button">Cancel</button>
+            </div>  -->
         </div>
+
+        <button id="savearea" type="button" class="btn button btn-circle btn-xl float"><i class="fas fa-arrow-right"></i></button>
+
         <div class="modal fade" id="messagepopup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">

@@ -21,10 +21,10 @@
 <div class="forms">
     <form id="OBS-form" novalidate>
         <div class="form-group">
-            <div class="d-inline">
+<!--             <div class="d-inline">
                 <a id="selectposition" href="#" class="btn button">Select location on map</a>
                 <br><span>or provide coordinates (in decimal degrees):</span><br>
-            </div>
+            </div> -->
             <label for="Inputlatitude">Latitude</label>
             <input class="form-control" id="Inputlatitude" pattern="^-?([1-8][0-9]|[0-9])(\.\d*)?$" title="decimal degrees (-90 to 90)" placeholder="Enter latitude" required>
             <div class="invalid-feedback">
@@ -64,13 +64,7 @@
                 <option value="" disabled selected>select severity</option>
             </select>
         </div>
-        <hr>        
-        <!--div class="form-group">
-            <label for="Inputcompass">Compass</label>
-            <input class="form-control" id="Inputcompass" placeholder="Enter compass value">
-            <required>            
-        </div>
-        <hr -->
+        <hr> 
         <div class="form-group">
             <div id="content">
                 <p>
@@ -92,14 +86,17 @@
                 </div>  
             </div>
         </div>
-        <br>
-        <hr>
+
         <!-- button id="btn_saveobs" type="submit" class="btn btn-primary">save my AOI</button -->
-        <a id="saveobs" href="#" class="btn button">Save</a>
-        <a id="cancelobs" href="#" class="btn button">Cancel</a>
+        <!--a id="saveobs" href="#" class="btn button">Save</a-->
+        <!--a id="cancelobs" href="#" class="btn button">Cancel</a-->
+
         <br><br>
     </form>
 </div>
+
+<button id="saveobs" type="button" class="btn button btn-circle btn-xl float"><i class="fas fa-check"></i>
+</button>
 
 <div class="modal fade" id="messagepopup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

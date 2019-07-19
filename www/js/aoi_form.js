@@ -5,6 +5,7 @@ var aoiform = {
 
     onDeviceReady: function() {
         AOI_cancel = false;
+        $("#cancelaoi").hide();
         document.addEventListener("backbutton", onBackKeyDown, false);
         window.plugins.spinnerDialog.show();
         var id_aoi = window.sessionStorage.getItem("id_aoi");
@@ -14,7 +15,7 @@ var aoiform = {
         $("#Inputxmax").val(window.sessionStorage.getItem("bbox_xmax"));
         $("#Inputymin").val(window.sessionStorage.getItem("bbox_ymin")); 
         $("#Inputymax").val(window.sessionStorage.getItem("bbox_ymax"));
-            
+        
         window.plugins.spinnerDialog.hide();        
     },
 
@@ -54,7 +55,9 @@ $("#cancelaoi").click( function(e) {
 });
 
 function onBackKeyDown() {
-    cancel_AOI();    
+    clearWSitems(); 
+    window.location = "aoi_list.html";
+    stopButtonSpinners();    
 }
 
 function cancel_AOI() {
@@ -63,8 +66,8 @@ function cancel_AOI() {
         AOI_cancel = true;
     } else { 
         displayMessage("AOI creation canceled.", function() {
-            clearWSitems(); 
-            window.location = "aoi_list.html";
+            //clearWSitems(); 
+            //window.location = "aoi_list.html";
             stopButtonSpinners();
         });        
     }    
@@ -80,8 +83,8 @@ function exit_AOI(success, message) {
     } else {
         displayMessage(message, ()=>{            
                         var id_aoi = window.sessionStorage.getItem("id_aoi");
-                        delete_aoi_fromDB(id_aoi);
-                        clearWSitems();
+                        if (id_aoi) { delete_aoi_fromDB(id_aoi); }
+                        //clearWSitems();
                     });
     }
     
@@ -162,6 +165,17 @@ function add_AOI(aoiname, bbox) {
     }
 }
 
+function delete_aoi_fromDB(id_aoi) {
+    window.plugins.spinnerDialog.show("Deleting AOI ...");
+    runSQL2('DELETE FROM aoi WHERE id = ' + id_aoi + ';')
+    .then((res) => { console.log("AOI deleted"); },   (error) => {handleError(error);})         
+    .catch(function(value) {console.log(value);})
+    .finally(function() {       
+        init_progress();
+        window.plugins.spinnerDialog.hide();   
+    });
+}
+
 function insert_AOI(val, bbox, id_region) {
     db.transaction(function(tx) {
         var sqlstr = 
@@ -193,16 +207,30 @@ function clearWSitems() {
     window.sessionStorage.removeItem("bbox_ymax");
 }
 
-
 function stopButtonSpinners() {
-    $("#saveaoi #loadingspinner").remove();
-    $("#cancelaoi #loadingspinner").remove();
+    //$("#saveaoi #loadingspinner").remove();
+    //$("#cancelaoi #loadingspinner").remove();
+    //$("#iconsave").attr( "class", "fas fa-check" );
+    $("#iconsave").remove();
+    $("#saveaoi").append('<i id="iconsave" class="fas fa-check"></i>');
+    //$("#iconcancel").attr( "class", "fas fa-stop" );
+    $("#iconcancel").remove();
+    $("#cancelaoi").append('<i id="iconcancel" class="fas fa-stop red"></i>');
+
+    $("#cancelaoi").hide();
 }
 function startCancelSpinner(){
-    stopButtonSpinners()
-    $("#cancelaoi").prepend('<span id="loadingspinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp');
+    //stopButtonSpinners()
+    //$("#cancelaoi").prepend('<span id="loadingspinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp');
+    $("#cancelaoi").show();
+    $("#iconcancel").remove();
+    $("#cancelaoi").append('<i id="iconcancel" class="spinner-border red"></i>');    
+    //$("#iconcancel").attr( "class", "spinner-border" );
 }
 function startSaveSpinner(){
-    stopButtonSpinners()
-    $("#saveaoi").prepend('<span id="loadingspinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp');
+    //stopButtonSpinners()
+    //$("#saveaoi").prepend('<span id="loadingspinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp');
+    $("#iconsave").remove();
+    $("#saveaoi").append('<i id="iconsave" class="spinner-border white"></i>');
+    $("#cancelaoi").show();
 }
