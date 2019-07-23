@@ -153,7 +153,7 @@ function insert_photo(photo) {
 } */
 
 function setWSitems() {
-    window.sessionStorage.setItem("photo_comment",          $("#InputPhotocomment").text().trim());
+    window.sessionStorage.setItem("photo_comment",          $("#InputPhotocomment").val().trim());
     window.sessionStorage.setItem("photo_compassbearing",   $("#InputCompassbearing").val().trim());
     //window.sessionStorage.setItem("photo_GPSbearing",       $("#GPSbearing").val().trim());
     window.sessionStorage.setItem("photo_image",            document.getElementById('image').src);

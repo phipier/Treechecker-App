@@ -37,20 +37,12 @@ var obsform = {
 
 obsform.initialize();
 
-/* $("#cancelobs").click( function(e) {
-    e.preventDefault();
-    cancel_OBS();
-    return false;
-}); */
-
 function onBackKeyDown() {
     cancel_OBS();
 }
 
 function cancel_OBS() {
-    //displayMessage("OBS creation/editing canceled.", function() {clearWSitems(); window.location = "obs_list.html";});
-    //clearWSitems(); 
-    //window.location = "obs_map.html";
+    window.location = "obs_list.html";
 }
 
 $("#saveobs").click( function(e) {

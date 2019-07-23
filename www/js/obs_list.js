@@ -18,7 +18,7 @@ var listObs = {
                         html += '<li class="list-group-item d-flex align-items-center py-1">'
                         + '<div class="mr-auto p-1"><h5>' + res.rows.item(x).name + '</h5></div>';                        
                         if (res.rows.item(x).uploaded == 1) {
-                            html += '<div class="p-1"><i class="fas fa-check-circle fa-2x green"></i></div>'
+                            html += '<div class="p-1"><i class="fas fa-clipboard-check fa-2x green"></i></div>'  //fa-check-circle 
                                     + '<div class="p-1"><a id="edit_idobs_'+id_obs+'" class="btn button button-listitem">'
                                     + '<i class="fas fa-eye fa-2x white"></i></a></div>'
                         } else {
@@ -106,9 +106,11 @@ var listObs = {
     },
     onOnline: function() {
         $('#sidebarCollapse').show();
+        $('#uploadobs').show();
     },
     onOffline: function() {
-        $('#sidebarCollapse').hide();
+        $('#sidebarCollapse').show();
+        $('#uploadobs').hide();
     },
     syncObservations: function() {        
 
@@ -155,7 +157,7 @@ var listObs = {
             return new Promise(function(resolve, reject) {
 
                 var data = '{"name" :"' + obs.name
-                                + '", "tree_specie":"'      + obs.id_tree_species
+                                + '", "tree_species":"'      + obs.id_tree_species
                                 + '", "crown_diameter":"'   + obs.id_crown_diameter
                                 + '", "canopy_status":"'    + obs.id_canopy_status
                                 + '", "comment":"'          + obs.comment
@@ -208,10 +210,12 @@ var listObs = {
                             photo.id_surveydata     = res.rows.item(x).id_surveydata;
                             photo.compass           = res.rows.item(x).compass;
                             photo.image             = res.rows.item(x).image;
+                            photo.comment             = res.rows.item(x).comment;
 
                             var data = '{"survey_data" :"'  + obs.id
                                     + '", "compass":"'      + photo.compass
                                     + '", "image":"'        + photo.image
+                                    + '", "comment":"'      + photo.comment
                                     + '"}';
 
                             $.ajax({
