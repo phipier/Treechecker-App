@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <link rel="stylesheet" href="lib/leaflet.css"/>
         <link rel="stylesheet" href="lib/leaflet-areaselect.css" />
+        <link rel="stylesheet" href="lib/leaflet-icon-pulse-master/L.Icon.Pulse.css" />
 
         <script src="lib/jquery-3.3.1.min.js"></script> 
         <script src="lib/popper.min.js"></script>
@@ -15,6 +16,8 @@
         <script src="lib/leaflet.js"></script>
         <script src="lib/leaflet-areaselect.js"></script>
         <script src="lib/font-awesome.js"></script>
+        <script src="lib/leaflet-icon-pulse-master/L.Icon.Pulse.js"></script>
+
 
         <title>TreeChecker</title>
     </head>
@@ -25,9 +28,11 @@
                     <button id="savelocation" class="btn button right-align">OK</button>
                     <button id="savelocation" class="btn button btn-circle btn-xl float"><i class="fas fa-check"></i></button> 
                 </div>  -->
-        </div>         
+        </div>  
 
-        <button id="savelocation" type="button" class="btn button btn-circle btn-xl float"><i class="fas fa-arrow-right"></i></button>
+        <span id="accuracy" class="float position3 bgwhite">accuracy:</span>
+        <span id="accuracyval" class="float position4 bgwhite"></span>
+        <button id="savelocation" type="button" class="btn button btn-circle btn-xl float position1"><i class="fas fa-satellite"></i></button>
 
         <div class="modal fade" id="messagepopup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">

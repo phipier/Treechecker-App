@@ -170,9 +170,28 @@ function delete_aoi_fromDB(id_aoi) {
     runSQL2('DELETE FROM aoi WHERE id = ' + id_aoi + ';')
     .then((res) => { console.log("AOI deleted"); },   (error) => {handleError(error);})         
     .catch(function(value) {console.log(value);})
-    .finally(function() {       
-        init_progress();
-        window.plugins.spinnerDialog.hide();   
+    .finally(function() {
+        // deletes AOI previously created
+        var token = window.sessionStorage.getItem("token");         
+        $.ajax({
+            method : 'DELETE',
+            crossDomain : true,
+            url : SERVERURL + '/api/aois/' + id_aoi,
+            beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
+            success : function(reg) {
+                console.log("DELETE AOI success.")     
+                init_progress();
+                window.plugins.spinnerDialog.hide();   
+            },
+            error : function(req, status, error) {
+                window.plugins.spinnerDialog.hide();
+                console.log("could not delete AOI from remote server.");
+            },
+            complete : function(xhr,textStatus) {
+                window.plugins.spinnerDialog.hide();
+                console.log("DELETE AOI complete. " + textStatus);
+            }
+        }); 
     });
 }
 

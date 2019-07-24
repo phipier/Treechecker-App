@@ -19,7 +19,7 @@ function downloadTiles(id_AOI, bbox) {
     
     for(var i=0, len=fetchQueue.length; i<len; ++i) {
     //for(var i=0, len=5; i<len; ++i) {
-        if (tile_downloading) {   
+        if (!AOI_cancel) {   
 
             var data = fetchQueue[i];
             
@@ -44,7 +44,7 @@ function downloadTiles(id_AOI, bbox) {
                     xhr.open('GET', url, true);
                     xhr.responseType = 'blob';
                     xhr.onload = function() {
-                        if (this.status == 200 && tile_downloading) {      
+                        if ((!AOI_cancel) && (this.status == 200)) {      
                             var blob = new Blob([this.response], { type: 'image/png' });
                             window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
                                 if (!AOI_cancel) {                                
@@ -52,13 +52,13 @@ function downloadTiles(id_AOI, bbox) {
                                     createPath(dirEntry, dirPath, function(dirTileEntry) {
                                         saveFile(dirTileEntry, blob, filePath);                                    
                                     })
-                                } else {return}
+                                } else {update_progress()}
                             }, function (filerror) {console.log("Failed request FS: " + filerror)});                
-                        }
+                        } else {update_progress()}
                     };
                     xhr.send();
                 };
-                if (tile_downloading) {makeRequest(data.url, dirPath, filePath);} else {return}
+                if (!AOI_cancel) {makeRequest(data.url, dirPath, filePath);} else {return}
             //};
         } else {
             return;

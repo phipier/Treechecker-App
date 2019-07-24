@@ -6,6 +6,7 @@ var gjson_layer;
 var overlays;
 var controlLayers;
 var obslist;
+var watchID = 0;
 
 var customControl =  L.Control.extend({
     options: {
@@ -105,24 +106,47 @@ function onBackKeyDown() {
 }
 
 function centerMapOnCurrentPosition() {
-    window.plugins.spinnerDialog.show(null, "Searching your position...");
-    var onSuccess = function(position) {
-        mymap.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
-        createMarker(new L.LatLng(position.coords.latitude, position.coords.longitude));
-        window.plugins.spinnerDialog.hide();
-    };
-    function onError(error) {
-        displayMessage('Could not get your position. Please make sure that GPS is on',()=>{});
-        window.plugins.spinnerDialog.hide();
+    if (!watchID) {
+        window.plugins.spinnerDialog.show(null, "Searching your position...");
+        var onSuccess = function(position) {            
+            $("#accuracyval").text(Number(position.coords.accuracy).toFixed(2));
+            $("#accuracy").show();$("#accuracyval").show();
+            mymap.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
+            createMarker(new L.LatLng(position.coords.latitude, position.coords.longitude));
+            createPulseMarker(new L.LatLng(position.coords.latitude, position.coords.longitude));
+            window.plugins.spinnerDialog.hide();
+        };
+        function onError(error) {
+            displayMessage('Could not get your position. Please make sure that GPS is on',()=>{});
+            window.plugins.spinnerDialog.hide();
+        }
+        //navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 15000, enableHighAccuracy: true});
+        watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000, enableHighAccuracy: true });
+    } else {
+        navigator.geolocation.clearWatch(watchID); 
+        mymap.removeLayer(pulsemarker); pulsemarker = null;
+        watchID = 0; 
+        $("#accuracy").hide();$("#accuracyval").hide();      
     }
-    navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 15000, enableHighAccuracy: true});
 }
 
+var pulsemarker;
+function createPulseMarker(latlng_pos) {
+    if (pulsemarker == null) { 
+        var pulsingIcon = L.icon.pulse({iconSize:[20,20],color:'red'});
+        pulsemarker = L.marker(latlng_pos,{icon: pulsingIcon}).addTo(mymap);
+    }
+    else { 
+        pulsemarker.setLatLng(latlng_pos, {draggable:'true'});
+    }
+}
+
+/* 
 function initLayers() {
     var osm = new L.TileLayer(LayerDefinitions.osm.url, {maxZoom: 22, maxNativeZoom: 19, attribution: LayerDefinitions.osm.attribution});
     mymap.addLayer(osm);
     controlLayers.addBaseLayer(osm, LayerDefinitions.osm.layerName);
-}
+} */
 
 function addOfflineWMSLayers(id_AOI, LayerDefinitions) {     
     for(let layer of LayerDefinitions.DL_WMS) {         
@@ -298,6 +322,7 @@ function addMapControls() {
     controlLayers.addTo(mymap);
     if (!obslist) {mymap.addControl(new customControl());}
     L.control.scale().addTo(mymap);
+    $("#accuracy").hide();$("#accuracyval").hide();
 }
   
 $("#savelocation").click(function(e) {

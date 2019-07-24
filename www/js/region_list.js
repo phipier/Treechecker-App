@@ -30,11 +30,15 @@ var listRegions = {
     },
 
     onOnline: function() {
-        $('#sidebarCollapse').show();
+        if (window.sessionStorage.getItem("stayOffline") === "true") {
+            stayOffline();
+        } else {
+            $('#sidebarCollapse').show();
+        }
     },
 
     onOffline: function() {
-        $('#sidebarCollapse').hide();
+        stayOffline();
     },
 
     // Update DOM on a Received Event
@@ -43,6 +47,10 @@ var listRegions = {
 };
 
 listRegions.initialize();
+
+function stayOffline() {
+    $('#sidebarCollapse').hide();
+}
 
 function onBackKeyDown() {
     window.location = "login.html";

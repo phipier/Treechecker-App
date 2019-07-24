@@ -26,6 +26,8 @@ var login = {
         $("#username").val(email);
         $("#password").val(password);
 
+
+        
         $('#log_in').click(function(event) {
             window.plugins.spinnerDialog.show();
             
@@ -54,6 +56,8 @@ var login = {
                     window.localStorage.setItem("trckp", password); 
                     window.sessionStorage.setItem("email", email);
                     window.sessionStorage.setItem("password", password);
+                    
+                    window.sessionStorage.setItem("stayOffline","false");
 
                     window.location = 'region_list.html';
                     
@@ -72,6 +76,13 @@ var login = {
 
         $('#ok_sent_error').click(function() {
             $('#log_in').removeAttr('disabled');
+        });
+
+        $('#useOffline').click(function(event) {
+            window.sessionStorage.setItem("stayOffline","true");
+            window.location = 'region_list.html';
+            event.preventDefault();
+            event.stopPropagation();
         });
     },
 

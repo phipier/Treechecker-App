@@ -79,20 +79,31 @@ var listAOI = {
             return false;
         });
     },
-    onOnline: function() {          
-        $('#addAOI').show();
-        $('.edit_aoi').show();
+
+    onOnline: function() {
+        if (window.sessionStorage.getItem("stayOffline") === "true") {
+            stayOffline();
+        } else {
+            $('#addAOI').show();
+            $('.edit_aoi').show();
+        }
     },
+
     onOffline: function() {
-        $('#addAOI').hide();
-        $('.edit_aoi').hide();
+        stayOffline();
     },
+
     // Update DOM on a Received Event
     receivedEvent: function(id) {
     }
 };
 
 listAOI.initialize();
+
+function stayOffline() {
+    $('#addAOI').hide();
+    $('.edit_aoi').hide();
+}
 
 function onBackKeyDown() {
     window.location = "region_list.html";

@@ -105,12 +105,15 @@ var listObs = {
         });
     },
     onOnline: function() {
-        $('#sidebarCollapse').show();
-        $('#uploadobs').show();
+        if (window.sessionStorage.getItem("stayOffline") === "true") {
+            stayOffline();
+        } else {
+            $('#sidebarCollapse').show();
+            $('#uploadobs').show();
+        }
     },
     onOffline: function() {
-        $('#sidebarCollapse').show();
-        $('#uploadobs').hide();
+        stayOffline();
     },
     syncObservations: function() {        
 
@@ -344,6 +347,11 @@ var listObs = {
 };
 
 listObs.initialize();
+
+function stayOffline() {
+    $('#sidebarCollapse').show();
+    $('#uploadobs').hide();
+}
 
 function onBackKeyDown() {
     window.location = "aoi_list.html";

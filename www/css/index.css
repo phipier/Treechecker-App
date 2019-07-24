@@ -150,22 +150,29 @@ h1 {
 .float{
     position:fixed;
     z-index:9999;
+	box-shadow: 2px 2px 3px #999;
+}
+.position1{
 	bottom:30px;
 	right:20px;
-	box-shadow: 2px 2px 3px #999;
 }
-
-.float2{
-    position:fixed;
-    z-index:9999;
+.position2{   
 	bottom:120px;
-	right:20px;
-	box-shadow: 2px 2px 3px #999;
+	right:20px;	
+}
+.position3{   
+	top:130px;
+	left:10px;	
+}
+.position4{   
+	top:150px;
+	left:10px;	
 }
 
-.my-float{
+
+/* .my-float{
 	margin-top:22px;
-}
+} */
 
 .button-navbar {
     background-color:#8BC34A;   
