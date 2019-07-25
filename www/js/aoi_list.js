@@ -122,7 +122,11 @@ function delete_aoi_fromDB(id_aoi) {
     .then((res) => { return runSQL2('DELETE FROM aoi WHERE id = ' + id_aoi + ';'); },            (error) => {handleError(error);}) 
     .then((res) => { console.log("AOI deleted"); },                                              (error) => {handleError(error);})         
     .catch(function(value) {console.log(value);})
-    .finally(function() {       
+    .finally(function() {
+
+        // delete downloaded tiles on device
+        deleteTiles(id_aoi);
+
         window.plugins.spinnerDialog.hide();  
         window.location = "aoi_list.html"     
     });

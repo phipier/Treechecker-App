@@ -1,6 +1,6 @@
 .leaflet-pulsing-icon {
     border-radius: 100%;
-    box-shadow: 1px 1px 8px 0 rgba(0,0,0,0.75);
+    /* box-shadow: 1px 1px 8px 0 rgba(0,0,0,0.75); */
 }
 
 .leaflet-pulsing-icon:after {
@@ -15,7 +15,7 @@
 
 @keyframes pulsate {
     0% {
-        transform: scale(0.1, 0.1);
+        transform: scale(0.01, 0.01);
         opacity: 0;
         -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
         filter: alpha(opacity=0);

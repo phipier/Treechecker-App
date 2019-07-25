@@ -98,6 +98,16 @@ h1 {
     font-size:16px;
 }
 
+.button-leaflet {
+    background-color:#8BC34A;
+    /* color:white; */
+}
+
+.button-leaflet-off {
+    background-color:rgb(212, 212, 212);
+    /* color:white; */
+}
+
 .btn-circle.btn-xl {
     width: 70px;
     height: 70px;
@@ -117,7 +127,6 @@ h1 {
     line-height: 1.42857;
 }
 
-
 .button-bottom {
     margin-top:50px;
 }
@@ -125,7 +134,6 @@ h1 {
 .button-circle {
     border-radius: 50%;
 }
-
 
 .white {
     color: white;
@@ -168,7 +176,10 @@ h1 {
 	top:150px;
 	left:10px;	
 }
-
+.position5{   
+	top:90px;
+	left:10px;	
+}
 
 /* .my-float{
 	margin-top:22px;

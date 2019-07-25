@@ -1,6 +1,6 @@
 document.addEventListener('deviceready', loadMap, false);
 
-var marker;
+
 var mymap;
 var gjson_layer;
 var overlays;
@@ -8,7 +8,7 @@ var controlLayers;
 var obslist;
 var watchID = 0;
 
-var customControl =  L.Control.extend({
+/* var customControl =  L.Control.extend({
     options: {
       position: 'topleft'
     },      
@@ -26,10 +26,11 @@ var customControl =  L.Control.extend({
       }  
       return container;
     }
-});
+}); */
 
 function loadMap() {
     document.addEventListener("backbutton", onBackKeyDown, false);
+    $("#GPS").hide();$("#noGPS").show();
 
     obslist                 =               window.sessionStorage.getItem("obslist") === "True"?true:false;
     if (obslist) {$("#savelocation").hide();}
@@ -79,6 +80,43 @@ function loadMap() {
     }
 }
 
+
+
+function onBackKeyDown() {
+    if (obslist) {window.location = "obs_list.html";window.sessionStorage.removeItem("obslist");} 
+    else {window.location = "obs_list.html";}
+}
+
+function switchGPS() {
+    if (!watchID) {
+        window.plugins.spinnerDialog.show(null, "Searching your position...");
+        var onSuccess = function(position) {            
+            $("#accuracyval").text("Accuracy: " + Number(position.coords.accuracy).toFixed(1).toString() + " m");
+            
+            mymap.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
+
+            createMarker(new L.LatLng(position.coords.latitude, position.coords.longitude));          
+            createPulseMarker(new L.LatLng(position.coords.latitude, position.coords.longitude),Number(position.coords.accuracy));
+
+            $("#GPS").show();$("#noGPS").hide();$("#accuracyval").show();
+            window.plugins.spinnerDialog.hide();
+        };
+        function onError(error) {
+            displayMessage('Could not get your position. Please make sure that GPS is on',()=>{});
+            $("#GPS").hide();$("#noGPS").show();$("#accuracyval").hide();
+            window.plugins.spinnerDialog.hide();
+        }
+        //navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 15000, enableHighAccuracy: true});
+        watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000, enableHighAccuracy: true });
+    } else {
+        navigator.geolocation.clearWatch(watchID); 
+        mymap.removeLayer(pulsemarker); pulsemarker = null;
+        watchID = "";
+        $("#GPS").hide();$("#noGPS").show();$("#accuracyval").hide();      
+    }
+}
+
+var marker;
 function createMarker(latlng_pos) {
     if (marker == null) { 
         marker = new L.marker(latlng_pos, {draggable:'true'});
@@ -100,44 +138,18 @@ function createMarker(latlng_pos) {
     }
 }
 
-function onBackKeyDown() {
-    if (obslist) {window.location = "obs_list.html";window.sessionStorage.removeItem("obslist");} 
-    else {window.location = "obs_list.html";}
-}
-
-function centerMapOnCurrentPosition() {
-    if (!watchID) {
-        window.plugins.spinnerDialog.show(null, "Searching your position...");
-        var onSuccess = function(position) {            
-            $("#accuracyval").text(Number(position.coords.accuracy).toFixed(2));
-            $("#accuracy").show();$("#accuracyval").show();
-            mymap.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
-            createMarker(new L.LatLng(position.coords.latitude, position.coords.longitude));
-            createPulseMarker(new L.LatLng(position.coords.latitude, position.coords.longitude));
-            window.plugins.spinnerDialog.hide();
-        };
-        function onError(error) {
-            displayMessage('Could not get your position. Please make sure that GPS is on',()=>{});
-            window.plugins.spinnerDialog.hide();
-        }
-        //navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 15000, enableHighAccuracy: true});
-        watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000, enableHighAccuracy: true });
-    } else {
-        navigator.geolocation.clearWatch(watchID); 
-        mymap.removeLayer(pulsemarker); pulsemarker = null;
-        watchID = 0; 
-        $("#accuracy").hide();$("#accuracyval").hide();      
-    }
-}
-
 var pulsemarker;
-function createPulseMarker(latlng_pos) {
-    if (pulsemarker == null) { 
-        var pulsingIcon = L.icon.pulse({iconSize:[20,20],color:'red'});
-        pulsemarker = L.marker(latlng_pos,{icon: pulsingIcon}).addTo(mymap);
+function createPulseMarker(latlng_pos, accuracy) {
+    var metresPerPixel = 40075016.686 * Math.abs(Math.cos(mymap.getCenter().lat * 180/Math.PI)) / Math.pow(2, mymap.getZoom()+8);
+    var pixels_accuracy = Math.round(0.6*accuracy/metresPerPixel);
+    var pulsingIcon = L.icon.pulse({iconSize:[pixels_accuracy,pixels_accuracy], color:'blue', fillColor:'#ffffff00', heartbeat:'3'});
+    
+    if (pulsemarker == null) {         
+        pulsemarker = L.marker(latlng_pos,{icon: pulsingIcon, opacity:0.8}).addTo(mymap)
     }
     else { 
-        pulsemarker.setLatLng(latlng_pos, {draggable:'true'});
+        pulsemarker.setLatLng(latlng_pos);
+        pulsemarker.setIcon(pulsingIcon);
     }
 }
 
@@ -320,9 +332,12 @@ function addMyObservations(id_aoi, id_obs) {
 function addMapControls() {
     controlLayers = new L.control.layers({}, overlays, {sortLayers: false, hideSingleBase: false});
     controlLayers.addTo(mymap);
-    if (!obslist) {mymap.addControl(new customControl());}
+    //if (!obslist) {mymap.addControl(new customControl());}
     L.control.scale().addTo(mymap);
-    $("#accuracy").hide();$("#accuracyval").hide();
+    //$("#accuracy").hide();
+    $("#accuracyval").hide();
+    var comp = new L.Control.Compass({autoActive: true, showDigit:true});
+	mymap.addControl(comp);
 }
   
 $("#savelocation").click(function(e) {
@@ -336,6 +351,16 @@ $("#savelocation").click(function(e) {
     } else {
         displayMessage("Please click on the map (or GPS icon) to select a location.",()=>{});
     }
+} );
+
+$("#GPS").click(function(e) {
+    e.preventDefault();   
+    switchGPS();
+} );
+
+$("#noGPS").click(function(e) {
+    e.preventDefault();   
+    switchGPS();
 } );
 
 /* $("#cancellocation").click(function(e) {

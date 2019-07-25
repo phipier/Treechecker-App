@@ -171,7 +171,10 @@ function delete_aoi_fromDB(id_aoi) {
     .then((res) => { console.log("AOI deleted"); },   (error) => {handleError(error);})         
     .catch(function(value) {console.log(value);})
     .finally(function() {
-        // deletes AOI previously created
+        // delete downloaded tiles on device
+        deleteTiles(id_aoi);
+
+        // deletes AOI on remote DB
         var token = window.sessionStorage.getItem("token");         
         $.ajax({
             method : 'DELETE',

@@ -18,11 +18,9 @@
             
             var uniqueClassName = 'lpi-'+ new Date().getTime()+'-'+Math.round(Math.random()*100000);
 
-            var before = ['background-color: '+this.options.fillColor];
+            var before = ['background-color: '+this.options.fillColor]; //,'Display: none'];
             var after = [
-
                 'box-shadow: 0 0 6px 2px '+this.options.color,
-
                 'animation: pulsate ' + this.options.heartbeat + 's ease-out',
                 'animation-iteration-count: infinite',
                 'animation-delay: '+ (this.options.heartbeat + .1) + 's',
