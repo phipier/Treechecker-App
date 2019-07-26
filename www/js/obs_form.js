@@ -29,6 +29,18 @@ var obsform = {
             );
             return false;
         });
+
+        $('#deletePhoto').on('click', function() {
+            
+            window.plugins.spinnerDialog.show("Deleting Photo ...");           
+            var id_photo = $(".carousel-item.active").data("photoid");  
+
+            runSQL2('DELETE FROM photo WHERE id = ' + id_photo + ';')
+            .then((res) => {$(".carousel-item.active").remove()},   (error) => {handleError(error)})
+            .finally(function() {window.plugins.spinnerDialog.hide()});
+
+            return false;
+        });
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -187,7 +199,7 @@ function init_form() {
             for(var x = 0; x < res.rows.length; x++) {
                 $('.carousel-indicators').append('<li data-target="#carouselphotos" data-slide-to="' + x + '" ' + ((x==0)?'class="active"':'') + '></li>');
                 $('.carousel-inner').append(
-                    '<div class="carousel-item ' + ((x==0)?'active':'') + '">' 
+                    '<div class="carousel-item ' + ((x==0)?'active':'') + '" data-photoid="'+ res.rows.item(x).id +'">' 
                     +   ' <img class="d-block w-100 h-100"' 
                         +   ' src="'            + res.rows.item(x).image    + '"'
                         +   ' data-comment="'   + res.rows.item(x).comment  + '"'
@@ -198,6 +210,7 @@ function init_form() {
                     +   '</div>'
                     +'</div>');
             }
+            if (res.rows.length==0) {$("#carouselphotos").hide();$("#deletePhoto").hide();}
         },
         function (tx, error) {
             console.log('SELECT canopystatus error: ' + error.message);
@@ -220,6 +233,8 @@ function init_form() {
         } */
         if (obs.uploaded === "1") { 
             $("#saveobs").hide();
+            $("#photo").hide();
+            $("#deletePhoto").hide();
             $('#OBS-form input').attr('readonly', 'readonly');
             $('#OBS-form textarea').attr('readonly', 'readonly'); 
             $('#OBS-form select').attr('readonly', 'readonly');  

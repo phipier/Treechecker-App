@@ -81,7 +81,7 @@ function createTables() {
 function handleError(value) {
     console.log("error message : " + value); 
     displayMessage("An error occured - " + value,()=>{});       
-    return Promise.reject(value);      
+    //return Promise.reject(value);      
 };
 
 function runSQL(query) {

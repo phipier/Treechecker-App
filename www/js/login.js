@@ -22,24 +22,26 @@ var login = {
     onDeviceReady: function() {
         email       = window.localStorage.getItem("trckl");
         password    = window.localStorage.getItem("trckp");
+        url         = window.localStorage.getItem("trckurl");
 
         $("#username").val(email);
         $("#password").val(password);
-
-
+        if (!url) {url = SERVERURL}
+        $("#serverurl").val(url);
         
         $('#log_in').click(function(event) {
             window.plugins.spinnerDialog.show();
             
             email       = $("#username").val();
             password    = $("#password").val();
+            trckurl     = $("#serverurl").val();
 
             $(this).attr('disabled', 'disabled');
             $.ajax({
                 type: 'POST',
                 crossDomain: true,
                 dataType: 'text',
-                url: SERVERURL + '/api-token-auth/',
+                url: trckurl + '/api-token-auth/',
                 data: {
                     email:      email,
                     password:   password
@@ -49,11 +51,13 @@ var login = {
                     window.plugins.spinnerDialog.hide();
                     window.sessionStorage.setItem("token", $.parseJSON(tk).token);
                     
-                    email = $("#username").val();
-                    password = $("#password").val();
+                   /*  email       = $("#username").val();
+                    password    = $("#password").val();
+                    trckurl     = $("#serverurl").val(); */
 
                     window.localStorage.setItem("trckl", email);       
                     window.localStorage.setItem("trckp", password); 
+                    window.localStorage.setItem("trckurl", trckurl);
                     window.sessionStorage.setItem("email", email);
                     window.sessionStorage.setItem("password", password);
                     
@@ -64,10 +68,16 @@ var login = {
                 },
                 error: function(req, status, error) {
                     if (status == "error") {
-                        login.onErrorNotFound();
-                    } else {
+                        login.onErrorNotFound();                        
+                    } 
+                    window.plugins.spinnerDialog.hide();
+                    /* else {
                         setTimeout(function(){login.onError();}, 500);
-                    }
+                    } */
+                },
+                complete: function() {   
+                    $("#log_in").removeAttr("disabled");                   
+                    window.plugins.spinnerDialog.hide();
                 }
             })
             event.preventDefault();
