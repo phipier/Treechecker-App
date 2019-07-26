@@ -357,41 +357,6 @@ function onBackKeyDown() {
     window.location = "aoi_list.html";
 }
 
-/* function edit_obs(id_obs) {
-    db.transaction(function (tx) {
-            var query = 'SELECT * FROM surveydata where id = '+id_obs+';';
-
-            tx.executeSql(query, [], function (tx, res) {                
-                window.sessionStorage.setItem("obs_id",                 res.rows.item(0).id);
-                window.sessionStorage.setItem("obs_name",               res.rows.item(0).name);
-                window.sessionStorage.setItem("obs_comment",            res.rows.item(0).comment);
-                window.sessionStorage.setItem("obs_id_tree_species",    res.rows.item(0).id_tree_species);
-                window.sessionStorage.setItem("obs_id_crown_diameter",  res.rows.item(0).id_crown_diameter);
-                window.sessionStorage.setItem("obs_id_canopy_status",   res.rows.item(0).id_canopy_status);
-                window.sessionStorage.setItem("obs_latitude",           res.rows.item(0).latitude);
-                window.sessionStorage.setItem("obs_longitude",          res.rows.item(0).longitude);
-                window.sessionStorage.setItem("obs_uploaded",           res.rows.item(0).uploaded);
-            }, function (tx, error) {
-                console.log('SELECT observation error: ' + error.message);
-            });
-
-            tx.executeSql('SELECT * FROM photo where id_surveydata = ' + id_obs + ';', [], function (tx, res) {
-                window.sessionStorage.setItem("photo_id",               res.rows.item(0).id);
-                window.sessionStorage.setItem("photo_compass",          res.rows.item(0).compass);
-                window.sessionStorage.setItem("photo_image",            res.rows.item(0).image);
-                window.location = 'obs_form.html';
-            }, function (tx, error) {
-                console.log('SELECT photo error: ' + error.message);
-            });
-
-        }, function (error) {
-            console.log('transaction observation_photo error: ' + error.message);
-        }, function () {
-            console.log('transaction observation_photo ok');
-        }
-    );
-} */
-
 function edit_obs(id_obs) {
     var err = false;
     var uploaded;
@@ -472,9 +437,9 @@ $("#addOBS").click(function(e) {
     .then((res) => {        
         window.sessionStorage.setItem("obs_id", "");
         window.sessionStorage.setItem("obs_uploaded", "0");
-        window.sessionStorage.setItem("obs_name", "myobstest");
+        /* window.sessionStorage.setItem("obs_name", "myobstest");
         window.sessionStorage.setItem("obs_latitude", "39.784352364601");
-        window.sessionStorage.setItem("obs_longitude", "-7.6377547801287"); 
+        window.sessionStorage.setItem("obs_longitude", "-7.6377547801287");  */
     }, (value) => {
         displayMessage("Error - It was not possible to delete photos.",()=>{});
         handleError(value);

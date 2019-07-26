@@ -149,7 +149,7 @@ L.Control.Compass = L.Control.extend({
 		
         if(this.options.showDigit && !isNaN
             (parseFloat(angle)) && isFinite(angle))
-			this._digit.innerHTML = angle+'&deg;';
+			this._digit.innerHTML = (360-Number(angle)).toString()+'&deg;';
 
 		this._currentAngle = angle;
 		this._rotateElement( this._icon );
@@ -165,7 +165,9 @@ L.Control.Compass = L.Control.extend({
 
 		this._isActive = true;
 
-		L.DomEvent.on(window, 'deviceorientation', this._rotateHandler, this);
+		//window.addEventListener("deviceorientationabsolute", this._rotateHandler, true);
+		L.DomEvent.on(window, 'deviceorientationabsolute', this._rotateHandler, this);
+		
 		
 		L.DomUtil.addClass(this._button, 'active');
 	},
@@ -176,7 +178,8 @@ L.Control.Compass = L.Control.extend({
 
 		this._isActive = false;
 
-		L.DomEvent.off(window, 'deviceorientation', this._rotateHandler, this);
+		//window.removeEventListener("deviceorientationabsolute", this._rotateHandler, true);
+		L.DomEvent.off(window, 'deviceorientationabsolute', this._rotateHandler, this);
 
 		L.DomUtil.removeClass(this._button, 'active');
 

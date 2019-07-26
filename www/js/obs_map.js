@@ -80,15 +80,13 @@ function loadMap() {
     }
 }
 
-
-
 function onBackKeyDown() {
     if (obslist) {window.location = "obs_list.html";window.sessionStorage.removeItem("obslist");} 
     else {window.location = "obs_list.html";}
 }
 
 function switchGPS() {
-    if (!watchID) {
+    if (!watchID) {        
         window.plugins.spinnerDialog.show(null, "Searching your position...");
         var onSuccess = function(position) {            
             $("#accuracyval").text("Accuracy: " + Number(position.coords.accuracy).toFixed(1).toString() + " m");
@@ -140,9 +138,10 @@ function createMarker(latlng_pos) {
 
 var pulsemarker;
 function createPulseMarker(latlng_pos, accuracy) {
-    var metresPerPixel = 40075016.686 * Math.abs(Math.cos(mymap.getCenter().lat * 180/Math.PI)) / Math.pow(2, mymap.getZoom()+8);
-    var pixels_accuracy = Math.round(0.6*accuracy/metresPerPixel);
-    var pulsingIcon = L.icon.pulse({iconSize:[pixels_accuracy,pixels_accuracy], color:'blue', fillColor:'#ffffff00', heartbeat:'3'});
+    //var metresPerPixel = 40075016.686 * Math.abs(Math.cos(mymap.getCenter().lat * 180/Math.PI)) / Math.pow(2, mymap.getZoom()+8);
+    //var pixels_accuracy = Math.round(0.6*accuracy/metresPerPixel);
+    var PixelsPerMeter = getPixelsperMeter();
+    var pulsingIcon = L.icon.pulse({iconSize:[0.6*accuracy*PixelsPerMeter[0],0.6*accuracy*PixelsPerMeter[1]], color:'blue', fillColor:'#ffffff00', heartbeat:'3'});
     
     if (pulsemarker == null) {         
         pulsemarker = L.marker(latlng_pos,{icon: pulsingIcon, opacity:0.8}).addTo(mymap)
@@ -151,6 +150,21 @@ function createPulseMarker(latlng_pos, accuracy) {
         pulsemarker.setLatLng(latlng_pos);
         pulsemarker.setIcon(pulsingIcon);
     }
+}
+
+function getPixelsperMeter() {
+    var centerLatLng = mymap.getCenter(); // get map center
+    var pointC = mymap.latLngToContainerPoint(centerLatLng); // convert to containerpoint (pixels)
+    var pointX = [pointC.x + 1, pointC.y]; // add one pixel to x
+    var pointY = [pointC.x, pointC.y + 1]; // add one pixel to y
+
+    // convert containerpoints to latlng's
+    var latLngC = mymap.containerPointToLatLng(pointC);
+    var latLngX = mymap.containerPointToLatLng(pointX);
+    var latLngY = mymap.containerPointToLatLng(pointY);
+
+    return [1/latLngC.distanceTo(latLngX),1/latLngC.distanceTo(latLngY)]; // calculate distance between c and x (latitude)
+    //var distanceY = latLngC.distanceTo(latLngY); // calculate distance between c and y (longitude)
 }
 
 /* 
@@ -337,7 +351,8 @@ function addMapControls() {
     //$("#accuracy").hide();
     $("#accuracyval").hide();
     var comp = new L.Control.Compass({autoActive: true, showDigit:true});
-	mymap.addControl(comp);
+    mymap.addControl(comp);
+    //switchGPS();
 }
   
 $("#savelocation").click(function(e) {
