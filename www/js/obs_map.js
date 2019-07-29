@@ -1,12 +1,13 @@
 document.addEventListener('deviceready', loadMap, false);
 
-
 var mymap;
 var gjson_layer;
 var overlays;
 var controlLayers;
 var obslist;
 var watchID = 0;
+var Location_current;
+var Accuracy_current;
 
 /* var customControl =  L.Control.extend({
     options: {
@@ -30,6 +31,9 @@ var watchID = 0;
 
 function loadMap() {
     document.addEventListener("backbutton", onBackKeyDown, false);
+
+    window.screen.orientation.lock('portrait');
+
     $("#GPS").hide();$("#noGPS").show();
 
     obslist                 =               window.sessionStorage.getItem("obslist") === "True"?true:false;
@@ -48,6 +52,11 @@ function loadMap() {
         // Hide those annoying non-error errors
         if (e && e.error !== 'Error: Not Found')
             console.error(e);
+    });
+
+    mymap.on('zoomend', function() {
+        if (typeof Location_current !== 'undefined' && typeof Accuracy_current !== 'undefined') 
+            createPulseMarker(Location_current, Accuracy_current);
     });
 
     controlLayers = {};
@@ -93,8 +102,10 @@ function switchGPS() {
             
             mymap.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
 
-            createMarker(new L.LatLng(position.coords.latitude, position.coords.longitude));          
-            createPulseMarker(new L.LatLng(position.coords.latitude, position.coords.longitude),Number(position.coords.accuracy));
+            Location_current = new L.LatLng(position.coords.latitude, position.coords.longitude);
+            Accuracy_current = (position.coords.accuracy)
+            createMarker(Location_current);          
+            createPulseMarker(Location_current, Number(Accuracy_current));
 
             $("#GPS").show();$("#noGPS").hide();$("#accuracyval").show();
             window.plugins.spinnerDialog.hide();

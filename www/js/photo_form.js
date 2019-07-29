@@ -117,14 +117,9 @@ function insert_photo(photo) {
         console.log("replace in photo table done ... ");
     }, (value) => {       
         handleError("It was not possible to replace photo - " + value);
+        err = true;
     })
-    .catch(function(error) {
-        console.log("error - edit obs");
-        console.log(error);      
-        err = true;      
-    })
-    .finally(function() {        
-        console.log("finally - edit obs");
+    .finally(function() {
         window.plugins.spinnerDialog.hide();      
         if (!err) {window.location = "obs_form.html";}
     });
@@ -163,7 +158,6 @@ function getWSitems() {
     var photo = {};
     photo.comment =           window.sessionStorage.getItem("photo_comment");
     photo.compassbearing =    window.sessionStorage.getItem("photo_compassbearing");
-    //photo.GPSbearing =        window.sessionStorage.getItem("photo_GPSbearing");
     photo.image =             window.sessionStorage.getItem("photo_image");
     photo.obsid =             window.sessionStorage.getItem("obs_id");
    
@@ -172,6 +166,9 @@ function getWSitems() {
     }    
     if (!photo.obsid) {
         photo.obsid = "NULL";
+    }
+    if (!photo.compassbearing) {
+        photo.compassbearing = "NULL";
     }
 
     return photo;
@@ -188,7 +185,7 @@ function init_form() {
     var photo = getWSitems();
     var id_obs = window.sessionStorage.getItem("obs_id");
     $("#InputPhotocomment")         .text(photo.comment);
-    $("#InputCompassbearing")       .val(photo.compassbearing);
+    $("#InputCompassbearing")       .val(photo.compassbearing=="NULL"?"":photo.compassbearing);
     //$("#photo_GPSbearing")      .val(photo.GPSbearing);
     if (photo.image) {
         $('#preview_text').remove();

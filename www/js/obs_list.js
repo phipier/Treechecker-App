@@ -5,8 +5,13 @@ var listObs = {
         document.addEventListener("offline", this.onOffline, false);        
     },
     onDeviceReady: function() {
-        clearWSitems_obs();
+        
+        window.screen.orientation.unlock();
+
         document.addEventListener("backbutton", onBackKeyDown, false);
+
+        clearWSitems_obs();        
+        
         var id_aoi = window.sessionStorage.getItem("id_aoi");        
 
         db.transaction(function (tx) {

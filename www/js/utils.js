@@ -32,7 +32,8 @@ function displayMessage(message, action_OK, action_cancel) {
         }
 }
 
-function clearWSitems_obs() {        
+function clearWSitems_obs() { 
+    window.sessionStorage.removeItem("obs_uploaded");       
     window.sessionStorage.removeItem("obs_id");
     window.sessionStorage.removeItem("obs_name");
     window.sessionStorage.removeItem("obs_comment");
@@ -42,7 +43,7 @@ function clearWSitems_obs() {
     window.sessionStorage.removeItem("obs_latitude");
     window.sessionStorage.removeItem("obs_longitude");
     window.sessionStorage.removeItem("photo_id");
-    window.sessionStorage.removeItem("obs_uploaded");
-    //window.sessionStorage.removeItem("photo_compass");
-    //window.sessionStorage.removeItem("photo_image");    
+    window.sessionStorage.removeItem("photo_comment");
+    window.sessionStorage.removeItem("photo_compassbearing");
+    window.sessionStorage.removeItem("photo_image");     
 }
