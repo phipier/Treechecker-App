@@ -108,7 +108,7 @@ function add_AOI(aoiname, bbox) {
             + '", "y_min":"' + bbox.ymin 
             + '", "y_max":"' + bbox.ymax + '"}';
 
-    var urlaoi = SERVERURL + "/api/gzs/"+ id_region +"/aois/";
+    var urlaoi = window.sessionStorage.getItem("serverurl") + "/api/gzs/"+ id_region +"/aois/";
 
     $.ajax({
         async: true,
@@ -132,7 +132,7 @@ function add_AOI(aoiname, bbox) {
                     type: 'POST',
                     crossDomain: true,
                     dataType: 'text',
-                    url: SERVERURL + '/api-token-auth/',
+                    url: window.sessionStorage.getItem("serverurl") + '/api-token-auth/',
                     data: {
                         email: window.sessionStorage.getItem("email"),
                         password: window.sessionStorage.getItem("password")
@@ -170,7 +170,7 @@ function delete_aoi_fromDB(id_aoi) {
         $.ajax({
             method : 'DELETE',
             crossDomain : true,
-            url : SERVERURL + '/api/aois/' + id_aoi,
+            url : window.sessionStorage.getItem("serverurl") + '/api/aois/' + id_aoi,
             beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'JWT ' + token);},
             success : function(reg) {
                 console.log("DELETE AOI success.")     

@@ -90,16 +90,6 @@ $("#savephoto").click( function(e) {
 
 function getorientation(event) {
     compassbearing = Number(360 - event.alpha).toFixed(1);
-
-/*     // lock the device orientation
-.orientation.lock('portrait')
-
-// unlock the orientation
-.orientation.unlock()
-
-// current orientation
-.orientation */
-
     $("#InputCompassbearing").val(compassbearing);
 }
 
@@ -110,7 +100,6 @@ function needscalibration(event) {
 
 function insert_photo(photo) {
     var err = false;
-
     runSQL2("REPLACE INTO photo (id, id_surveydata, compass, image, comment) "
     + "VALUES(" + photo.id + "," + photo.obsid + "," + photo.compassbearing + ",'" + photo.image + "','" + photo.comment + "');")   
     .then((res) => {     
@@ -121,31 +110,9 @@ function insert_photo(photo) {
     })
     .finally(function() {
         window.plugins.spinnerDialog.hide();      
-        if (!err) {window.location = "obs_form.html";}
+        if (!err) {window.location = "obs_form.html#carouselscroll";}
     });
 }
-
-/* 
-    db.transaction(function(tx) {        
-        var sql = "REPLACE INTO photo (id, id_surveydata, compass, image) "
-            + "VALUES(" + photo.id + "," + photo.obsid + "," + photo.compassbearing + ",'" + photo.image + "');";
-        tx.executeSql(sql, [],
-            function(tx, res) {
-                //console.log('Photo inserted');
-                window.sessionStorage.setItem("photo_id", res.insertId);
-                runSQL2('DELETE FROM photo where id_surveydata = NULL;')
-            },
-            function(tx, error) {
-                console.log('ExecuteSQL Photo error: ' + error.message);
-            }
-        );
-    }, function(error) {
-        console.log('Transaction photo temp ERROR: ' + error.message);
-        displayMessage("Error - It was not possible to store the photo.",()=>{});
-    }, function() {
-        cancel_Photo();
-    });
-} */
 
 function setWSitems() {
     window.sessionStorage.setItem("photo_comment",          $("#InputPhotocomment").val().trim());

@@ -80,7 +80,8 @@ function loadRegions() {
                 var query = 'SELECT * FROM geographicalzone where id = ' + id_region + ';';
                 db.transaction(function (tx) {
                     tx.executeSql(query, [], function (tx, res) {                    
-                        window.sessionStorage.setItem("wms_url",  res.rows.item(0).wms_url); //JSON.stringify(res.rows.item(0).wms_url));     
+                        window.sessionStorage.setItem("wms_url",  res.rows.item(0).wms_url);
+                        window.sessionStorage.setItem("features", res.rows.item(0).features);     
                         window.sessionStorage.setItem("reg_xmin", res.rows.item(0).x_min);
                         window.sessionStorage.setItem("reg_xmax", res.rows.item(0).x_max);
                         window.sessionStorage.setItem("reg_ymin", res.rows.item(0).y_min);

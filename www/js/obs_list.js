@@ -175,7 +175,7 @@ var listObs = {
                 $.ajax({
                     type: 'POST',
                     crossDomain: true,
-                    url: SERVERURL + '/api/aois/' + obs.id_aoi + '/observations/',
+                    url: window.sessionStorage.getItem("serverurl") + '/api/aois/' + obs.id_aoi + '/observations/',
                     headers: {
                         "Authorization": "JWT " + token,
                         "Content-Type": "application/json",
@@ -229,7 +229,7 @@ var listObs = {
                             $.ajax({
                                 type: 'POST',
                                 crossDomain: true,
-                                url: SERVERURL + '/api/images/',
+                                url: window.sessionStorage.getItem("serverurl") + '/api/images/',
                                 headers: {
                                     "Authorization": "JWT " + token,
                                     "Content-Type": "application/json",

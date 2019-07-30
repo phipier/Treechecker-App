@@ -9,8 +9,8 @@ document.addEventListener('deviceready', loadmap, false);
 
 function loadmap() {
 
-    LayerDefinitions = JSON.parse(window.sessionStorage.getItem("wms_url"));    
-
+    LayerDefinitions = JSON.parse(window.sessionStorage.getItem("wms_url")); 
+ 
     map = L.map('mapid');
 
     overlays = {};
@@ -30,6 +30,27 @@ function loadmap() {
             baseMaps[baselayer.name] = ll_baselayer;
     }
 
+    if (window.sessionStorage.getItem("features")) {
+        Features         = JSON.parse(window.sessionStorage.getItem("features"));  
+
+        var FeaturesStyle = {
+            "color": "#ff7800",
+            "weight": 5,
+            "opacity": 0.65
+        };
+        
+        var ll_features = L.geoJSON(Features, {
+            style: FeaturesStyle
+        })
+
+        ll_features.addTo(map);
+
+        if(controlLayers)
+            controlLayers.addOverlay(ll_features, "Features");
+        else
+            overlays["Features"] = ll_features;
+    }
+
     for(let WMSlayer of LayerDefinitions.DL_WMS) {    
 
         var ll_layer = L.tileLayer.wms(    
@@ -47,6 +68,8 @@ function loadmap() {
         else
             overlays[WMSlayer.name] = ll_layer;
     }
+
+     
 
     addMapControls();
     

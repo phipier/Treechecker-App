@@ -39,7 +39,7 @@ function loadMap() {
     obslist                 =               window.sessionStorage.getItem("obslist") === "True"?true:false;
     if (obslist) {$("#savelocation").hide();}
 
-    var LayerDefinitions    = JSON.parse(   window.sessionStorage.getItem("wms_url"));
+    var LayerDefinitions    = JSON.parse(   window.sessionStorage.getItem("wms_url"));    
     var id_AOI              =               window.sessionStorage.getItem("id_aoi");
     var obs_latitude        =               window.sessionStorage.getItem("obs_latitude");
     var obs_longitude       =               window.sessionStorage.getItem("obs_longitude");
@@ -111,12 +111,13 @@ function switchGPS() {
             window.plugins.spinnerDialog.hide();
         };
         function onError(error) {
+            console.log('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
             displayMessage('Could not get your position. Please make sure that GPS is on',()=>{});
             $("#GPS").hide();$("#noGPS").show();$("#accuracyval").hide();
             window.plugins.spinnerDialog.hide();
         }
         //navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 15000, enableHighAccuracy: true});
-        watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000, enableHighAccuracy: true });
+        watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 15000, enableHighAccuracy: true });
     } else {
         navigator.geolocation.clearWatch(watchID); 
         mymap.removeLayer(pulsemarker); pulsemarker = null;

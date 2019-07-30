@@ -7,7 +7,9 @@ var obsform = {
         
         document.addEventListener("backbutton", onBackKeyDown, false);
 
-        init_form();
+        var obs = getWSitems();
+        init_form(obs);  
+        init_carousel(obs);     
 
         $('#photo').on('click', function() {
             //e.preventDefault();
@@ -41,13 +43,7 @@ var obsform = {
             .then((res) => {
                 $(".carousel-inner").empty();
                 $(".carousel-indicators").empty();
-                db.transaction(function (tx) {
-                    init_carousel(tx, getWSitems());
-                }, function (error) {
-                    console.log('transaction error: ' + error.message);
-                }, function () {
-                    console.log('transaction ok');                
-                });        
+                init_carousel(getWSitems());      
             },   
             (error) => {handleError(error)})
             .finally(function() {window.plugins.spinnerDialog.hide()});
@@ -161,8 +157,7 @@ function getWSitems() {
     return obs;
 }
 
-function init_form() {
-    var obs = getWSitems();
+function init_form(obs) {
     db.transaction(function (tx) {
         var query = 'SELECT * FROM treespecies;';
         tx.executeSql(query, [], function (tx, res) {
@@ -205,7 +200,6 @@ function init_form() {
         function (tx, error) {
             console.log('SELECT canopystatus error: ' + error.message);
         });
-        init_carousel(tx,obs);
     }, function (error) {
         console.log('transaction error: ' + error.message);
     }, function () {
@@ -235,28 +229,33 @@ function init_form() {
     });
 };
 
-function init_carousel(tx, obs) {
-    // photos
-    var query = 'SELECT * FROM photo where id_surveydata' + (obs.id=="NULL" ? ' is NULL' : ' = ' + obs.id ) + ';';
-    tx.executeSql(query, [], function (tx, res) {
-        var html = "";
-        for(var x = 0; x < res.rows.length; x++) {
-            $('.carousel-indicators').append('<li data-target="#carouselphotos" data-slide-to="' + x + '" ' + ((x==0)?'class="active"':'') + '></li>');
-            $('.carousel-inner').append(
-                '<div class="carousel-item ' + ((x==0)?'active':'') + '" data-photoid="'+ res.rows.item(x).id +'">' 
-                +   ' <img class="d-block w-100 h-100"'
-                    +   ' src="'            + res.rows.item(x).image    + '"'
-                    +   ' data-comment="'   + res.rows.item(x).comment  + '"'
-                    +   ' data-compass="'   + res.rows.item(x).compass  + '">'
-                +   ' <div class="carousel-caption">'
-                +       ((res.rows.item(x).compass)?' <h5>'   + Number(res.rows.item(x).compass).toFixed(1) + '&deg;</h5>':'')
-                +       ((res.rows.item(x).comment)?' <p>'    + res.rows.item(x).comment  + '</p>':'')
-                +   '</div>'
-                +'</div>');
-        }
-        if (res.rows.length==0) {$("#carouselphotos").hide();$("#deletePhoto").hide();}
-    },
-    function (tx, error) {
-        console.log('SELECT canopystatus error: ' + error.message);
-    });
+function init_carousel(obs) {
+    db.transaction(function (tx) {
+        var query = 'SELECT * FROM photo where id_surveydata' + (obs.id=="NULL" ? ' is NULL' : ' = ' + obs.id ) + ';';
+        tx.executeSql(query, [], function (tx, res) {
+            var html = "";
+            for(var x = 0; x < res.rows.length; x++) {
+                $('.carousel-indicators').append('<li data-target="#carouselphotos" data-slide-to="' + x + '" ' + ((x==0)?'class="active"':'') + '></li>');
+                $('.carousel-inner').append(
+                    '<div class="carousel-item ' + ((x==0)?'active':'') + '" data-photoid="'+ res.rows.item(x).id +'">' 
+                    +   ' <img class="d-block w-100 h-100"'
+                        +   ' src="'            + res.rows.item(x).image    + '"'
+                        +   ' data-comment="'   + res.rows.item(x).comment  + '"'
+                        +   ' data-compass="'   + res.rows.item(x).compass  + '">'
+                    +   ' <div class="carousel-caption">'
+                    +       ((res.rows.item(x).compass)?' <h5>'   + Number(res.rows.item(x).compass).toFixed(1) + '&deg;</h5>':'')
+                    +       ((res.rows.item(x).comment)?' <p>'    + res.rows.item(x).comment  + '</p>':'')
+                    +   '</div>'
+                    +'</div>');
+            }
+            if (res.rows.length==0) {$("#carouselphotos").hide();$("#deletePhoto").hide();}
+        },
+        function (tx, error) {
+            console.log('SELECT canopystatus error: ' + error.message);
+        });
+    }, function (error) {
+        console.log('transaction error: ' + error.message);
+    }, function () {
+        console.log('transaction ok');                
+    });  
 }

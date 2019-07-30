@@ -32,7 +32,10 @@ function createTables() {
     //sqlstr = "DROP TABLE IF EXISTS geographicalzone;"
     //runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS geographicalzone "
-            + "(id integer primary key, name varchar(255) not null, wms_url varchar(255) not null, "
+            + "(id integer primary key, "
+            + " name varchar(255) not null, "
+            + " wms_url varchar(255) not null, "
+            + " features varchar(255) not null, "
             + "x_min double precision not null, x_max double precision not null, "
             + "y_min double precision not null, y_max double precision not null);"
     runSQL(sqlstr);
@@ -80,8 +83,7 @@ function createTables() {
 
 function handleError(value) {
     console.log("error message : " + value); 
-    displayMessage("An error occured - " + value,()=>{});       
-    //return Promise.reject(value);      
+    displayMessage("An error occured - " + value,()=>{});
 };
 
 function runSQL(query) {
@@ -90,12 +92,11 @@ function runSQL(query) {
             return res;
         },
         function (tx, error) {
-            console.log('SELECT error: ' + error.message);
+            handleError(error.message);            
         });
     }, function (error) {
-        console.log('transaction error: ' + error.message);
+        handleError(error.message);
     }, function () {
-        console.log('transaction ok');
     });
 }
 
