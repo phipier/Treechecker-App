@@ -30,7 +30,7 @@ function loadmap() {
             baseMaps[baselayer.name] = ll_baselayer;
     }
 
-    if (window.sessionStorage.getItem("features")) {
+    if (window.sessionStorage.getItem("features")!=="null") {
         Features         = JSON.parse(window.sessionStorage.getItem("features"));  
 
         var FeaturesStyle = {

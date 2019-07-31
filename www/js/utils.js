@@ -47,3 +47,18 @@ function clearWSitems_obs() {
     window.sessionStorage.removeItem("photo_compassbearing");
     window.sessionStorage.removeItem("photo_image");     
 }
+
+function getAsync(url_request) {            
+    return new Promise(function(resolve, reject) {
+        var token       = window.sessionStorage.getItem("token");
+        var serverurl   = window.sessionStorage.getItem("serverurl")
+        $.ajax({
+            type : 'GET',
+            crossDomain : true,
+            url : serverurl + url_request,
+            beforeSend: function(xhr)                {xhr.setRequestHeader('Authorization', 'JWT ' + token);},
+            success :   function(reg)                {resolve(reg);},
+            error :     function(req, status, error) {reject(error);}
+        });
+    })
+};

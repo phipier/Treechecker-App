@@ -22,8 +22,7 @@ var listRegions = {
             $('.overlay').toggleClass('active');
         });
 
-        $('#update').on('click', function() {
-            window.plugins.spinnerDialog.show();
+        $('#update').on('click', function() {            
             update();
             loadRegions();
         });
@@ -57,59 +56,44 @@ function onBackKeyDown() {
 }
 
 function loadRegions() {
-    db.transaction(function (tx) {
-        window.plugins.spinnerDialog.show();
-        var query = 'SELECT * FROM geographicalzone';
-        tx.executeSql(query, [], function (tx, res) {
-            var html = '<ul class="list-group">';
-            for(var x = 0; x < res.rows.length; x++) {
-                html += '<li class="list-group-item">'                                 
-                + '<h5>' + res.rows.item(x).name + '</h5>'
-                + '<a id="idreg'+res.rows.item(x).id+'" href="#" class="btn button button-navbar m-2"><i class="fas fa-door-open fa-2x white"></i></a>'
-                + '</li>';
-                //window.sessionStorage.setItem("wms_url_"+res.rows.item(x).id, res.rows.item(x).wms_url);
-            }
-            html += "</ul>";
-            $("#listregions-page").html(html);
-            $("[id^=idreg]").click(function(e) {
-                window.plugins.spinnerDialog.show();
+    runSQL2('SELECT * FROM geographicalzone')
+    .then((res1)=>{
 
-                e.preventDefault();                
-                var id_region = this.id.substring(5);
-                window.sessionStorage.setItem("id_region", id_region);
-                var query = 'SELECT * FROM geographicalzone where id = ' + id_region + ';';
-                db.transaction(function (tx) {
-                    tx.executeSql(query, [], function (tx, res) {                    
-                        window.sessionStorage.setItem("wms_url",  res.rows.item(0).wms_url);
-                        window.sessionStorage.setItem("features", res.rows.item(0).features);     
-                        window.sessionStorage.setItem("reg_xmin", res.rows.item(0).x_min);
-                        window.sessionStorage.setItem("reg_xmax", res.rows.item(0).x_max);
-                        window.sessionStorage.setItem("reg_ymin", res.rows.item(0).y_min);
-                        window.sessionStorage.setItem("reg_ymax", res.rows.item(0).y_max);  
-                        window.plugins.spinnerDialog.hide();
-                        window.location = 'aoi_list.html';                    
-                    }, function (tx, error) {console.log("error in db request: SELECT geographicalzone where id")});
-                },
-                function (error) {
-                    console.log('Transaction error : ' + error.message);
-                    window.plugins.spinnerDialog.hide();
-                },
-                function () {
-                    console.log('transaction ok');
-                    window.plugins.spinnerDialog.hide();
-                }); 
-                return false;
-            });            
-        },
-        function (tx, error) {
-            console.log('SELECT error: ' + error.message);
-            window.plugins.spinnerDialog.hide();
+        var html = '<ul class="list-group">';
+        for(var x = 0; x < res1.rows.length; x++) {
+            html += '<li class="list-group-item">'                                 
+            + '<h5>' + res1.rows.item(x).name + '</h5>'
+            + '<a id="idreg'+res1.rows.item(x).id+'" href="#" class="btn button button-navbar m-2"><i class="fas fa-door-open fa-2x white"></i></a>'
+            + '</li>';                
+        }
+        html += "</ul>";
+
+        $("#listregions-page").html(html);
+
+        $("[id^=idreg]").click(function(e) {
+
+            window.plugins.spinnerDialog.show();
+            e.preventDefault();                
+            var id_region = this.id.substring(5);
+            window.sessionStorage.setItem("id_region", id_region);
+
+            runSQL2('SELECT * FROM geographicalzone where id = ' + id_region + ';')
+            .then((res)=>{                  
+                window.sessionStorage.setItem("wms_url",  res.rows.item(0).wms_url);
+                window.sessionStorage.setItem("features", res.rows.item(0).features);     
+                window.sessionStorage.setItem("reg_xmin", res.rows.item(0).x_min);
+                window.sessionStorage.setItem("reg_xmax", res.rows.item(0).x_max);
+                window.sessionStorage.setItem("reg_ymin", res.rows.item(0).y_min);
+                window.sessionStorage.setItem("reg_ymax", res.rows.item(0).y_max);  
+                window.location = 'aoi_list.html';           
+
+            }, (error)=>{   displayMessage("error in db request: SELECT geographicalzone where id" + error,()=>{});
+                            console.log("error in db request: SELECT geographicalzone where id" + error)})
+
+            .finally(()=>{window.plugins.spinnerDialog.hide();});
+            return false;
         });
-    }, function (error) {
-        console.log('transaction error: ' + error.message);
-        window.plugins.spinnerDialog.hide();
-    }, function () {
-        console.log('transaction ok');
-        window.plugins.spinnerDialog.hide();
-    });
+
+    }, function (error) {console.log('transaction error: ' + error.message);})
+    .finally(()=>{window.plugins.spinnerDialog.hide();});
 }

@@ -8,6 +8,7 @@ function openDb() {
 };
 
 function createTables() {
+    var sqlstr; 
     /* sqlstr = "DROP TABLE IF EXISTS treespecies;"
     runSQL(sqlstr);  */     
     sqlstr = "CREATE TABLE IF NOT EXISTS treespecies "
@@ -27,8 +28,7 @@ function createTables() {
     sqlstr = "CREATE TABLE IF NOT EXISTS canopystatus "
             + "(id integer primary key, "
             + "name varchar(100) not null);"
-    runSQL(sqlstr);
-    var sqlstr; 
+    runSQL(sqlstr);    
     //sqlstr = "DROP TABLE IF EXISTS geographicalzone;"
     //runSQL(sqlstr);
     sqlstr = "CREATE TABLE IF NOT EXISTS geographicalzone "
@@ -49,7 +49,7 @@ function createTables() {
             + "is_deleted varchar(5) not null DEFAULT 'false', "
             + "geographical_zone_id integer not null REFERENCES geographicalzone(id), "
             + "owner_id integer);"
-    runSQL(sqlstr);   
+    runSQL(sqlstr);
     //sqlstr = "DROP TABLE IF EXISTS surveydata;"
     //runSQL(sqlstr); 
     sqlstr = "CREATE TABLE IF NOT EXISTS surveydata"

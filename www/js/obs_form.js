@@ -13,6 +13,7 @@ var obsform = {
 
         $('#photo').on('click', function() {
             //e.preventDefault();
+            setWSitems();
             navigator.camera.getPicture(
                 function(imageData) {                    
                     $('#preview_text').remove();
