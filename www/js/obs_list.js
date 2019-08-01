@@ -201,7 +201,8 @@ var listObs = {
                         
                     },
                     error: function(req, status, error) {                        
-                        reject(error);                        
+                        //reject(error);
+                        resolve({id:r.key, lid:null});                        
                     }
                 });
             })

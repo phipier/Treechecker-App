@@ -3,67 +3,67 @@ var cur_tile_num;
 var tilePC;   
 var AOI_cancel = false; 
 var tile_downloading = false;
+var resmap;
+var id_AOI;
 
-function downloadTiles(id_AOI, bbox) {
+function downloadTiles(p_id_AOI, bbox) {
+
     init_progress();
+    var urls = getTileDownloadURLs(bbox);
+    var res; id_AOI = p_id_AOI;
+
+    // if tiles exist for this AOI id then delete them (folder)
     
-    var fetchQueue = getTileDownloadURLs(bbox);
-
-    var deleteFile_flag = false;
-
-    // if tiles exist for this AOI id then delete them (folder)    
-     
-    tile_num = fetchQueue.length;
+    tile_num = urls.length;
     tilePC = 100/tile_num;
     cur_tile_num = 0;
-    
-    for(var i=0, len=fetchQueue.length; i<len; ++i) {
-    //for(var i=0, len=5; i<len; ++i) {
-        if (!AOI_cancel) {   
 
-            var data = fetchQueue[i];
-            
-            console.log("i: " + i
-                        + " layername: " + data.layerName
-                        + " x: " +      data.x
-                        + " y: " +      data.y
-                        + " zoom: " +   data.z)
+    resmap = urls.map((tile)=>{
 
-            console.log("URL: " + fetchQueue[i].url);
+        if (!AOI_cancel) {
+            var dirPath     = `files/tiles/${id_AOI}/${tile.layerName}/${tile.z}/${tile.x}`;
+            var filePath    = `${tile.y}.png`;
+            //var fileName = dirPath+"/"+filePath;
 
-            var dirPath = `files/tiles/${id_AOI}/${data.layerName}/${data.z}/${data.x}`;
-            var filePath = `${data.y}.png`;
-            var fileName = dirPath+"/"+filePath;
+            console.log(" layername: "  + tile.layerName + "\n"
+                        + " x: "        + tile.x + "\n"
+                        + " y: "        + tile.y + "\n"
+                        + " zoom: "     + tile.z + "\n"
+                        + " URL: "      + tile.url)
 
-            //if (!fileExists(fileName)) {         
-        
-                var makeRequest = function(dataURL, dirPath, filePath) {
-                    // download tile
-                    var url = dataURL;
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('GET', url, true);
-                    xhr.responseType = 'blob';
-                    xhr.onload = function() {
-                        if ((!AOI_cancel) && (this.status == 200)) {      
-                            var blob = new Blob([this.response], { type: 'image/png' });
-                            window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
-                                if (!AOI_cancel) {                                
-                                    console.log("fileName: "+fileName);
-                                    createPath(dirEntry, dirPath, function(dirTileEntry) {
-                                        saveFile(dirTileEntry, blob, filePath);                                    
-                                    })
-                                } else {update_progress()}
-                            }, function (filerror) {console.log("Failed request FS: " + filerror)});                
-                        } else {update_progress()}
-                    };
-                    xhr.send();
-                };
-                if (!AOI_cancel) {makeRequest(data.url, dirPath, filePath);} else {return}
-            //};
+            $.ajax({
+                type        : 'GET',
+                crossDomain : true,
+                url         : tile.url, 
+                cache       : false,
+                xhrFields   : {responseType: 'blob'}, 
+                timeout     : 200000,  // 3 minutes max to get all tiles        
+                success     : 
+                    function(tileres, textStatus, jqXHR) {
+                        console.log("jqXHR  : " + jqXHR + " //////// textStatus : " + textStatus);                        
+                        if (!AOI_cancel) {
+                            var blob = new Blob([tileres], { type: 'image/png' });
+                            window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {                            
+                                createPath(dirEntry, dirPath, function(dirTileEntry) {
+                                    saveFile(dirTileEntry, blob, filePath);                          
+                                })                            
+                            }, function (filerror) {console.log("Failed request FS: " + filerror)});
+                        } else {update_progress()}                        
+                    },
+                error       : 
+                    function(req, status, error) {
+                        console.log("error  : " + error);
+                        console.log("status : " + status);
+
+                        //if status = timeout !!                       
+                        update_progress();
+
+                    }
+            });
         } else {
-            return;
-        }
-    };
+            update_progress();
+        }        
+    });
 };
 
 function init_progress() {
@@ -286,7 +286,7 @@ function getTileDownloadURLs(bbox) {
     var LayerDefinitions = JSON.parse(window.sessionStorage.getItem("wms_url"));
     var minZoom = 2;
     var maxZoom = 19;
-    var fetchQueue = [];
+    var urls = [];
     for(var zoom = minZoom; zoom <= maxZoom; ++zoom) {        
         var xMin = lon2tile(bbox.xmin, zoom);
         var xMax = lon2tile(bbox.xmax, zoom);
@@ -308,10 +308,10 @@ function getTileDownloadURLs(bbox) {
                     var wmsParams = `REQUEST=GetMap&VERSION=${version}&SERVICE=WMS&SRS=${epsg}&WIDTH=${width}&HEIGHT=${height}&LAYERS=${wmsLayerName}&STYLES=&FORMAT=${format}&TRANSPARENT=${transparent}&BBOX=${tileBbox}`;
                     var url = `${urlBase}${wmsParams}`;
         
-                    fetchQueue.push({url: url, x: x, y: y, z: zoom, layerName: wmsLayerName});
+                    urls.push({url: url, x: x, y: y, z: zoom, layerName: wmsLayerName});
                 }
             }
         }
     }
-    return fetchQueue;
+    return urls;
 };

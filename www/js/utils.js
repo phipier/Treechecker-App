@@ -62,3 +62,15 @@ function getAsync(url_request) {
         });
     })
 };
+
+function getAsync2(url_request) {            
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type : 'GET',
+            crossDomain : true,
+            url : url_request,            
+            success :   function(reg)                {resolve(reg);},
+            error :     function(req, status, error) {reject(error);}
+        });
+    })
+};
