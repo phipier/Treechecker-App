@@ -2,11 +2,16 @@ var tile_num;
 var cur_tile_num;
 var tilePC;   
 var AOI_cancel = false; 
-var tile_downloading = false;
+var AOI_saving = false;
 var resmap;
 var id_AOI;
+var tiles_received = [];
+var tiles_timeout = [];
+var tiles_error = [];
+var xhr_requests = [];
 
 function downloadTiles(p_id_AOI, bbox) {
+    tiles_received = []; tiles_timeout = []; tiles_error = [];
 
     init_progress();
     var urls = getTileDownloadURLs(bbox);
@@ -14,55 +19,56 @@ function downloadTiles(p_id_AOI, bbox) {
 
     // if tiles exist for this AOI id then delete them (folder)
     
-    tile_num = urls.length;
+    tile_num = urls.length*2; // 2 steps: download and save in FS
     tilePC = 100/tile_num;
     cur_tile_num = 0;
 
     resmap = urls.map((tile)=>{
 
-        if (!AOI_cancel) {
-            var dirPath     = `files/tiles/${id_AOI}/${tile.layerName}/${tile.z}/${tile.x}`;
-            var filePath    = `${tile.y}.png`;
-            //var fileName = dirPath+"/"+filePath;
+        if (AOI_cancel) {return}
 
-            console.log(" layername: "  + tile.layerName + "\n"
-                        + " x: "        + tile.x + "\n"
-                        + " y: "        + tile.y + "\n"
-                        + " zoom: "     + tile.z + "\n"
-                        + " URL: "      + tile.url)
+        console.log(" layername: "  + tile.layerName + "\n"
+                    + " x: "        + tile.x + "\n"
+                    + " y: "        + tile.y + "\n"
+                    + " zoom: "     + tile.z + "\n"
+                    + " URL: "      + tile.url)
 
-            $.ajax({
-                type        : 'GET',
-                crossDomain : true,
-                url         : tile.url, 
-                cache       : false,
-                xhrFields   : {responseType: 'blob'}, 
-                timeout     : 200000,  // 3 minutes max to get all tiles        
-                success     : 
-                    function(tileres, textStatus, jqXHR) {
-                        console.log("jqXHR  : " + jqXHR + " //////// textStatus : " + textStatus);                        
-                        if (!AOI_cancel) {
-                            var blob = new Blob([tileres], { type: 'image/png' });
-                            window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {                            
-                                createPath(dirEntry, dirPath, function(dirTileEntry) {
-                                    saveFile(dirTileEntry, blob, filePath);                          
-                                })                            
-                            }, function (filerror) {console.log("Failed request FS: " + filerror)});
-                        } else {update_progress()}                        
-                    },
-                error       : 
-                    function(req, status, error) {
-                        console.log("error  : " + error);
-                        console.log("status : " + status);
+        var xhr = $.ajax({
+            type        : 'GET',
+            crossDomain : true,
+            url         : tile.url, 
+            cache       : false,
+            xhrFields   : {responseType: 'blob'}, 
+            timeout     : 1000000,  // milliseconds max to get all tiles        
+            success     : 
+                function(tileres, textStatus, jqXHR) {
+                    console.log(" //////// textStatus : " + textStatus);
+                    if (AOI_cancel) {return}
 
-                        //if status = timeout !!                       
-                        update_progress();
+                    tiles_received.push(tile);                        
+                    update_progress();
+                    
+                    var blob = new Blob([tileres], { type: 'image/png' });
 
-                    }
-            });
-        } else {
-            update_progress();
-        }        
+                    var dirPath     = `files/tiles/${id_AOI}/${tile.layerName}/${tile.z}/${tile.x}`;
+                    var filePath    = `${tile.y}.png`;
+
+                    window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {                            
+                        createPath(dirEntry, dirPath, function(dirTileEntry) {
+                            saveFile(dirTileEntry, blob, filePath);                          
+                        })                            
+                    }, function (filerror) {console.log("Failed request FS: " + filerror)});
+                    
+                },
+            error       : 
+                function(jqXHR, status, error) {
+                    if (AOI_cancel) {return}
+                    update_progress();update_progress();
+                    if (status === "timeout")   { tiles_timeout.push(tile)}
+                    else                        { tiles_error.push(tile)}                                            
+                }
+        });
+        xhr_requests.push(xhr);
     });
 };
 
@@ -71,18 +77,13 @@ function init_progress() {
 }
 
 function update_progress() {
-    if (tile_downloading) {
-        if (!AOI_cancel) {
-            cur_tile_num++;
-            var cur_tilePC = tilePC*cur_tile_num;
-            $('.progress-bar').css('width', cur_tilePC+'%').attr('aria-valuenow', cur_tilePC);
-            if (cur_tile_num == tile_num) {
-                exit_AOI(true,"");
-            }
-        } else {
-            tile_downloading = false;
-            exit_AOI(false,"AOI creation canceled.");
-        }
+    if (AOI_saving) {
+		cur_tile_num++;
+		var cur_tilePC = tilePC*cur_tile_num;
+		$('.progress-bar').css('width', cur_tilePC+'%').attr('aria-valuenow', cur_tilePC);
+		if (cur_tile_num == tile_num) {
+			exit_AOI(true,"");
+		}		
     }
 }
 
@@ -136,7 +137,8 @@ function deleteFile(fileName) {
 
 function saveFile(dirEntry, fileData, fileName) {
     dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
-        if (!AOI_cancel) { writeFile(fileEntry, fileData); } else {return}
+        if (AOI_cancel) {return}
+        writeFile(fileEntry, fileData);
     }, function (fileError) {
         console.log("Failed save to file: " + fileError);       
     });
@@ -188,8 +190,8 @@ function createPath(dirEntry, path, finalCB) {
     var dirs = path.split("/").reverse();
     var dirE = dirEntry;    
 
-    var createDir = function(dir) {
-        if (dir.trim()!="") {
+    var createDir = function(dir) {        
+        if ((dir.trim()!="") && (!AOI_cancel)) {
             dirE.getDirectory(dir, {
                 create: true,
                 exclusive: false
@@ -207,7 +209,7 @@ function createPath(dirEntry, path, finalCB) {
     };
 
     var failed = function(dir) {
-        error("failed to create dir " + dir);
+        console.log("failed to create dir " + dir);
         return false;     
     };
 

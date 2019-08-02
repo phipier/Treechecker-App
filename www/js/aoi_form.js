@@ -28,7 +28,10 @@ aoiform.initialize();
 
 $("#saveaoi").click( function(e) {
     e.preventDefault();
-    if (!tile_downloading) {
+    if (!AOI_saving) {
+        AOI_cancel = false;
+        AOI_saving = true;
+
         if ($("#AOI-form")[0].checkValidity() === false) {
             $("#AOI-form")[0].classList.add('was-validated');
             return false;
@@ -62,19 +65,27 @@ function onBackKeyDown() {
 }
 
 function cancel_AOI() {    
-    if (tile_downloading) {
-        startCancelSpinner();
+    if (AOI_saving) {
         AOI_cancel = true;
+        AOI_saving = false;        
+        xhr_requests.map((xhr)=>{xhr.abort()});
+        startCancelSpinner(); 
+        exit_AOI(false, "AOI canceled.");       
     } 
 }
 
 function exit_AOI(success, message) {
-    stopButtonSpinners();    
+    stopButtonSpinners();       
     if (success) { 
-        displayMessage("AOI created.", ()=>{            
-                        clearWSitems();           
-                        window.location = 'aoi_list.html';
-                    }); 
+        displayMessage(
+            "AOI created " +
+            (tiles_received.length?  "</br>" + "- " + tiles_received.length  + " tiles downloaded and saved on device":"") +
+            (tiles_timeout.length?  "</br>"  + "- " + tiles_timeout.length  + " tiles could not be downloaded because of slow connection and/or long server response times":"") +
+            (tiles_error.length?    "</br>"  + "- " + tiles_error.length    + " tiles could not be downloaded because of other reasons.":"")
+            , ()=>{            
+                //clearWSitems();           
+                //window.location = 'aoi_list.html';
+            }); 
     } else {
         displayMessage(message, ()=>{            
                         var id_aoi = window.sessionStorage.getItem("id_aoi");
@@ -95,8 +106,7 @@ $("#selectarea").click( function(e) {
 });
 
 function add_AOI(aoiname, bbox) {    
-    AOI_cancel = false;
-    tile_downloading = true;
+
     startSaveSpinner();
 
     var token = window.sessionStorage.getItem("token");
@@ -126,7 +136,7 @@ function add_AOI(aoiname, bbox) {
             window.sessionStorage.setItem("id_aoi",val.key);             
             insert_AOI(val, bbox, id_region);
         },
-        error : function(req, status, error) {
+        error : function(req, status, error) {            
             if ($.parseJSON(req.responseText).detail == "Signature has expired.") {
                 $.ajax({
                     type: 'POST',
