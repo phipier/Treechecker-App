@@ -41,10 +41,10 @@ $("#saveaoi").click( function(e) {
         var id_aoi = window.sessionStorage.getItem("id_aoi");
 
         var aoiname = $("#InputAOIname").val();
-        var bbox = { xmin : Number($("#Inputxmin").val()),
-                    xmax : Number($("#Inputxmax").val()),
-                    ymin : Number($("#Inputymin").val()),
-                    ymax : Number($("#Inputymax").val()) }
+        var bbox = {    xmin : Number($("#Inputxmin").val()),
+                        xmax : Number($("#Inputxmax").val()),
+                        ymin : Number($("#Inputymin").val()),
+                        ymax : Number($("#Inputymax").val()) }
         
         // check bbox value (not too large)
 
@@ -60,8 +60,7 @@ $("#cancelaoi").click( function(e) {
 });
 
 function onBackKeyDown() {
-    cancel_AOI()
-    window.location = "aoi_list.html";   
+    cancel_AOI();  
 }
 
 function cancel_AOI() {    
@@ -70,8 +69,14 @@ function cancel_AOI() {
         AOI_saving = false;        
         xhr_requests.map((xhr)=>{xhr.abort()});
         startCancelSpinner(); 
-        exit_AOI(false, "AOI canceled.");       
-    } 
+        exit_AOI(false, "AOI canceled.");
+             
+    } else if (AOI_cancel) {
+        return;
+
+    } else {
+        window.location = "aoi_list.html";
+    }
 }
 
 function exit_AOI(success, message) {
@@ -84,7 +89,7 @@ function exit_AOI(success, message) {
             (tiles_error.length?    "</br>"  + "- " + tiles_error.length    + " tiles could not be downloaded because of other reasons.":"")
             , ()=>{            
                 //clearWSitems();           
-                //window.location = 'aoi_list.html';
+                window.location = 'aoi_list.html';
             }); 
     } else {
         displayMessage(message, ()=>{            

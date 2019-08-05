@@ -14,20 +14,24 @@ function displayMessage(message, action_OK, action_cancel) {
     $("#messagepopupdata").prepend("<p><i class='fas'></i> " + message + "</p>");
     $('#messagepopup').modal('show');
 
-    $("#ok_sent").click(()=>{
+    $("#ok_sent").one("click", function(e) {
+        e.preventDefault();
         $("#messagepopup").modal("hide");
         if (typeof action_OK !== 'undefined') {
             action_OK();
         }
+        return false;
     });    
 
     if (typeof action_cancel === 'undefined')   
         {   $("#cancel_sent").hide();}
     else                                        
         {   
-            $("#cancel_sent").click(()=>{  
+            $("#cancel_sent").one("click", function(e) {
+                e.preventDefault();  
                 $("#messagepopup").modal("hide");             
                 action_cancel();
+                return false;
             });
         }
 }

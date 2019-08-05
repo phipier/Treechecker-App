@@ -8,6 +8,7 @@ var id_AOI;
 var tiles_received = [];
 var tiles_timeout = [];
 var tiles_error = [];
+//var tiles_abort = [];
 var xhr_requests = [];
 
 function downloadTiles(p_id_AOI, bbox) {
@@ -19,19 +20,18 @@ function downloadTiles(p_id_AOI, bbox) {
 
     // if tiles exist for this AOI id then delete them (folder)
     
-    tile_num = urls.length*2; // 2 steps: download and save in FS
+    tile_num = urls.length; 
     tilePC = 100/tile_num;
     cur_tile_num = 0;
 
     resmap = urls.map((tile)=>{
+/*         console.log(" layername: "  + tile.layerName + "\n"
+        + " x: "        + tile.x + "\n"
+        + " y: "        + tile.y + "\n"
+        + " zoom: "     + tile.z + "\n"
+        + " URL: "      + tile.url) */
 
         if (AOI_cancel) {return}
-
-        console.log(" layername: "  + tile.layerName + "\n"
-                    + " x: "        + tile.x + "\n"
-                    + " y: "        + tile.y + "\n"
-                    + " zoom: "     + tile.z + "\n"
-                    + " URL: "      + tile.url)
 
         var xhr = $.ajax({
             type        : 'GET',
@@ -42,11 +42,11 @@ function downloadTiles(p_id_AOI, bbox) {
             timeout     : 1000000,  // milliseconds max to get all tiles        
             success     : 
                 function(tileres, textStatus, jqXHR) {
-                    console.log(" //////// textStatus : " + textStatus);
                     if (AOI_cancel) {return}
 
-                    tiles_received.push(tile);                        
-                    update_progress();
+                    //console.log(" //////// textStatus : " + textStatus);
+                    
+                    tiles_received.push(tile);
                     
                     var blob = new Blob([tileres], { type: 'image/png' });
 
@@ -62,10 +62,14 @@ function downloadTiles(p_id_AOI, bbox) {
                 },
             error       : 
                 function(jqXHR, status, error) {
+                    if      (status === "timeout")  { tiles_timeout.push(tile)}
+                    //else if (status === "abort")    { tiles_abort.push(tile)}                   
+                    else                            { tiles_error.push(tile)} 
+
                     if (AOI_cancel) {return}
-                    update_progress();update_progress();
-                    if (status === "timeout")   { tiles_timeout.push(tile)}
-                    else                        { tiles_error.push(tile)}                                            
+
+                    update_progress();                           
+
                 }
         });
         xhr_requests.push(xhr);
@@ -136,6 +140,7 @@ function deleteFile(fileName) {
 }
 
 function saveFile(dirEntry, fileData, fileName) {
+    if (AOI_cancel) {return}
     dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
         if (AOI_cancel) {return}
         writeFile(fileEntry, fileData);
@@ -149,7 +154,7 @@ function writeFile(fileEntry, dataObj, isAppend) {
     fileEntry.createWriter(function (fileWriter) {
 
         fileWriter.onwriteend = function() {
-            console.log("Successful file write...");
+            //console.log("Successful file write...");
             update_progress();
             /*if (dataObj.type == "image/png") {
                 readBinaryFile(fileEntry);
