@@ -49,8 +49,44 @@ function cancel_Photo() {
     window.location = "obs_form.html";
 }
 
+/* function onSuccess(heading) {
+    compassbearing = heading.magneticHeading;
+    $("#InputCompassbearing").val(compassbearing);
+};
+
+function onError(compassError) {
+    alert('Compass error: ' + compassError.code);  
+};
+
+var options = {
+    frequency: 1000
+}; 
+
+var watchID; */
+
 $("#btncompass").click(function(e) {
-    e.preventDefault();
+    e.preventDefault();       
+
+/*     if (!flag_measuring) 
+    {
+        flag_measuring = true;
+
+        watchID = navigator.compass.watchHeading(onSuccess, onError, options);
+
+        //$("#btncompass").text("Stop measuring");
+        $("#InputCompassbearing").prop('disabled', true);
+    }
+    else {
+        flag_measuring = false;
+
+        navigator.compass.clearWatch(watchID);
+
+        setWSitems();
+
+        //$("#btncompass").text("Start measuring compass bearing"); 
+        $("#InputCompassbearing").prop('disabled', false);     
+    } */
+
     if (!flag_measuring) 
     {
         flag_measuring = true;

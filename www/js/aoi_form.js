@@ -84,15 +84,16 @@ function exit_AOI(success, message) {
     if (success) { 
         displayMessage(
             "AOI created " +
-            (tiles_received.length?  "</br>" + "- " + tiles_received.length  + " tiles downloaded and saved on device":"") +
-            (tiles_timeout.length?  "</br>"  + "- " + tiles_timeout.length  + " tiles could not be downloaded because of slow connection and/or long server response times":"") +
+            (tiles_received.length?  "</br>" + "- " + tiles_received.length  + " tiles downloaded":"") +
+            (tiles_timeout.length?  "</br>"  + "- " + tiles_timeout.length  + " tiles could not be downloaded because of connection and/or server response times":"") +
             (tiles_error.length?    "</br>"  + "- " + tiles_error.length    + " tiles could not be downloaded because of other reasons.":"")
             , ()=>{            
                 //clearWSitems();           
                 window.location = 'aoi_list.html';
             }); 
     } else {
-        displayMessage(message, ()=>{            
+        displayMessage(message, ()=>{ 
+                        AOI_cancel = false;           
                         var id_aoi = window.sessionStorage.getItem("id_aoi");
                         if (id_aoi) { delete_aoi_fromDB(id_aoi); }
                     });
