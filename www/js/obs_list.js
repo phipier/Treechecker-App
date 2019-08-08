@@ -178,8 +178,8 @@ var listObs = {
                     url: window.sessionStorage.getItem("serverurl") + '/api/aois/' + obs.id_aoi + '/observations/',
                     headers: {
                         "Authorization": "JWT " + token,
-                        "Content-Type": "application/json",
-                        "cache-control": "no-cache"
+                        "Content-Type": "application/json"
+                        //"cache-control": "no-cache"
                     },
                     processData: false,
                     data: data,
@@ -233,8 +233,8 @@ var listObs = {
                                 url: window.sessionStorage.getItem("serverurl") + '/api/images/',
                                 headers: {
                                     "Authorization": "JWT " + token,
-                                    "Content-Type": "application/json",
-                                    "cache-control": "no-cache"
+                                    "Content-Type": "application/json"
+                                    //"cache-control": "no-cache"
                                 },
                                 processData: false,
                                 data: data,

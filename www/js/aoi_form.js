@@ -133,8 +133,8 @@ function add_AOI(aoiname, bbox) {
         method: "POST",
         headers: {
         "Authorization": "JWT " + token,
-        "Content-Type": "application/json",
-        "cache-control": "no-cache"         
+        "Content-Type": "application/json"
+        //"cache-control": "no-cache"         
         },
         processData: false,
         data: aoi_data,
