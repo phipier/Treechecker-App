@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cordova build android --debug
+
+cp ./platforms/android/app/build/outputs/apk/debug/app-debug.apk ./APK/debug/app-debug.apk
+

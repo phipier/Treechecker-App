@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cordova build --release
+cordova build android --release
 
 cp ./platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk ./APK/release/app-release-unsigned.apk
 
