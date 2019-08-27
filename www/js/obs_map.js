@@ -8,31 +8,17 @@ var obslist;
 var watchID = 0;
 var Location_current;
 var Accuracy_current;
-
-/* var customControl =  L.Control.extend({
-    options: {
-      position: 'topleft'
-    },      
-    onAdd: function (map) {
-      var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');  
-      L.DomEvent.disableClickPropagation(container);
-      container.title = "Center map on current GPS position";
-      container.style.backgroundColor = 'white';     
-      container.style.backgroundImage = "url(file:///android_asset/www/lib/images/gps.png)";
-      container.style.backgroundSize = "35px 35px";
-      container.style.width = '40px';
-      container.style.height = '40px';
-      container.onclick = function(){
-        centerMapOnCurrentPosition();
-      }  
-      return container;
-    }
-}); */
+var external_storage = false;
 
 function loadMap() {
     document.addEventListener("backbutton", onBackKeyDown, false);
 
     window.screen.orientation.lock('portrait');
+
+    /* window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, 
+        function (dirEntry) {console.log("request for external storage succeeded: " + dirEntry);    external_storage = true},
+        function (filerror) {console.log("Failed request FS: " + filerror);                         external_storage = false}
+    ); */
 
     $("#GPS").hide();$("#noGPS").show();
 
@@ -189,7 +175,7 @@ function initLayers() {
 function addOfflineWMSLayers(id_AOI, LayerDefinitions) {     
     for(let layer of LayerDefinitions.DL_WMS) {         
         console.log("Adding " + layer.name);
-        var ll_layer = new L.TileLayer(cordova.file.dataDirectory + "files/tiles/" + id_AOI + "/" + layer.layers + "/{z}/{x}/{y}.png", {maxZoom: Number(layer.maxZoom), maxNativeZoom: Number(layer.maxNativeZoom)});      
+        var ll_layer = new L.TileLayer((external_storage?cordova.file.externalDataDirectory:cordova.file.dataDirectory) + "files/tiles/" + id_AOI + "/" + layer.layers + "/{z}/{x}/{y}.png", {maxZoom: Number(layer.maxZoom), maxNativeZoom: Number(layer.maxNativeZoom)});      
 
         mymap.addLayer(ll_layer);
         if(controlLayers)

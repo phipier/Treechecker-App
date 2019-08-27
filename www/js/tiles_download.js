@@ -10,6 +10,9 @@ var tiles_timeout = [];
 var tiles_error = [];
 //var tiles_abort = [];
 var xhr_requests = [];
+var external_storage = false;
+
+
 
 function downloadTiles(p_id_AOI, bbox) {
     tiles_received = []; tiles_timeout = []; tiles_error = [];
@@ -24,12 +27,9 @@ function downloadTiles(p_id_AOI, bbox) {
     tilePC = 100/tile_num;
     cur_tile_num = 0;
 
+    //doesExtStorageExists().then((res)=>{
+    //external_storage = res;
     resmap = urls.map((tile)=>{
-/*         console.log(" layername: "  + tile.layerName + "\n"
-        + " x: "        + tile.x + "\n"
-        + " y: "        + tile.y + "\n"
-        + " zoom: "     + tile.z + "\n"
-        + " URL: "      + tile.url) */
 
         if (AOI_cancel) {return}
 
@@ -44,8 +44,6 @@ function downloadTiles(p_id_AOI, bbox) {
                 function(tileres, textStatus, jqXHR) {
                     if (AOI_cancel) {return}
 
-                    //console.log(" //////// textStatus : " + textStatus);
-                    
                     tiles_received.push(tile);
                     
                     var blob = new Blob([tileres], { type: 'image/png' });
@@ -53,12 +51,15 @@ function downloadTiles(p_id_AOI, bbox) {
                     var dirPath     = `files/tiles/${id_AOI}/${tile.layerName}/${tile.z}/${tile.x}`;
                     var filePath    = `${tile.y}.png`;
 
-                    window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {                            
-                        createPath(dirEntry, dirPath, function(dirTileEntry) {
-                            saveFile(dirTileEntry, blob, filePath);                          
-                        })                            
-                    }, function (filerror) {console.log("Failed request FS: " + filerror)});
-                    
+                    window.resolveLocalFileSystemURL(external_storage?cordova.file.externalDataDirectory:cordova.file.dataDirectory, 
+                        function (dirEntry) {                            
+                            createPath(dirEntry, dirPath, function(dirTileEntry) {
+                                saveFile(dirTileEntry, blob, filePath);                          
+                            }
+                        )                            
+                    },  function (filerror) {
+                            console.log("Failed request FS: " + filerror)
+                    });                    
                 },
             error       : 
                 function(jqXHR, status, error) {
@@ -74,6 +75,7 @@ function downloadTiles(p_id_AOI, bbox) {
         });
         xhr_requests.push(xhr);
     });
+    //}, (error)=>{console.log(error);});
 };
 
 function init_progress() {
@@ -91,8 +93,20 @@ function update_progress() {
     }
 }
 
+function doesExtStorageExists() {
+    return new Promise(function(resolve, reject) {
+        window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, 
+            function (dirEntry) {console.log("request for external storage succeeded: " + dirEntry);    resolve(true)},
+            function (filerror) {console.log("Failed request FS: " + filerror);                         resolve(false)}
+        );
+    })
+}
+
 function deleteTiles(id_aoi) {
-    window.resolveLocalFileSystemURL(cordova.file.dataDirectory + "files/tiles/" + id_aoi, function (dirEntry) {
+
+    //doesExtStorageExists();
+
+    window.resolveLocalFileSystemURL((external_storage?cordova.file.externalDataDirectory:cordova.file.dataDirectory) + "files/tiles/" + id_aoi, function (dirEntry) {
         var success = function(parent) {
             console.log("Remove Recursively Succeeded");
         }
@@ -109,7 +123,7 @@ function fileExists(fileName) {
     window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {        
         console.log("exists? "+fileName);
         dirEntry.getFile(fileName, {create:false}, function(fileEntry) {
-            console.log("file exists "+fileEntry.fullPath);
+            console.log("file exists " + fileEntry.fullPath);
         }, function(fileEntry) {
             console.log("file doesn't exist "+fileEntry.fullPath);
         });
