@@ -87,7 +87,10 @@ For example:
 ```
 * Additional vector data
     
-It is also possible to include additional features to be displaid on map. The GeoJSON format will be used.
+It is also possible to include additional features to be displaid on map. Only GeoJSON format is accepted.
+
+For example:
+
 ```
 [{
     "type": "LineString",
