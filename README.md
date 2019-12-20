@@ -87,7 +87,19 @@ For example:
 ```
 * Additional vector data
     
-It is also possible to include additional features to be displaid on map. The GeoJSON format will be used.
+It is also possible to include additional features to be displaid on map. Only GeoJSON format is accepted.
+
+For example:
+
+```
+[{
+    "type": "LineString",
+    "coordinates": [[9.7, 45.67], [9.8, 45.77], [9.9, 45.89]]
+}, {
+    "type": "LineString",
+    "coordinates": [[8.7, 44.67], [8.8, 44.77], [8.9, 44.89]]
+}]
+```
 
 ### Log-in the Treechecker App <a name="login"></a>
 
@@ -116,7 +128,8 @@ Once you selected a region of interest, the next screen will display the list of
 
 ### Add an Area of Interest (AOI) <a name="aoi"></a>
 
-To add an AOI, it is necessary to be online (WIFI or mobile data). From the AOI list, push the “+” button to access the AOI creation form. 
+To add an AOI, it is necessary to be online (WIFI or mobile data). From the AOI list, push the “+” button to access the AOI creation form.  
+
 | | |
 |---|---|
 |<img src="docs/screenshots/AOI_form1.png" width="300"/>|Give a name to your area of interest and push the “select area on the map” button to select the area where you will do your survey.|
