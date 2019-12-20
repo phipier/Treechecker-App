@@ -56,34 +56,35 @@ The WMS layers information is stored as a JSON format string and splits into two
 * DL_WMS : A list of WMS whose tiles will be downloaded when creating an area of interest (AOI) from the app.  
 
 For example:
-{
-"BASE_WMS":[
-    {
-        "name":"OSM",
-        "layerName":"OSM",
-        "url":"https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
-        "attribution":"Map data © <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
-        "maxZoom":"22",
-        "maxNativeZoom":"19"
-    }
-],
-"DL_WMS":[
-{
-    "name":"Lombardia",
-    "url":"https://www.cartografia.servizirl.it/viewer31/proxy/proxy.jsp?https://www.cartografia.servizirl.it/arcgis2/services/BaseMap/ortofoto2007UTM/ImageServer/WMSServer?",
-    "layers":"0",
-    "format":"image/png",
-    "transparent":"true",
-    "version":"1.1.0",
-    "height":256,
-    "width":256,
-    "crs":"EPSG:4326",
-    "maxZoom":"22",
-    "maxNativeZoom":"19"
-}
-]
-}
-
+```
+{  
+"BASE_WMS":[  
+    {  
+        "name":"OSM",  
+        "layerName":"OSM",  
+        "url":"https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",  
+        "attribution":"Map data © <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",  
+        "maxZoom":"22",  
+        "maxNativeZoom":"19"  
+    }  
+],  
+"DL_WMS":[  
+    {  
+        "name":"Lombardia",  
+        "url":"https://www.cartografia.servizirl.it/viewer31/proxy/proxy.jsp?https://www.cartografia.servizirl.it/arcgis2/services/BaseMap/ortofoto2007UTM/ImageServer/WMSServer?",  
+        "layers":"0",  
+        "format":"image/png",  
+        "transparent":"true",  
+        "version":"1.1.0",  
+        "height":256,  
+        "width":256,  
+        "crs":"EPSG:4326",  
+        "maxZoom":"22",  
+        "maxNativeZoom":"19"  
+    }  
+]  
+}  
+```
 * Additional vector data
     
 It is also possible to include additional features to be displaid on map. The GeoJSON format will be used.
