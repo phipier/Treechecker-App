@@ -128,7 +128,7 @@ Once you selected a region of interest, the next screen will display the list of
 
 ### Add an Area of Interest (AOI) <a name="aoi"></a>
 
-To add an AOI, it is necessary to be online (WIFI or mobile data). From the AOI list, push the “+” button to access the AOI creation form. 
+To add an AOI, it is necessary to be online (WIFI or mobile data). From the AOI list, push the “+” button to access the AOI creation form.  
 | | |
 |---|---|
 |<img src="docs/screenshots/AOI_form1.png" width="300"/>|Give a name to your area of interest and push the “select area on the map” button to select the area where you will do your survey.|
