@@ -1,10 +1,23 @@
-# Documentation
+# Treechecker App
 
-## User manual
+# Treechecker server
 
-Introduction
-The Treechecker app (and server) is an Android app enabling tree survey using offline maps. When online, the app first downloads WMS tiles (From a WMS layer of the user’s choice) on the Android device. It then allows the user to visualize the layer offline while overlaying the location provided by the GPS of the Android device. When back online, the app will upload the observations made on the field back to the Treechecker server. 
+1. [User's manual](#usersmanual)  
+    1. [Introduction](#introduction)  
+
+2. [Technical documentation](#technical)  
+
+## User's manual <a name="usersmanual"></a>
+
+### Introduction <a name="introduction"></a>
+
+The Treechecker app (and server) is an Android app enabling tree survey using offline maps. When online, the app first downloads WMS tiles (From a WMS layer of the user’s choice) on the Android device. It is then possible to visualize the layer offline while overlaying the location provided by the GPS of the Android device. When online, the app will upload the observations made on the field back to the Treechecker server.  
+
 To use the Treechecker you will need to set up and configure a Treechecker server. If you have not already set up your own Treechecker server then please go to chapter “How to set up a new Treechecker-server on Pythonanywhere” on page ...  
+
+### Installing the Treechecker app on Android
+
+Download and install the last version of the Treechecker App at https://cutt.ly/7rqZ5UZ
 
 ### Comments on the use of compass and GPS with an Android Device
 
@@ -18,23 +31,16 @@ In order to use the Android device GPS efficiently, you may want to follow these
 
 Geolocation should be set to "high precision" mode. For more information, please consult https://support.google.com/maps/answer/2839911?co=GENIE.Platform%3DAndroid&hl=en
 
-To save battery while using GPS, your device could be set to flight mode.
-
-### Installing the Treechecker app on Android
-
-Download and install the last version of the Treechecker App at https://cutt.ly/7rqZ5UZ
+To save battery while using GPS, your device should be set to flight mode.
 
 ### Configure the Treechecker-server	
 Before using the Treechecker App you will need to configure the Treechecker server by adding at least one Region of Interest.	
-
-* Add Region
 
 | | |
 |---|---|
 | <img src="docs/screenshots/Admin1.png" width="500"/>|Navigate to the Treechecker server admin page (e.g. if you set up a Treechecker server using the Pythonanywhere service, the URL should be: your-username.pythonanywhere.com/config ). If you have not yet set up a Treechecker server, go to ... |
 | <img src="docs/screenshots/Admin5_Regions.png" width="500"/>|By clicking on “Geographical Zones”, the list of Geographical zones will appear. Click on button “Add Geographical Zone” at the top right-end corner of the screen.|
-| <img src="docs/screenshots/Admin1.png" width="500"/>|The Geographical Zone (same as Region of Interest) creation form will appear. 
-|
+| <img src="docs/screenshots/Admin1.png" width="500"/>|The Geographical Zone (same as Region of Interest) creation form will appear.|
 
 The WMS layers information is stored as a JSON format string and splits into two parts:
 
@@ -145,7 +151,9 @@ You may also add a bearing measure from the compass of your smartphone. For a ma
 |<img src="docs/screenshots/Admin3_surveydata.png" width="600"/>|By clicking the “Go” button, it will create a file containing all the data selected and will download to your computer.|
 |<img src="docs/screenshots/Admin4_surveydata.png" width="600"/>|By clicking on a specific observation, it will display its information details.|
 
-## Development environment setup
+## Technical documentation <a name="technical"></a>
+
+### Development environment setup
 
 To set up a development environment for the Treechecker app, the following applications should be installed:
 
@@ -154,7 +162,7 @@ To set up a development environment for the Treechecker app, the following appli
 * cordova 9  
 * Android studio  
 
-### Create the Android platform
+* Create the Android platform
 
 ```
 $cordova platform add Android
