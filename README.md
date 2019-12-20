@@ -1,11 +1,19 @@
 # Treechecker App
 
-# Treechecker server
-
 1. [User's manual](#usersmanual)  
     1. [Introduction](#introduction)  
+    2. [Installing the Treechecker app on Android](#install)
+    3. [Comments on the use of compass and GPS with an Android Device](#GPS)
+    4. [Configure Treechecker server](#server)
+    5. [Log-in the Treechecker App](#login)
+    6. [Add an Area of Interest (AOI)](#aoi)
+    7. [Add observations](#addobs)
+    8. [Upload observations](#uploadobs)
+    9. [Download observations](#dldobs)
 
 2. [Technical documentation](#technical)  
+    1. [Development environment set up](#devenv)
+    2. [Build APK](#buildapk)
 
 ## User's manual <a name="usersmanual"></a>
 
@@ -15,11 +23,11 @@ The Treechecker app (and server) is an Android app enabling tree survey using of
 
 To use the Treechecker you will need to set up and configure a Treechecker server. If you have not already set up your own Treechecker server then please go to chapter “How to set up a new Treechecker-server on Pythonanywhere” on page ...  
 
-### Installing the Treechecker app on Android
+### Installing the Treechecker app on Android <a name="install"></a>
 
 Download and install the last version of the Treechecker App at https://cutt.ly/7rqZ5UZ
 
-### Comments on the use of compass and GPS with an Android Device
+### Comments on the use of compass and GPS with an Android Device <a name="GPS"></a>
 
 * Compass calibration
 
@@ -33,7 +41,7 @@ Geolocation should be set to "high precision" mode. For more information, please
 
 To save battery while using GPS, your device should be set to flight mode.
 
-### Configure the Treechecker-server	
+### Configure Treechecker server <a name="server"></a>
 Before using the Treechecker App you will need to configure the Treechecker server by adding at least one Region of Interest.	
 
 | | |
@@ -80,7 +88,7 @@ For example:
     
 It is also possible to include additional features to be displaid on map. The GeoJSON format will be used.
 
-### Log-in the Treechecker App
+### Log-in the Treechecker App <a name="login"></a>
 
 | | |
 |---|---|
@@ -105,7 +113,7 @@ You will NOT be able to:
 
 Once you selected a region of interest, the next screen will display the list of areas of interest for that region.  
 
-### Add an Area of Interest (AOI)
+### Add an Area of Interest (AOI) <a name="aoi"></a>
 
 To add an AOI, it is necessary to be online (WIFI or mobile data). From the AOI list, push the “+” button to access the AOI creation form. 
 | | |
@@ -115,7 +123,7 @@ To add an AOI, it is necessary to be online (WIFI or mobile data). From the AOI 
 |<img src="docs/screenshots/AOI_form3.png" width="300"/>|Push the button the “tick” button in the bottom right corner to save your AOI and start downloading the tiles corresponding to the area you have selected.  If the selected area is too large, you will have to reduce its size. It is possible to cancel the downloading process by clicking on the red square.|
 |<img src="docs/screenshots/AOI_list_full.png" width="300"/>|When the downloading process has completed, the application will navigate back to the AOI list that will include the newly created AOI. For each AOI (Area of interest) in the list, there are two buttons. One to access the observations section and another one to delete the AOI. If you use the push button for an AOI that has not yet uploaded observations, there will be a warning.|
 
-### Add observations
+### Add observations <a name="addobs"></a>
 
 | | |
 |---|---|
@@ -135,14 +143,14 @@ After pushing the ‘next’ arrow, the observation form will appear.
 You may also add a bearing measure from the compass of your smartphone. For a matter of accuracy, you will position your smartphone horizontally and point the top part of your smartphone towards the subject of the photo you have taken. The compass bearing will then give the angle of the observer in respect to the magnetic North. You may also add a comment for the photo.|
 |<img src="docs/screenshots/Observations_list2.png" width="300"/>|The next screen will take you back to the observation form. After validation of the observation form you will navigate back to the observation list. By pushing the map button, you will get an overall view of the observations that have been made fot that AOI so far.|
 
-### Uploading observations to the Treechecker server
+### Uploading observations to the Treechecker server <a name="uploadobs"></a>
 
 | | |
 |---|---|
 |<img src="docs/screenshots/Observations_list_menu.png" width="300"/>|To upload observations, your device will need to be online. From the observation list, open the menu (top right corner) and push on “Upload observations". |
 |<img src="docs/screenshots/Observations_list3_uploadedobs.png" width="300"/>|After the uploading process has completed, the uploaded observations will be marked as such in the observation list.|
 
-### Downloading the field observation data
+### Downloading the field observation data <a name="dldobs"></a>
 
 | | |
 |---|---|
@@ -153,7 +161,7 @@ You may also add a bearing measure from the compass of your smartphone. For a ma
 
 ## Technical documentation <a name="technical"></a>
 
-### Development environment setup
+### Development environment setup <a name="devenv"></a>
 
 To set up a development environment for the Treechecker app, the following applications should be installed:
 
@@ -168,7 +176,7 @@ To set up a development environment for the Treechecker app, the following appli
 $cordova platform add Android
 ```
 
-## Build APK
+## Build APK <a name="buildapk"></a>
 
 If you have changed code in the app, you will need to compile a new APK. On your development machine, go to project folder and run:
 
