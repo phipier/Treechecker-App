@@ -88,6 +88,15 @@ For example:
 * Additional vector data
     
 It is also possible to include additional features to be displaid on map. The GeoJSON format will be used.
+```
+[{
+    "type": "LineString",
+    "coordinates": [[9.7, 45.67], [9.8, 45.77], [9.9, 45.89]]
+}, {
+    "type": "LineString",
+    "coordinates": [[8.7, 44.67], [8.8, 44.77], [8.9, 44.89]]
+}]
+```
 
 ### Log-in the Treechecker App <a name="login"></a>
 
