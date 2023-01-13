@@ -9,6 +9,10 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
+    <allow-navigation href="*"/>
+
+    <preference name="AndroidInsecureFileModeEnabled" value="true" />
+
     <icon src="www/img/ic_canhemon.png" />
     <platform name="android">
         <allow-intent href="market:*" />

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+cordova build android --release
+
+cp ./platforms/android/app/build/outputs/bundle/release/app-release.aab ./APK/release/app-release-unsigned.aab
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ./Treechecker-mobileapps.keystore ./APK/release/app-release-unsigned.aab Treechecker-mobileapps
+
+rm ./APK/release/Treechecker.aab
+
+zipalign -v 4 ./APK/release/app-release-unsigned.aab ./APK/release/Treechecker.aab

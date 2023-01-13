@@ -1,10 +1,14 @@
 #!/bin/bash
 
-cordova build android --release
+#keytool -genkey -v -keystore Treechecker.keystore -alias Treechecker-mobileapp -keyalg RSA -keysize 2048 -validity 9000
+# TreecheckerJRC
+
+#cordova build android --release
+cordova build android --release -- --packageType=apk
 
 cp ./platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk ./APK/release/app-release-unsigned.apk
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ./../Treechecker-mobileapps.keystore ./APK/release/app-release-unsigned.apk Treechecker-mobileapps
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ./Treechecker.keystore ./APK/release/app-release-unsigned.apk Treechecker-mobileapp
 
 rm ./APK/release/Treechecker.apk
 
