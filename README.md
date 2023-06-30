@@ -243,6 +243,8 @@ to run android
 ```
 cordova run android
 ```
+to debug application, open chrome and go to
+chrome://inspect/#devices
 
 To remove and add plugins
 ```
