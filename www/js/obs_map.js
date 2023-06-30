@@ -198,7 +198,7 @@ function addOnlineWMSLayers(LayerDefinitions) {
             baseMaps[baselayer.name] = ll_baselayer;
     }
 
-    for(let WMSlayer of LayerDefinitions.DL_WMS) {
+    for(let WMSlayer of LayerDefinitions.VIEWER_WMS) {
         var ll_layer = L.tileLayer.wms(    
             WMSlayer.url, {
                 layers:         WMSlayer.layers,

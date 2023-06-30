@@ -51,7 +51,7 @@ function loadmap() {
             overlays["Features"] = ll_features;
     }
 
-    for(let WMSlayer of LayerDefinitions.DL_WMS) {    
+    for(let WMSlayer of LayerDefinitions.VIEWER_WMS) {    
 
         var ll_layer = L.tileLayer.wms(    
             WMSlayer.url, {
