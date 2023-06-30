@@ -204,5 +204,47 @@ $bash buildrel (for a release build)
 $bash builddebug (for a debug build)
 ```
 
+Another option is to use a Docker container
+
+search for a cordova image
+```
+docker search cordova
+```
+Possible image to use, download image
+```
+docker pull beevelop/cordova
+```
+
+Go to Cordova project directory and then, 
+```
+sudo docker run -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova
+```
+To see what platforms are available 
+```
+cordova platform list
+```
+
+To add the platform android
+```
+cordova platform add android
+```
+To build the app
+```
+cordova build
+```
+Then, in order to list the attached devices:
+```
+adb devices
+```
+to run android
+```
+cordova run android
+```
+
+To remove and add plugins
+```
+cordova plugin rm cordova-plugin-camera 
+cordova plugin add cordova-plugin-camera 
+```
 
 
