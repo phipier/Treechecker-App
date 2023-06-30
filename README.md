@@ -243,13 +243,16 @@ to run android
 ```
 cordova run android
 ```
-to debug application, open chrome and go to
-chrome://inspect/#devices
+to debug application, open chrome and go to chrome://inspect/#devices
 
 To remove and add plugins
 ```
 cordova plugin rm cordova-plugin-camera 
 cordova plugin add cordova-plugin-camera 
+```
+To create release APK
+```
+bash buildrel
 ```
 
 
