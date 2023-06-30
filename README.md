@@ -228,6 +228,9 @@ To add the platform android
 ```
 cordova platform add android
 ```
+
+Connect device to computer
+
 To build the app
 ```
 cordova build
