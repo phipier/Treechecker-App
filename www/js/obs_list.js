@@ -15,24 +15,59 @@ var listObs = {
         var id_aoi = window.sessionStorage.getItem("id_aoi");        
 
         db.transaction(function (tx) {
-                var query = 'SELECT * FROM surveydata where id_aoi = '+id_aoi+';';
+                //var query = 'SELECT * FROM surveydata where id_aoi = '+id_aoi+';';
+                var query = "SELECT " +
+                            "surveydata.uploaded AS surveydata_uploaded, " +
+                            "surveydata.id AS id, " +
+                            "photo.uploaded AS photo_uploaded, " +
+                            "photo.id AS photo_id " +
+                            "FROM " +
+                            "surveydata " +
+                            "INNER JOIN " +
+                            "photo ON surveydata.id = photo.id_surveydata and surveydata.id_aoi = "+id_aoi+";";
+              
                 tx.executeSql(query, [], function (tx, res) {
                     var html = '<ul class="list-group">';
-                    for(var x = 0; x < res.rows.length; x++) {
+                    var a_obs = [];
+                
+                    for (var x = 0; x < res.rows.length; x++) {
                         var id_obs = res.rows.item(x).id;
-                        html += '<li class="list-group-item d-flex align-items-center py-1">'
-                        + '<div class="mr-auto p-1"><h5>' + res.rows.item(x).name + '</h5></div>';                        
-                        if (res.rows.item(x).uploaded == 1) {
-                            html += '<div class="p-1"><i class="fas fa-clipboard-check fa-2x green"></i></div>'  //fa-check-circle 
-                                    + '<div class="p-1"><a id="edit_idobs_'+id_obs+'" class="btn button button-listitem">'
-                                    + '<i class="fas fa-eye fa-2x white"></i></a></div>'
+                
+                        // Check if the observation already exists in the array
+                        var existingObs = a_obs.find(obs => obs.id === id_obs);
+                        if (existingObs) {
+                            // Observation already exists, update the uploaded field if necessary
+                            if (res.rows.item(x).photo_uploaded == 2) {
+                                existingObs.uploaded = 2;
+                            }
                         } else {
-                            html += '<div class="p-1"><a id="edit_idobs_'+id_obs+'" class="btn button button-listitem">'
-                                    + '<i class="fas fa-edit fa-2x white"></i></a></div>'
-                        }                        
-                        html += '<div class="p-1"><a id="dele_idobs_'+id_obs+'" data-uploaded="'+res.rows.item(x).uploaded+'" class="btn button button-listitem">'
-                            + '<i class="fas fa-trash fa-2x white"></i></a></div>'
-                            + '</li>';
+                            // Observation doesn't exist, create a new entry
+                            var obs = {};
+                            obs.id = id_obs;
+                            obs.name = res.rows.item(x).name;
+                            obs.uploaded = res.rows.item(x).photo_uploaded == 2 ? 2 : res.rows.item(x).surveydata_uploaded;
+                            a_obs.push(obs);
+                        }
+                    }
+
+                    for (var x = 0; x < a_obs.length; x++) {
+                        var id_obs = a_obs[x].id;
+
+                        html += '<li class="list-group-item d-flex align-items-center py-1">' +
+                            '<div class="mr-auto p-1"><h5>' + a_obs[x].name + '</h5></div>';
+
+                        if (a_obs[x].uploaded == 1) {
+                            html += '<div class="p-1"><i class="fas fa-clipboard-check fa-2x green"></i></div>';
+                        } else if (a_obs[x].uploaded == 2) {
+                            html += '<div class="p-1"><a id="warn_idobs_' + id_obs + '" class="btn button button-listitem">' +
+                            '<i class="fas fa-circle-exclamation fa-2x green"></i></div>';
+                        }
+
+                        html += '<div class="p-1"><a id="edit_idobs_' + id_obs + '" class="btn button button-listitem">' +
+                            '<i class="fas fa-edit fa-2x white"></i></a></div>' +
+                            '<div class="p-1"><a id="dele_idobs_' + id_obs + '" data-uploaded="' + a_obs[x].uploaded + '" class="btn button button-listitem">' +
+                            '<i class="fas fa-trash fa-2x white"></i></a></div>' +
+                            '</li>';
                     }
                     html += "</ul>";
                     $("#listobs-page").html(html);
@@ -41,6 +76,14 @@ var listObs = {
                         window.sessionStorage.setItem("edit_mode", "t");
                         var id_obs = this.id.substring(11);
                         edit_obs(id_obs);
+                        return false;
+                    });
+                    $("[id^=warning_idobs_]").click(function(e) {
+                        e.preventDefault();                        
+                        var id_obs = this.id.substring(11);
+                        displayMessage("Some data for this observation could not be uploaded, please try again",
+                                            ()=>{},
+                                            ()=>{});
                         return false;
                     });
                     $("[id^=dele_idobs_]").click(function(e) {
@@ -133,7 +176,7 @@ var listObs = {
         var getObservations = function(resolve, reject) {
             db.transaction(function (tx) {
                 var id_aoi = window.sessionStorage.getItem("id_aoi");
-                tx.executeSql('SELECT * FROM surveydata where id_aoi = ' + id_aoi + ' and uploaded = 0;', [], function (tx, res) {       
+                tx.executeSql('SELECT * FROM surveydata where id_aoi = ' + id_aoi + ' and uploaded IN (0,2);', [], function (tx, res) { //TO CHANGE and uploaded = 0;', [], function (tx, res) {       
                     var a_obs = [];                        
                     for(var x = 0; x < res.rows.length; x++) {
                         var obs = {};
@@ -183,26 +226,44 @@ var listObs = {
                     },
                     processData: false,
                     data: data,
-                    success: r => {      
+                    success: r => {  
+                        console.log('success Ajax Sendobs: ');    
                         db.transaction(function (tx) {
                             var id_aoi = window.sessionStorage.getItem("id_aoi");
                             tx.executeSql('UPDATE surveydata SET uploaded = 1 where id = ' + obs.id + ';', [], function (tx, res) {       
                                 resolve({id:r.key, lid:obs.id});
                             },
                             function (tx, error) {
-                                console.log('EXEC SQL : UPDATE surveydata error: ' + error);
-                                reject(error);   
+                                console.log('EXEC SQL : UPDATE surveydata error: ' + error);  
+                                reject(error);                               
                             });  
                         },
                         function (tx, error) {
-                            console.log('TRANSAC : UPDATE surveydata  error: ' + error);
-                            reject(error);   
+                            console.log('TRANSAC : UPDATE surveydata  error: ' + error);   
+                            reject(error);                           
                         });                                                  
                         
                     },
                     error: function(req, status, error) {                        
                         //reject(error);
-                        resolve({id:r.key, lid:null});                        
+                        console.log('error Ajax SendObs: ' + error);
+                        //resolve({id:r.key, lid:null});            
+                         
+                        db.transaction(function (tx) {                          
+                            tx.executeSql('UPDATE surveydata SET uploaded = 2, response = "'+ error +'" where id = ' + obs.id + ';', [], function (tx, res) {       
+                                console.log('UPDATED surveydata for obs ' + obs.id + ';');
+                                resolve({id:r.key, lid:obs.id});
+                            },
+                            function (tx, error) {
+                                console.log('EXEC SQL : UPDATE surveydata error: ' + error);   
+                                reject(error);                             
+                            });  
+                        },
+                        function (tx, error) {
+                            console.log('TRANSAC : UPDATE surveydata  error: ' + error);                         
+                            reject(error);
+                        });  
+                                                  
                     }
                 });
             })
@@ -211,7 +272,7 @@ var listObs = {
         var sendPhotoforObs = function(obs) {
             return new Promise(function(resolve, reject) {
                 db.transaction(function (tx) {                
-                    tx.executeSql('SELECT * FROM photo where id_surveydata = ' + obs.lid + ';', [], function (tx, res) {
+                    tx.executeSql('SELECT * FROM photo where id_surveydata = ' + obs.lid + ' WHERE uploaded IN (0,2);', [], function (tx, res) {
                         if (res.rows.length == 0) {resolve(res);}
                         // TODO : make this loop synchronous?
                         for(var x = 0; x < res.rows.length; x++) {
@@ -239,12 +300,27 @@ var listObs = {
                                 processData: false,
                                 data: data,
                                 success: function(res) {   
-                                    console.log("resolve");                                 
+                                    console.log('Success Ajax SendPhoto: ');
                                     resolve(res);
                                 },
-                                error: function(req, status, error) {     
-                                    console.log("reject");                               
-                                    reject(error.message);                                                   
+                                error: function(req, status, error) {   
+                                    console.log('error Ajax SendPhoto: ' + error);
+                                    
+                                    db.transaction(function (tx) {                          
+                                        tx.executeSql('UPDATE photo SET uploaded = 2, response = "'+ error +'" where id = ' + photo.id + ';', [], function (tx, res) {       
+                                            console.log('UPDATED photo for obs ' + obs.id + ' and photo ' + photo.id + ';');
+                                            resolve({id:r.key, lid:obs.id});
+                                        },
+                                        function (tx, error) {
+                                            console.log('EXEC SQL : UPDATE photo error: ' + error);   
+                                            reject(error);                             
+                                        });  
+                                    },
+                                    function (tx, error) {
+                                        console.log('TRANSAC : UPDATE photo  error: ' + error);                         
+                                        reject(error);
+                                    });    
+                                    resolve();                                             
                                 }
                             });
                         }
@@ -254,32 +330,13 @@ var listObs = {
                     });
                 });
             });
-        } 
-       
-        /*
-        function delay() {
-            return new Promise(resolve => setTimeout(resolve, 300));
         }
-        
-        async function delayedLog(item) {
-        // notice that we can await a function
-        // that returns a promise
-        await delay();
-        console.log(item);
-        }
-        */
 
         new Promise(getObservations)        
         .then((observations) => {
             console.log("sending observations ... ");  
             console.log(observations);
-            /*async function processArray(array) {
-                for (const item of array) {
-                    await delayedLog(item);
-                }
-                console.log('Done!');
-            }*/
-            // return processArray(array)
+        
             if (observations.length > 0) {
                 var sendObs = observations.map(obs => sendObservation(obs));
                 return Promise.all(sendObs);
@@ -301,6 +358,7 @@ var listObs = {
             handleError(value);
         })
         .catch(function(error) {
+            window.plugins.spinnerDialog.hide();
             console.log(error);            
         })
         .finally(function() { 

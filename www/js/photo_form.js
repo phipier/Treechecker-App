@@ -136,8 +136,8 @@ function needscalibration(event) {
 
 function insert_photo(photo) {
     var err = false;
-    runSQL2("REPLACE INTO photo (id, id_surveydata, compass, image, comment) "
-    + "VALUES(" + photo.id + "," + photo.obsid + "," + photo.compassbearing + ",'" + photo.image + "','" + photo.comment + "');")   
+    runSQL2("REPLACE INTO photo (id, id_surveydata, compass, image, comment, uploaded) "
+    + "VALUES(" + photo.id + "," + photo.obsid + "," + photo.compassbearing + ",'" + photo.image + "','" + photo.comment + ",0');")   
     .then((res) => {     
         console.log("replace in photo table done ... ");
     }, (value) => {       

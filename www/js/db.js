@@ -60,7 +60,8 @@ function createTables() {
             + " comment text, id_aoi integer not null   REFERENCES aoi(id)              ON UPDATE CASCADE ON DELETE CASCADE, "
             + " longitude double precision not null, "
             + " latitude double precision not null,"
-            + " uploaded integer);"
+            + " uploaded integer,"
+            + " response text);"
     runSQL(sqlstr);
 
     //sqlstr = "DROP TABLE IF EXISTS photo;"
@@ -69,8 +70,10 @@ function createTables() {
             +   " (id integer primary key,"
             +   " id_surveydata integer REFERENCES surveydata(id) ON DELETE CASCADE,"
             +   " compass double precision,"
-            +   " image text not null,"
-            +   " comment text);"
+            +   " image text not null,"            
+            +   " comment text,"
+            +   " uploaded integer,"
+            +   " response text);"
     runSQL(sqlstr);
 
     sqlstr = "CREATE TABLE IF NOT EXISTS photo_tmp "

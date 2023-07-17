@@ -217,7 +217,7 @@ function init_form(obs) {
             $('#preview_text').remove();
             document.getElementById('image').src = obs.photo.image;
         } */
-        if (obs.uploaded === "1") { 
+        if (obs.uploaded === "1" || obs.uploaded === "2") { 
             $("#saveobs").hide();
             $("#photo").hide();
             $("#deletePhoto").hide();
