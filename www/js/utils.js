@@ -7,6 +7,12 @@ function isNumberKey(evt)
     return true;
 }
 
+// Function to escape special characters in a string for SQLite
+function escapeSQLiteString(str) {
+    // Replace single quotes, double quotes, backslashes, and null characters with space
+    return str.replace(/['"\\]/g, ' ').replace(/\u0000/g, ' ');
+}
+
 function displayMessage(message, action_OK, action_cancel) {
     if(document.getElementById("messagepopupdata").getElementsByTagName('p').length > 0) {
         $("#messagepopupdata>p").html("");

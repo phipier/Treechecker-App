@@ -53,7 +53,7 @@ function createTables() {
     //sqlstr = "DROP TABLE IF EXISTS surveydata;"
     //runSQL(sqlstr); 
     sqlstr = "CREATE TABLE IF NOT EXISTS surveydata"
-            + " (id integer primary key, name varchar(255) not null,"
+            + " (id integer primary key, id_server integer, name varchar(255) not null,"
             + " id_tree_species integer                 REFERENCES treespecies(id)      ON UPDATE CASCADE, "
             + " id_crown_diameter integer               REFERENCES crowndiameter(id)    ON UPDATE CASCADE, "
             + " id_canopy_status integer not null       REFERENCES canopystatus(id)     ON UPDATE CASCADE, "

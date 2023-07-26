@@ -84,9 +84,9 @@ function insert_OBS(obs) {
     db.transaction(function(tx) {
         var sqlstr = 
             "REPLACE INTO surveydata(id, name, id_aoi, id_tree_species, id_crown_diameter, "
-            + "id_canopy_status, comment, longitude, latitude, uploaded) "
+            + "id_canopy_status, comment, longitude, latitude, uploaded, response) "
             + "VALUES(" +   obs.id + ",'" + obs.name + "'," + obs.id_aoi + "," + obs.id_tree_species + "," + obs.id_crown_diameter + ","
-            +               obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ",0);";
+            +               obs.id_canopy_status + ",'" + obs.comment + "'," + obs.longitude + "," + obs.latitude + ",0,'');";
 
         tx.executeSql(sqlstr, [], function(tx, results) {
                 var obsid = results.insertId;
@@ -149,11 +149,11 @@ function getWSitems() {
         obs.id = "NULL";
     }
     if (!obs.id_tree_species || obs.id_tree_species==="undefined") {
-        obs.id_tree_species = 5;
+        obs.id_tree_species = "NULL";
     }
     if (!obs.id_crown_diameter || obs.id_crown_diameter==="undefined") {
-        obs.id_crown_diameter = 18;
-    }
+        obs.id_crown_diameter = "NULL";
+    } 
     
     return obs;
 }
