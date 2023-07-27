@@ -317,3 +317,7 @@ html, #mapid, #login-page {
     /* height:215px; */
     margin:0 auto;
 }
+
+#idmessagepopup {
+    z-index: 9999;
+}

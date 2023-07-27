@@ -104,13 +104,13 @@ var listObs = {
 
                                 // Display field names on the first line
                                 const fieldNames = Object.keys(res.rows.item(0));
-                                resultString += fieldNames.join(', ') + '\n';
+                                resultString += fieldNames.join(', ') + '<br>';
 
                                 // Display field values for each record
                                 for (let x = 0; x < res.rows.length; x++) {
                                     const record = res.rows.item(x);
                                     const values = Object.values(record);
-                                    resultString += values.join(', ') + '\n';
+                                    resultString += values.join(', ') + '<br>';
                                 }
                                 // if surv.uploaded==2 then 1 break; 
                                 // else photo.uploaded==2 then 2 break;
@@ -198,7 +198,7 @@ var listObs = {
             listObs.deleteOBS(id_aoi);            
             return false;
         });
-        $('#viewLog').on('click', function() {
+        $('#viewStatus').on('click', function() {
             $('#sidebar').toggleClass('active');
             $('.overlay').toggleClass('active');
             var id_aoi = window.sessionStorage.getItem("id_aoi");
@@ -259,44 +259,18 @@ var listObs = {
             if (error == '401') { message = 'Your session has expired. Please log in again'}
             else                { message = error }
 
-            console.log("value promise : " + message);
-            
-            // display message error_message
-            return Promise.reject(message);      
+            console.log("value promise : " + message);                           
         };
 
-        var getObservations = function(resolve, reject) {
-            db.transaction(function (tx) {
-                var id_aoi = window.sessionStorage.getItem("id_aoi");
-                tx.executeSql('SELECT * FROM surveydata where id_aoi = ' + id_aoi + ' ;', [], function (tx, res) { //TO CHANGE and uploaded = 0;', [], function (tx, res) {       //and uploaded IN (0,2)
-                    var a_obs = [];                        
-                    for(var x = 0; x < res.rows.length; x++) {
-                        var obs = {};
-                        obs.id                  = res.rows.item(x).id;
-                        obs.id_server           = res.rows.item(x).id_server;
-                        obs.name                = res.rows.item(x).name;
-                        obs.comment             = res.rows.item(x).comment;
-                        obs.id_tree_species     = res.rows.item(x).id_tree_species;
-                        obs.id_crown_diameter   = res.rows.item(x).id_crown_diameter;
-                        obs.id_canopy_status    = res.rows.item(x).id_canopy_status;
-                        obs.latitude            = res.rows.item(x).latitude;
-                        obs.longitude           = res.rows.item(x).longitude;
-                        obs.id_aoi              = res.rows.item(x).id_aoi;
-                        obs.uploaded            = res.rows.item(x).uploaded;
-                        a_obs.push(obs);
-                    }
-                    resolve(a_obs);
-                },
-                function (tx, error) {
-                    console.log('EXEC SQL : SELECT obs error: ' + error.message);
-                    reject(error.message);
-                });            
-            },
-            function (tx, error) {
-                console.log('TRANSAC : SELECT obs error: ' + error.message);
-                reject(error.message);
-            });
-        };          
+        const getObservations = () => {
+            const id_aoi = window.sessionStorage.getItem("id_aoi");
+            return runSQL2('SELECT * FROM surveydata where id_aoi = ' + id_aoi + ';')  
+                .then(getResArray)
+                .catch((error) => {
+                    console.error("Error occurred while fetching survey data:", error);
+                    return Promise.reject(error);
+                });
+        };
         
         var sendPhoto = function(obs, photo) {
             return new Promise(function(resolve,reject){
@@ -320,7 +294,7 @@ var listObs = {
                     data: JSON.stringify(data),
                     success: function(res) {
                         let response = res.status + ' ' + res.responseText;
-                        let response_db = escapeSQLiteString(response);                        
+                        let response_db = escapeSQLiteString(response);                       
                         console.log('SUCCESS: Ajax SendPhoto: for obs ' + obs.id + ' and photo ' + photo.id + ' error: ' + response);
                         let sqlstring = 'UPDATE photo SET uploaded = 1, response = "OK"   where id = ' + photo.id;
                         resolve(sqlstring)
@@ -338,74 +312,63 @@ var listObs = {
             }).then((sqlstring) => {            
                  return runSQL2(sqlstring);
 
-            }).catch(function(error) {                                                             
+            }).catch(function(error) {  
+                console.error("Error occurred while sending photo:", error);                                                           
                 return Promise.reject(error);
-            });
-                
+            });                
         }
 
-        // to do: check if surveydata was correctly sent to server before uploading the photos
         var sendPhotosforObs = function(obs) {
-            return new Promise(function(resolve, reject) {
-                // first checks if related survey data exists in database and if it was uploaded successfully
-                runSQL2('SELECT * FROM surveydata where id = ' + obs.id + ' ;') 
-                .then((res) => { 
-                    console.log(res)                   
-                    if (res.rows.length == 0) {return Promise.resolve('no survey data');}  
-                    else if (res.rows.item(0).uploaded != 1) {return Promise.resolve('survey not uploaded');} 
-                    else { return runSQL2('SELECT * FROM photo where id_surveydata = ' + obs.id + ' ;') }
-                })   
-                .then((res) => {        
-                    if (typeof res === 'string') {
-                        console.log(res); 
-                        return Promise.resolve();
+            // First, check if related survey data exists in the database and if it was uploaded successfully
+            return runSQL2('SELECT * FROM surveydata where id = ' + obs.id + ' ;')
+                .then((res) => {
+                    console.log(res);
+                    if (res.rows.length === 0) {
+                        return Promise.resolve('no survey data');
+                    } else if (res.rows.item(0).uploaded !== 1) {
+                        return Promise.resolve('survey not uploaded');
                     } else {
-                        console.log('DB Result:', res); // Case where Promise was resolved with DB result
-                        // Continue with further processing if needed
-                    
-                        if (res.rows.length == 0) {resolve(res);}
-                        else {
-                            let promiseChain = Promise.resolve();
-                            
-                            for(var x = 0; x < res.rows.length; x++) {
-                                
-                                (function (i) {
-                                    promiseChain = promiseChain
-                                    .then(function(x) {
-                                        var photo = {};
-                                        photo.id_surveydata     = res.rows.item(i).id_surveydata;
-                                        photo.compass           = res.rows.item(i).compass;
-                                        photo.image             = res.rows.item(i).image;
-                                        photo.comment           = res.rows.item(i).comment;
-                                        photo.id                = res.rows.item(i).id;
-                                        
-                                        return sendPhoto(obs, photo);
-                                    })        
-                                    .catch(function(error) {                                                             
-                                        return Promise.reject(error);
-                                    });
-                                })(x);
-                            }                    
-                            return promiseChain;                     
-                        }
+                        return runSQL2('SELECT * FROM photo where id_surveydata = ' + obs.id + ' and uploaded IN (0,2);');
                     }
-    
                 })
                 .then((res) => {
-                    console.log('out of promisechain: obs' + obs.id)
-                    resolve();         
-                    
-                }) 
-                .catch(function(error) {                   
-                    reject(error);         
-                })
+                    if (typeof res === 'string') {
+                        console.log(res);
+                        return Promise.resolve(res);
 
-            }).then((res) => {
-                console.log('out of promisechain 2: obs' + obs.id)
-                return Promise.resolve(res);         
-                    
-            });
-        }
+                    } else {                      
+                        if (res.rows.length === 0) {
+                            return res;
+                        } else {
+                            let promiseChain = Promise.resolve();
+        
+                            for (let x = 0; x < res.rows.length; x++) {
+                                const photo = {
+                                    id_surveydata: res.rows.item(x).id_surveydata,
+                                    compass: res.rows.item(x).compass,
+                                    image: res.rows.item(x).image,
+                                    comment: res.rows.item(x).comment,
+                                    id: res.rows.item(x).id,
+                                };
+                                promiseChain = promiseChain.then(() => sendPhoto(obs, photo))
+                                .catch(function(error) {
+                                    console.error('error in function sendPhoto: ', error);
+                                    return Promise.reject(error);
+                                });
+                            }
+                            return promiseChain;
+                        }
+                    }
+                })
+                .then((res) => {
+                    console.log('out of promisechain: obs' + obs.id);
+                    return res;
+                })
+                .catch(function(error) {
+                    console.error('error in function sendPhotosforObs: ', error);
+                    return Promise.reject(error);
+                });
+        };        
 
         var sendObservation = function (obs) {            
             return new Promise(function(resolve, reject) {
@@ -441,7 +404,7 @@ var listObs = {
                             console.log('Response status:', r.status);
                             console.log('Response data:', r.data);
                    
-                            let sqlstring = 'UPDATE surveydata SET uploaded = 1, id_server = ' + r.key + ', response = "OK" ' + r.data + '"  where id = ' + obs.id + ';'
+                            let sqlstring = 'UPDATE surveydata SET uploaded = 1, id_server = ' + r.key + ', response = "OK" where id = ' + obs.id + ';'
                             resolve({id_server:r.key, id:obs.id, sql:sqlstring, msg:''});
                         },
                         error: function(req, status, error) {
@@ -464,16 +427,17 @@ var listObs = {
             }).then((value) => {            
                 return sendPhotosforObs(value);
 
-            }).then(() => {            
+            }).then((value) => {            
                 console.log('out of sendPhotosforObs')
-                return Promise.resolve();
+                return Promise.resolve(value);
 
-            }).catch(function(error) {                                                             
+            }).catch(function(error) {    
+                console.error('error in function sendObservation: ', error)                                                         
                 return Promise.reject(error);
             });
-        };
+        };         
 
-        new Promise(getObservations)        
+        getObservations()        
         .then((observations) => {
             console.log("sending observations ... ");  
             console.log(observations);        
@@ -484,7 +448,7 @@ var listObs = {
                 return Promise.reject("no observation to be sent");
             }                            
         })
-        .then(() => {
+        .then((value) => {
             console.log('then then then then then'); 
             // here check the local database to see if all data could be sent
             displayMessage("Process finished.",()=>{}); 

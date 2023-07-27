@@ -118,3 +118,17 @@ function runSQL2(query) {
         });
     });
 }
+
+function getResArray(res) {
+    var a_obs = [];
+    var columnNames = Object.keys(res.rows.item(0));
+    for (var x = 0; x < res.rows.length; x++) {
+        var obs = {};
+        for (var i = 0; i < columnNames.length; i++) {
+            var columnName = columnNames[i];
+            obs[columnName] = res.rows.item(x)[columnName];
+        }
+        a_obs.push(obs);
+    }
+    return a_obs;
+}
