@@ -206,26 +206,6 @@ function delete_aoi_fromDB(id_aoi) {
 }
 
 function insert_AOI(val, bbox, id_region) {
-/*     db.transaction(function(tx) {
-        var sqlstr = 
-            "REPLACE INTO aoi(id, name, x_min, x_max, y_min, y_max, geographical_zone_id) "
-            + "VALUES("+val.key+",'"+val.name+ "',"
-            +           val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+ ","
-            +           id_region+")";
-
-        tx.executeSql(sqlstr, [], function (tx, res) {            
-            
-        },
-        function (tx, error) {
-            console.log('REPLACE INTO aoi error: ' + error.message);
-            exit_AOI(False, 'REPLACE INTO aoi error: ' + error)
-        });      
-
-    }, function(error) {       
-        exit_AOI(False, "Error - It was not possible to add the AOI to the local DB")
-    }, function() {
-        console.log('Populated database OK');
-    }); */
     runSQL2("REPLACE INTO aoi(id, name, x_min, x_max, y_min, y_max, geographical_zone_id) "
     + "VALUES("+val.key+",'"+val.name+ "',"
     +           val.bbox[0]+","+val.bbox[1]+","+val.bbox[2]+","+val.bbox[3]+ ","

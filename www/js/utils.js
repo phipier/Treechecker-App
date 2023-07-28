@@ -84,3 +84,33 @@ function getAsync2(url_request) {
         });
     })
 };
+
+function refreshToken(){
+    $.ajax({
+        async: true,
+        crossDomain: true,
+        url: "urlrefresh",
+        method: "POST",
+        headers: {
+        "Authorization": "JWT " + token,
+        "Content-Type": "application/json"
+        //"cache-control": "no-cache"         
+        },
+        processData: false,
+        //data: token,
+        success : function(val) { 
+           resolve();
+        },
+        error : function(req, status, error) {            
+            if ($.parseJSON(req.responseText).detail == "Signature has expired.") {
+                
+                displayMessage("Error - Please try again to store the AOI.");
+                $('#ok_sent').click(function() {
+                    window.location = 'aoi_form.html';
+                });
+            }
+                  
+          
+        }
+    });    
+}

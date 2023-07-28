@@ -132,14 +132,19 @@ var listObs = {
                     $("[id^=dele_idobs_]").click(function(e) {
                         e.preventDefault(); 
                         var id_obs = this.id.substring(11);  
-                        if (this.dataset.uploaded=="0" || this.dataset.uploaded=="2") { 
-                            displayMessage("This observation was not uploaded. Are you sure you want to delete it?",
+                        if (this.dataset.uploaded=="0") { 
+                            displayMessage("This observation has not been uploaded yet. Are you sure you want to delete it?",
                                             ()=>{delete_obs(id_obs);},
-                                            ()=>{});      
-                            //$(this).closest(".list-group-item").remove();
+                                            ()=>{});
                             return false;
-                        } else {
-                            delete_obs(id_obs);  
+                        } else if (this.dataset.uploaded=="2") {  
+                            displayMessage("This observation was not uploaded successfully. Are you sure you want to delete it?",
+                                            ()=>{delete_obs(id_obs);},
+                                            ()=>{});
+                            return false;
+                        }
+                        else {
+                            delete_obs(id_obs); 
                         }
                     });
                     window.plugins.spinnerDialog.hide();
@@ -458,7 +463,7 @@ var listObs = {
         .catch((error) => {        
            
             handleError(error);
-            displayMessage("An error occured in the process.",()=>{});   
+            displayMessage("An error occured in the uploading process.",()=>{});   
 
             window.plugins.spinnerDialog.hide();
             console.log(error);            
@@ -470,7 +475,6 @@ var listObs = {
         });
     },
 
-    // Update DOM on a Received Event
     deleteOBS: function(id_aoi) {
 
         var handleError = function(error_message) {
@@ -479,19 +483,16 @@ var listObs = {
             return Promise.reject(error_message);      
         };
 
-        runSQL2('DELETE FROM photo where id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ' and uploaded = 1);')
+        runSQL2('DELETE FROM photo where uploaded = 1 and id_surveydata in (select id from surveydata where id_aoi = ' + id_aoi + ' and uploaded = 1);')
         .then(() => {
-            console.log("Photos deleted ... ");console.log("deleting obs ... ");             
+            console.log("Photos deleted ... ");        
             return runSQL2('DELETE FROM surveydata where id_aoi = ' + id_aoi + ' and uploaded = 1;');
         }, (value) => {
             displayMessage("Error - It was not possible to delete photos.",()=>{});
             handleError(value);
-        })
-        .then(() => {console.log("observations deleted ... ")}, (value) => {
-            displayMessage("Error - It was not possible to delete observations.",()=>{});
-            handleError(value);
-        })
+        })     
         .catch(function(error) {
+            displayMessage("Error - It was not possible to delete observations.",()=>{});
             console.log(error);            
         })
         .finally(function() { 
@@ -519,7 +520,6 @@ function onBackKeyDown() {
 }
 
 function edit_obs(id_obs) {
-    var err = false;
     var uploaded;
     
     runSQL2('DELETE FROM photo where id_surveydata is NULL;')
@@ -544,6 +544,9 @@ function edit_obs(id_obs) {
     }, (value) => {
         displayMessage("Error - It was not possible to select obs.",()=>{});
         handleError(value);
+    }).then((res) => { 
+        if (uploaded === "1") {window.location = "obs_form.html"}
+        else                  {window.location = "obs_map.html"} 
     })
     .catch(function(error) {
         err = true;
@@ -552,42 +555,31 @@ function edit_obs(id_obs) {
     })
     .finally(function() {        
         console.log("finally - edit obs");
-        window.plugins.spinnerDialog.hide();      
-        if (!err) {
-            if (uploaded === "1") {window.location = "obs_form.html"}
-            else                  {window.location = "obs_map.html"}        
-        };
+        window.plugins.spinnerDialog.hide();
     });
     
 }
 
 function delete_obs(id_obs) {
     window.plugins.spinnerDialog.show("deleting observation ...");
-    var handleError = function(error_message) {
-        console.log("value promise : " + error_message);
-        // display message error_message
-        return Promise.reject(error_message);      
-    };
+
     runSQL2("DELETE FROM surveydata WHERE id = " + id_obs + ";")
-    .then(() => {
-        console.log("observation deleted ... ");console.log("deleting obs ... ");             
-        return runSQL2("DELETE FROM photo WHERE id_surveydata = " + id_obs + ";");
-    }, (value) => {
-        displayMessage("Error - It was not possible to delete surveydata.",()=>{});
-        handleError(value);
-    })
-    .then(() => {console.log("photos deleted ... ")}, (value) => {
-        displayMessage("Error - It was not possible to delete photos.",()=>{});
-        handleError(value);
-    })
-    .catch(function(error) {
-        console.log(error);            
-    })
-    .finally(function() {        
-        console.log("finally - delete obs");
-        window.plugins.spinnerDialog.hide();      
-        window.location = "obs_list.html";
-    });
+        .then(() => {
+            console.log("observation deleted ... ");
+            console.log("deleting obs ... ");
+            return runSQL2("DELETE FROM photo WHERE id_surveydata = " + id_obs + ";");
+        })
+        .then(() => {
+            console.log("photos deleted ... ");
+            window.plugins.spinnerDialog.hide();
+            window.location = "obs_list.html";
+        })
+        .catch((error) => {
+            console.log("Error occurred while deleting observation:", error);
+            displayMessage("An error occurred while deleting the observation.", () => {});
+            window.plugins.spinnerDialog.hide();
+            window.location = "obs_list.html";
+        });
 }
 
 $("#addOBS").click(function(e) {
