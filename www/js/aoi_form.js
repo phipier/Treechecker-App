@@ -38,7 +38,6 @@ $("#saveaoi").click( function(e) {
         } else {
             $("#AOI-form")[0].classList.add('was-validated');
         }
-        var id_aoi = window.sessionStorage.getItem("id_aoi");
 
         var aoiname = $("#InputAOIname").val();
         var bbox = {    xmin : Number($("#Inputxmin").val()),
@@ -48,7 +47,22 @@ $("#saveaoi").click( function(e) {
         
         // check bbox value (not too large)
 
-        add_AOI(aoiname, bbox);
+        const loginTime = sessionStorage.getItem('loginTime');
+        if (loginTime) {
+            if (getTokenAge()>30) {
+                refreshToken()
+                .then(() => {add_AOI(aoiname, bbox);})
+                .catch(() => {displayMessage("Your token has expired, please log in again",
+                                ()=>{window.location = "login.html";},
+                                ()=>{})})
+                         
+            } else {
+                add_AOI(aoiname, bbox);
+            }
+        } else {
+            window.location = "login.html";
+        }
+        
     }
     return false; 
 } );
@@ -111,65 +125,47 @@ $("#selectarea").click( function(e) {
     return false;
 });
 
-function add_AOI(aoiname, bbox) {    
+function add_AOI(aoiname, bbox) { 
+    try {       
 
-    startSaveSpinner();
+        startSaveSpinner();
 
-    var token = window.sessionStorage.getItem("token");
-    var id_region = window.sessionStorage.getItem("id_region");
+        var token = window.sessionStorage.getItem("token");
+        var id_region = window.sessionStorage.getItem("id_region");
 
-    aoi_data =  '{"name" :"' + aoiname 
-            + '", "x_min":"' + bbox.xmin 
-            + '", "x_max":"' + bbox.xmax 
-            + '", "y_min":"' + bbox.ymin 
-            + '", "y_max":"' + bbox.ymax + '"}';
+        aoi_data =  '{"name" :"' + aoiname 
+                + '", "x_min":"' + bbox.xmin 
+                + '", "x_max":"' + bbox.xmax 
+                + '", "y_min":"' + bbox.ymin 
+                + '", "y_max":"' + bbox.ymax + '"}';
 
-    var urlaoi = window.sessionStorage.getItem("serverurl") + "/api/gzs/"+ id_region +"/aois/";
+        var urlaoi = window.sessionStorage.getItem("serverurl") + "/api/gzs/"+ id_region +"/aois/";
 
-    $.ajax({
-        async: true,
-        crossDomain: true,
-        url: urlaoi,
-        method: "POST",
-        headers: {
-        "Authorization": "JWT " + token,
-        "Content-Type": "application/json"
-        //"cache-control": "no-cache"         
-        },
-        processData: false,
-        data: aoi_data,
-        success : function(val) { 
-            window.sessionStorage.setItem("id_aoi",val.key);             
-            insert_AOI(val, bbox, id_region);
-        },
-        error : function(req, status, error) {            
-            if ($.parseJSON(req.responseText).detail == "Signature has expired.") {
-                $.ajax({
-                    type: 'POST',
-                    crossDomain: true,
-                    dataType: 'text',
-                    url: window.sessionStorage.getItem("serverurl") + '/api-token-auth/',
-                    data: {
-                        email: window.sessionStorage.getItem("email"),
-                        password: window.sessionStorage.getItem("password")
-                    },
-                    contentType: 'application/x-www-form-urlencoded',
-                    success: function(r) {
-                        window.sessionStorage.setItem("token", $.parseJSON(r).token);
-                        displayMessage("Error - Please try again to store the AOI.");
-                        $('#ok_sent').click(function() {
-                            window.location = 'aoi_form.html';
-                        });
-                    },
-                    error: function(req, status, error) {
-                        displayMessage("Error - It was not possible to add the AOI to the remote DB. Try again later or check if there is internet connection.<br>" + req.responseText);
-                    }
-                })
-            } else {
-                displayMessage("Error - It was not possible to add the AOI to the remote DB. <br> " + req.responseText);
+        $.ajax({
+            async: true,
+            crossDomain: true,
+            url: urlaoi,
+            method: "POST",
+            headers: {
+            "Authorization": "JWT " + token,
+            "Content-Type": "application/json"
+            //"cache-control": "no-cache"         
+            },
+            processData: false,
+            data: aoi_data,
+            success : function(val) { 
+                window.sessionStorage.setItem("id_aoi",val.key);             
+                insert_AOI(val, bbox, id_region);
+            },
+            error : function(req, status, error) {
+                displayMessage("Error - It was not possible to add the AOI to the remote DB. <br> " + req.responseText);              
             }
-        }
-    });    
+        });  
+        
+
+    } catch (error) {       
+        console.error("Error in add_AOI:", error);
+    }   
 }
 
 function delete_aoi_fromDB(id_aoi) {

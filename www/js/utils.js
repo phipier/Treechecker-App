@@ -85,32 +85,51 @@ function getAsync2(url_request) {
     })
 };
 
-function refreshToken(){
-    $.ajax({
-        async: true,
-        crossDomain: true,
-        url: "urlrefresh",
-        method: "POST",
-        headers: {
-        "Authorization": "JWT " + token,
-        "Content-Type": "application/json"
-        //"cache-control": "no-cache"         
-        },
-        processData: false,
-        //data: token,
-        success : function(val) { 
-           resolve();
-        },
-        error : function(req, status, error) {            
-            if ($.parseJSON(req.responseText).detail == "Signature has expired.") {
-                
-                displayMessage("Error - Please try again to store the AOI.");
-                $('#ok_sent').click(function() {
-                    window.location = 'aoi_form.html';
-                });
+// Function to get the current time as a string
+function getCurrentTimeAsString() {
+    const currentTime = new Date();
+    return currentTime.toISOString(); // Convert to ISO string for easy storage and comparison
+}
+
+// Function to check if the time difference is greater than 45 minutes
+function getTokenAge() {
+    const currentTime = new Date();
+    const loginTime = window.sessionStorage.getItem('loginTime');
+    const loginTimeObject = new Date(loginTime);
+    const timeDifferenceInMilliseconds = currentTime - loginTimeObject;
+    const timeDifferenceInMinutes = timeDifferenceInMilliseconds / (1000 * 60);
+
+    return timeDifferenceInMinutes;
+}
+
+
+function refreshToken() {
+    return new Promise((resolve, reject) => {
+        var token = window.sessionStorage.getItem("token");
+        $.ajax({
+            async: true,
+            crossDomain: true,
+            url: window.sessionStorage.getItem("serverurl") + "/api-token-refresh/", 
+            method: "POST",
+            headers: {
+                "Authorization": "JWT " + token,
+                "Content-Type": "application/json",
+            },
+            data: JSON.stringify({ "token": token }), 
+            processData: false,
+            success: function (data) {
+                // Token refreshed successfully
+                console.log(data.token)
+                window.sessionStorage.setItem("token", data.token);
+                const loginTime = getCurrentTimeAsString();
+                window.sessionStorage.setItem('loginTime', loginTime);
+                resolve();
+            },
+            error: function (xhr, status, error) {
+                //if (xhr.status === 401) {              
+                    reject();
+                //}
             }
-                  
-          
-        }
-    });    
+        });
+    });
 }

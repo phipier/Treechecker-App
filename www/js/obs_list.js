@@ -24,8 +24,8 @@ var listObs = {
                             "photo.uploaded AS photo_uploaded " +
                             "FROM " +
                             "surveydata " +
-                            "LEFT OUTER JOIN " +
-                            "photo ON surveydata.id = photo.id_surveydata and surveydata.id_aoi = "+id_aoi+";";
+                            "LEFT OUTER JOIN photo ON surveydata.id = photo.id_surveydata " +
+                            "WHERE surveydata.id_aoi = "+id_aoi+";";
               
                 tx.executeSql(query, [], function (tx, res) {
                     var html = '<ul class="list-group">';
@@ -189,8 +189,7 @@ var listObs = {
         
         $('#syncobs').on('click', function() { 
             $('#sidebar').toggleClass('active');
-            $('.overlay').toggleClass('active');       
-            window.plugins.spinnerDialog.show(null, "uploading survey data ...");
+            $('.overlay').toggleClass('active');                   
             listObs.syncObservations();
             return false;
         });
@@ -260,11 +259,10 @@ var listObs = {
 
         var handleError = function(error) {
             var message;
-            
+            console.error('error: ', error) 
             if (error == '401') { message = 'Your session has expired. Please log in again'}
-            else                { message = error }
-
-            console.log("value promise : " + message);                           
+            else                { message = error }  
+            console.log(message)
         };
 
         const getObservations = () => {
@@ -417,8 +415,7 @@ var listObs = {
                             var error_message_db = escapeSQLiteString(error_message);
                             console.log('error Ajax SendObs obs id: '+ obs.id + ' ' + error_message);
                             let sqlstring = 'UPDATE surveydata SET uploaded = 2, response = "'+ error_message_db + '" where id = ' + obs.id + ';'
-                            resolve({id_server:null, id:obs.id, sql:sqlstring, msg:''})                                    
-                                                    
+                            resolve({id_server:null, id:obs.id, sql:sqlstring, msg:''}) 
                         }
                     });
                 }
@@ -440,39 +437,55 @@ var listObs = {
                 console.error('error in function sendObservation: ', error)                                                         
                 return Promise.reject(error);
             });
-        };         
+        }; 
+        
+        var sendObservations = function () { 
+            window.plugins.spinnerDialog.show(null, "uploading survey data ...");
+            getObservations()   
+            .then((observations) => {
+                console.log("sending observations ... ");  
+                console.log(observations);        
+                if (observations.length > 0) {
+                    var sendObs = observations.map(obs => sendObservation(obs));
+                    return Promise.all(sendObs);
+                } else {
+                    return Promise.reject("no observation to be sent");
+                }                            
+            })
+            .then((value) => {       
+                // here check the local database to see if all data could be sent
+                displayMessage("Process finished.",()=>{}); 
+            
+                window.plugins.spinnerDialog.hide();
+            })
+            .catch((error) => {        
+                window.plugins.spinnerDialog.hide();
+                handleError(error);
+                //displayMessage("An error occured in the uploading process.",()=>{});               
+                console.error('syncobs last catch - error: ', error)            
+            })
+            .finally(() => { 
+                console.log("finally");
+                window.plugins.spinnerDialog.hide();                
+                window.location = "obs_list.html";
+            });
+        }
 
-        getObservations()        
-        .then((observations) => {
-            console.log("sending observations ... ");  
-            console.log(observations);        
-            if (observations.length > 0) {
-                var sendObs = observations.map(obs => sendObservation(obs));
-                return Promise.all(sendObs);
+        const loginTime = sessionStorage.getItem('loginTime');
+        if (loginTime) {
+            if (getTokenAge()>30) {
+                refreshToken()
+                .then(() => {sendObservations();})
+                .catch(() => {displayMessage("Your token has expired, please log in again",
+                                            ()=>{window.location = "login.html";},
+                                            ()=>{})});                
             } else {
-                return Promise.reject("no observation to be sent");
-            }                            
-        })
-        .then((value) => {
-            console.log('then then then then then'); 
-            // here check the local database to see if all data could be sent
-            displayMessage("Process finished.",()=>{}); 
-          
-            window.plugins.spinnerDialog.hide();
-        })
-        .catch((error) => {        
-           
-            handleError(error);
-            displayMessage("An error occured in the uploading process.",()=>{});   
-
-            window.plugins.spinnerDialog.hide();
-            console.log(error);            
-        })
-        .finally(() => { 
-            console.log("finally");
-            window.plugins.spinnerDialog.hide();                
-            window.location = "obs_list.html";
-        });
+                sendObservations();
+            }
+        } else {
+            window.location = "login.html";
+        }
+    
     },
 
     deleteOBS: function(id_aoi) {

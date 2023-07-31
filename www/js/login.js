@@ -7,7 +7,6 @@ const SERVERURL = 'https://treechecker.eu.pythonanywhere.com';
 //const SERVERURL = 'https://treechecker.ies.jrc.it';
 
 //const SERVERURL = 'http://127.0.0.1:8001';
-//const SERVERURL = 'http://0e097f6f.gclientes.com';
 //const SERVERURL = 'http://10.191.240.1:8000';
 
 var login = {
@@ -59,11 +58,10 @@ var login = {
                 success: function(tk) {
                     window.plugins.spinnerDialog.hide();
                     window.sessionStorage.setItem("token", $.parseJSON(tk).token);
-                    
-                   /*  email       = $("#username").val();
-                    password    = $("#password").val();
-                    trckurl     = $("#serverurl").val(); */
 
+                    const loginTime = getCurrentTimeAsString();
+                    window.sessionStorage.setItem('loginTime', loginTime);
+                    
                     window.localStorage.setItem("trckl", email);       
                     window.localStorage.setItem("trckp", password); 
                     window.localStorage.setItem("trckurl", trckurl);
@@ -72,6 +70,8 @@ var login = {
                     window.sessionStorage.setItem("serverurl", trckurl);
                     
                     window.sessionStorage.setItem("stayOffline","false");
+                    
+
 
                     window.location = 'region_list.html';
                     
