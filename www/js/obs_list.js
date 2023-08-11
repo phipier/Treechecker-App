@@ -193,6 +193,14 @@ var listObs = {
             listObs.syncObservations();
             return false;
         });
+
+        $('#uploadDataFile').on('click', function() {
+            $('#sidebar').toggleClass('active');
+            $('.overlay').toggleClass('active');
+            //window.plugins.spinnerDialog.show(null, "deleting survey data ...");          
+            listObs.uploadDataFile();            
+            return false;
+        });
         
         $('#deleteObs').on('click', function() {
             $('#sidebar').toggleClass('active');
@@ -253,6 +261,72 @@ var listObs = {
     onOffline: function() {
         stayOffline();
     },
+    uploadDataFile: function() { 
+ 
+        const createGeoJSON = function(data) {
+            const geojson = {
+                type: 'FeatureCollection',
+                features: []
+            };
+        
+            for (let item of data) {
+                const feature = {
+                    type: 'Feature',
+                    properties: {
+                        id: item.id,
+                        id_server: item.id_server,
+                        name: item.name,
+                        id_tree_species: item.id_tree_species,
+                        id_crown_diameter: item.id_crown_diameter,
+                        id_canopy_status: item.id_canopy_status,
+                        comment: item.comment,
+                        id_aoi: item.id_aoi,
+                        uploaded: item.uploaded,
+                        response: item.response
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [item.longitude, item.latitude]
+                    }
+                };
+                geojson.features.push(feature);
+            }
+        
+            return geojson;
+        }
+
+        const shareFile = function(fileURL) {            
+            window.plugins.socialsharing.share(null, null, fileURL, null);
+        }        
+
+        const saveGeoJSONToFile = function(geojson, callback) {
+            const fileName = 'surveydata.geojson';
+            const fileData = JSON.stringify(geojson);
+        
+            window.resolveLocalFileSystemURL(cordova.file.cacheDirectory, function (dir) {
+                dir.getFile(fileName, { create: true }, function (file) {
+                    file.createWriter(function (fileWriter) {
+                        const blob = new Blob([fileData], { type: 'application/json' });
+                        fileWriter.write(blob);
+                        callback(file.toURL()); // this URL is passed for sharing
+                    }, onError);
+                }, onError);
+            });
+        
+            function onError(error) {
+                console.error("Error: " + error);
+            }
+        }
+
+        getObservations()   
+        .then((observations) => {
+            const geojson = createGeoJSON(observations)
+            saveGeoJSONToFile(geojson, function (fileURL) {
+                shareFile(fileURL);
+            });                        
+        })
+        
+    },    
     syncObservations: function() {        
 
         var token = window.sessionStorage.getItem("token");  
@@ -263,16 +337,6 @@ var listObs = {
             if (error == '401') { message = 'Your session has expired. Please log in again'}
             else                { message = error }  
             console.log(message)
-        };
-
-        const getObservations = () => {
-            const id_aoi = window.sessionStorage.getItem("id_aoi");
-            return runSQL2('SELECT * FROM surveydata where id_aoi = ' + id_aoi + ';')  
-                .then(getResArray)
-                .catch((error) => {
-                    console.error("Error occurred while fetching survey data:", error);
-                    return Promise.reject(error);
-                });
         };
         
         var sendPhoto = function(obs, photo) {
@@ -622,3 +686,13 @@ $("#addOBS").click(function(e) {
     });
     return false;
 });
+
+function getObservations() {
+    const id_aoi = window.sessionStorage.getItem("id_aoi");
+    return runSQL2('SELECT * FROM surveydata where id_aoi = ' + id_aoi + ';')  
+        .then(getResArray)
+        .catch((error) => {
+            console.error("Error occurred while fetching survey data:", error);
+            return Promise.reject(error);
+        });
+};

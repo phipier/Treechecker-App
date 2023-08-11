@@ -15,6 +15,8 @@
 
     <icon src="www/img/ic_canhemon.png" />
     <platform name="android">
+        <preference name="android-debuggable" value="true" />
+
         <allow-intent href="market:*" />
         <preference name="android-minSdkVersion" value="19" />
         <preference name="android-targetSdkVersion" value="28" />        

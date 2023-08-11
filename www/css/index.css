@@ -157,7 +157,7 @@ h1 {
 
 .float{
     position:fixed;
-    z-index:9999;
+    z-index:9990;
 	box-shadow: 2px 2px 3px #999;
 }
 .position1{
@@ -239,7 +239,7 @@ html, #mapid, #login-page {
     height:100vh;
     margin-left:150%;
     position:fixed;
-    z-index:9999;
+    z-index:9990;
     background:#e9fce9;
     color:#000;
     transition:all 0.3s;
