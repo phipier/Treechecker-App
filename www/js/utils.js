@@ -133,3 +133,97 @@ function refreshToken() {
         });
     });
 }
+
+
+/* 
+function copyFile(filePath, targetFolder, successCallback, errorCallback) {
+    const segments = filePath.split('/'); // Split the path by slashes
+    const fileName = segments.pop(); // Get the last segment as the filename
+    //const folder = segments.join('/'); // Join the remaining segments back to get the folder
+
+    // Check if the file exists.
+    window.resolveLocalFileSystemURL(filePath, function(fileEntry) {
+        // Check if the target folder exists or create it.
+        window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + targetFolder, function(targetFolderEntry) {
+            // Target folder exists, proceed with copying
+            fileEntry.copyTo(targetFolderEntry, fileName, successCallback, errorCallback);
+        }, function() {
+            // Error - folder doesn't exist. Create it.
+            window.requestFileSystem(window.PERSISTENT, 0, function(fileSystem) {
+                fileSystem.root.getDirectory(targetFolder, { create: true, exclusive: false }, function(directoryEntry) {
+                    // Folder created successfully, proceed with copying
+                    fileEntry.copyTo(directoryEntry, fileName, successCallback, errorCallback);
+                }, errorCallback);
+            }, errorCallback);
+        }
+        
+        );
+    }, errorCallback);
+} */
+
+
+function saveGeoJSONToFile(geojson, callback) {
+    const fileName = 'surveydata.geojson';
+    const fileData = JSON.stringify(geojson);
+
+    window.resolveLocalFileSystemURL(cordova.file.cacheDirectory, function (dir) {
+        dir.getFile(fileName, { create: true }, function (file) {
+            file.createWriter(function (fileWriter) {
+                const blob = new Blob([fileData], { type: 'application/json' });
+                fileWriter.write(blob);
+                callback(file.toURL()); // this URL is passed for sharing
+            }, onError);
+        }, onError);
+    });
+
+    function onError(error) {
+        console.error("Error: " + error);
+    }    
+}
+
+
+function copyFile(filePath, targetFolder, successCallback, errorCallback) {
+    const permissions = cordova.plugins.permissions;
+
+    const segments = filePath.split('/'); // Split the path by slashes
+    const fileName = segments.pop(); // Get the last segment as the filename
+
+    function proceedWithCopy() {
+        // Check if the file exists.
+        window.resolveLocalFileSystemURL(filePath, function(fileEntry) {
+            // Check if the target folder exists or create it.
+            window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + targetFolder, function(targetFolderEntry) {
+                // Target folder exists, proceed with copying
+                fileEntry.copyTo(targetFolderEntry, fileName, successCallback, errorCallback);
+            }, function() {
+                // Error - folder doesn't exist. Create it.
+                window.requestFileSystem(window.PERSISTENT, 0, function(fileSystem) {
+                    fileSystem.root.getDirectory(targetFolder, { create: true, exclusive: false }, function(directoryEntry) {
+                        // Folder created successfully, proceed with copying
+                        fileEntry.copyTo(directoryEntry, fileName, successCallback, errorCallback);
+                    }, errorCallback);
+                }, errorCallback);
+            });
+        }, errorCallback);
+    }
+
+    // Check for storage permission
+    permissions.checkPermission(permissions.WRITE_EXTERNAL_STORAGE, function(status) {
+        if (status.hasPermission) {
+            // Permission is granted, proceed with copying the file            
+            proceedWithCopy();
+        } else {
+            // Request permission first
+            permissions.requestPermission(permissions.WRITE_EXTERNAL_STORAGE, function(status) {
+                if (status.hasPermission) {
+                    proceedWithCopy();
+                } else {
+                    displayMessage("WRITE_EXTERNAL_STORAGE permission is not turned on",()=>{});
+                }
+            }, function() {
+                displayMessage("Failed to request WRITE_EXTERNAL_STORAGE permission",()=>{});
+            });
+        }
+    });
+}
+
