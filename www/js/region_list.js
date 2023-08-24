@@ -63,7 +63,7 @@ function loadRegions() {
         for(var x = 0; x < res1.rows.length; x++) {
             html += '<li class="list-group-item">'                                 
             + '<h5>' + res1.rows.item(x).name + '</h5>'
-            + '<a id="idreg'+res1.rows.item(x).id+'" href="#" class="btn button button-navbar m-2"><i class="fas fa-door-open fa-2x white"></i></a>'
+            + '<a id="idreg'+res1.rows.item(x).id+'" href="#" class="btn button button-navbar m-2"><i class="fa-solid fa-door-open fa-2x white"></i></a>'
             + '</li>';                
         }
         html += "</ul>";

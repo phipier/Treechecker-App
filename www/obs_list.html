@@ -10,13 +10,13 @@
     <script src="lib/jquery.min.js"></script>
     <script src="lib/popper.min.js"></script>
     <script src="lib/bootstrap.min.js"></script>
-    <script src="lib/font-awesome.js"></script>
+    <link rel="stylesheet" href="lib/css/all.min.css">
     <title>TreeChecker</title>
 </head>
 <body>
     <nav class="navbar navbar-light trckapp-navbar">
 <!--         <a class="btn button-navbar" type="button" id="addOBS">
-            <i class="fas fa-plus white"></i>
+            <i class="fa-solid fa-plus white"></i>
         </a> -->
         <span class="header">Observations</span>
         <button class="navbar-toggler ml-auto" type="button" id="sidebarCollapse" aria-label="Toggle navigation">
@@ -29,24 +29,26 @@
     <nav id="sidebar">
         <div id="sliderLinks">            
             <div id="uploadobs" class="listItem">
-                <i class="fas fa-cloud-upload-alt"></i>
+                <i class="fa-solid fa-cloud-upload-alt"></i>
                 <span id="syncobs">Upload observations to Treechecker server</span>
             </div>
-            <div class="listItem">               
+            <div class="listItem">    
+                <i class="fa-solid fa-file-export"></i>           
                 <span id="exportDataFile">Export observations (as GeoJSON) on this device</span>
             </div>
-            <div class="listItem">               
+            <div class="listItem">  
+                <i class="fa-solid fa-share"></i>            
                 <span id="uploadDataFile">Share observations (as GeoJSON)</span>
             </div>
             <div class="listItem">
-                <i class="fas fa-trash"></i>
+                <i class="fa-solid fa-trash"></i>
                 <span id="deleteObs">Delete uploaded observations</span>
             </div>
             <div class="listItem">               
                 <span id="viewStatus">Status</span>
             </div>
             <!-- <div class="listItem">
-                <i class="fas fa-map-marked-alt"></i>
+                <i class="fa-solid fa-map-marked-alt"></i>
                 <span id="viewmap">View observations on map</span>
             </div> -->
         </div>
@@ -55,8 +57,8 @@
 
 <div id="listobs-page"></div>
 
-<button id="addOBS" type="button" class="btn button btn-circle btn-xl float position1"><i class="fas fa-plus"></i></button>
-<button id="viewmap" type="button" class="btn button btn-circle btn-xl float position2"><i class="fas fa-map-marked-alt"></i></button>
+<button id="addOBS" type="button" class="btn button btn-circle btn-xl float position1"><i class="fa-solid fa-plus"></i></button>
+<button id="viewmap" type="button" class="btn button btn-circle btn-xl float position2"><i class="fa-solid fa-map-marked-alt"></i></button>
 
 <div class="modal fade" id="messagepopup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

@@ -58,21 +58,21 @@ var listObs = {
                             '<div class="mr-auto p-1"><h5>' + a_obs[x].name + '</h5></div>';
 
                         if (a_obs[x].uploaded == 1) {
-                            html += '<div class="p-1"><i class="fas fa-clipboard-check fa-2x green"></i></div>'
+                            html += '<div class="p-1"><i class="fa-solid fa-clipboard-check fa-2x green"></i></div>'
                                     + '<div class="p-1"><a id="edit_idobs_'+id_obs+'" class="btn button button-listitem">'
-                                    + '<i class="fas fa-eye fa-2x white"></i></a></div>'
+                                    + '<i class="fa-solid fa-eye fa-2x white"></i></a></div>'
                         } else if (a_obs[x].uploaded == 2) {
                             html += '<div class="p-1"><a id="warn_idobs_' + id_obs + '" class="btn button button-listitem">'
-                                + '<i class="fas fa-circle-exclamation fa-2x green"></i></div>'
+                                + '<i class="fa-solid fa-circle-exclamation fa-2x green"></i></div>'
                                 + '<div class="p-1"><a id="edit_idobs_'+id_obs+'" class="btn button button-listitem">'
-                                + '<i class="fas fa-eye fa-2x white"></i></a></div>'
+                                + '<i class="fa-solid fa-eye fa-2x white"></i></a></div>'
                         } else {
                             html += '<div class="p-1"><a id="edit_idobs_'+id_obs+'" class="btn button button-listitem">'
-                                    + '<i class="fas fa-edit fa-2x white"></i></a></div>'
+                                    + '<i class="fa-solid fa-edit fa-2x white"></i></a></div>'
                         } 
 
                         html += '<div class="p-1"><a id="dele_idobs_' + id_obs + '" data-uploaded="' + a_obs[x].uploaded + '" class="btn button button-listitem">' +
-                            '<i class="fas fa-trash fa-2x white"></i></a></div>' +
+                            '<i class="fa-solid fa-trash fa-2x white"></i></a></div>' +
                             '</li>';
                     }
                     html += "</ul>";

@@ -222,12 +222,12 @@ function clearWSitems() {
 function stopButtonSpinners() {
     //$("#saveaoi #loadingspinner").remove();
     //$("#cancelaoi #loadingspinner").remove();
-    //$("#iconsave").attr( "class", "fas fa-check" );
+    //$("#iconsave").attr( "class", "fa-solid fa-check" );
     $("#iconsave").remove();
-    $("#saveaoi").append('<i id="iconsave" class="fas fa-check"></i>');
-    //$("#iconcancel").attr( "class", "fas fa-stop" );
+    $("#saveaoi").append('<i id="iconsave" class="fa-solid fa-check"></i>');
+    //$("#iconcancel").attr( "class", "fa-solid fa-stop" );
     $("#iconcancel").remove();
-    $("#cancelaoi").append('<i id="iconcancel" class="fas fa-stop red"></i>');
+    $("#cancelaoi").append('<i id="iconcancel" class="fa-solid fa-stop red"></i>');
 
     $("#cancelaoi").hide();
 }
