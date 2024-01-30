@@ -1,19 +1,31 @@
+<div style="position: fixed; left: 0; top: 0; width: 200px; height: 100%; overflow: auto; padding: 10px; background-color: #f0f0f0;">
+    <h2>Menu</h2>
+    <a href="#usersmanual">User's Manual</a>
+    <ul>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#install">Installing the Treechecker app on Android</a></li>
+        <li><a href="#GPS">Comments on the use of compass and GPS with an Android Device</a></li>
+        <li><a href="#server">Configure Treechecker server</a></li>
+        <li><a href="#login">Log-in the Treechecker App</a></li>
+        <li><a href="#aoi">Add an Area of Interest (AOI)</a></li>
+        <li><a href="#addobs">Add observations</a></li>
+        <li><a href="#uploadobs">Upload observations</a></li>
+        <li><a href="#dldobs">Download observations</a></li>
+    </ul>
+    <a href="#technical">Technical Documentation</a>
+    <ul>
+        <li><a href="#devenv">Development environment set up</a></li>
+        <li><a href="#buildapk">Build APK</a></li>
+    </ul>
+</div>
+
+<div style="margin-left: 220px;">
+
+
+
 # Treechecker App
 
-1. [User's manual](#usersmanual)  
-    1. [Introduction](#introduction)  
-    2. [Installing the Treechecker app on Android](#install)
-    3. [Comments on the use of compass and GPS with an Android Device](#GPS)
-    4. [Configure Treechecker server](#server)
-    5. [Log-in the Treechecker App](#login)
-    6. [Add an Area of Interest (AOI)](#aoi)
-    7. [Add observations](#addobs)
-    8. [Upload observations](#uploadobs)
-    9. [Download observations](#dldobs)
 
-2. [Technical documentation](#technical)  
-    1. [Development environment set up](#devenv)
-    2. [Build APK](#buildapk)
 
 ## User's manual <a name="usersmanual"></a>
 
@@ -254,5 +266,10 @@ To create release APK
 ```
 bash buildrel
 ```
+
+
+
+
+</div>
 
 
