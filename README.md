@@ -24,7 +24,7 @@
 
 The Treechecker app (and server) is an Android app enabling tree survey using offline maps. When online, the app first downloads WMS tiles (From a WMS layer of the user’s choice) on the Android device. It is then possible to visualize the layer offline while overlaying the location provided by the GPS of the Android device. When online, the app will upload the observations made on the field back to the Treechecker server.  
 
-To use the Treechecker you will need to set up and configure a Treechecker server. If you have not already set up your own Treechecker server then please go to chapter “How to set up a new Treechecker-server on Pythonanywhere” on page ...  
+To use the Treechecker you will need to set up and configure a Treechecker server. If you have not already set up your own Treechecker server then please go to chapter “How to set up a new Treechecker-server on Pythonanywhere” on page https://phipier.github.io/Treechecker-server/
 
 ### Installing the Treechecker app on Android <a name="install"></a>
 
