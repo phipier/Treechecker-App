@@ -108,8 +108,8 @@ For example:
 
 | | |
 |---|---|
-| <img src="docs/screenshots/start.png" width="300"/>|On your Android device, start the Treechecker App. |
-| <img src="docs/screenshots/Login_form.png" width="300"/>|On the login window, use the login and password created from the Treechecker server interface. Add the URL of your Treechecker server.|
+| <img src="docs/screenshots/start.png" alt="start" width="300px"/>|On your Android device, start the Treechecker App. |
+| <img src="docs/screenshots/Login_form.png" alt="login" width="300px"/>|On the login window, use the login and password created from the Treechecker server interface. Add the URL of your Treechecker server.|
 
 By choosing the “stay offline” option, the app will not need an internet connection (e.g. when working on the field).  
 In that case, you will be able to:
@@ -124,8 +124,8 @@ You will NOT be able to:
 
 | | |
 |---|---|
-| <img src="docs/screenshots/ROI_mainmenu.png" width="300"/>|The next screen shows the list of regions of interest. |
-| <img src="docs/screenshots/ROI_menu.png" width="300"/>|If nothing is displayed and you have already set up a region of interest from the Treechecker server interface, then click on the menu in the top right-end corner and push the update button (For this you will need to be online). This action will download the latest regions available and created earlier on the Treechecker server.|
+| <img src="docs/screenshots/ROI_mainmenu.png" alt="mainmenu" width="300px"/>|The next screen shows the list of regions of interest. |
+| <img src="docs/screenshots/ROI_menu.png" alt="menu" width="300px"/>|If nothing is displayed and you have already set up a region of interest from the Treechecker server interface, then click on the menu in the top right-end corner and push the update button (For this you will need to be online). This action will download the latest regions available and created earlier on the Treechecker server.|
 
 Once you selected a region of interest, the next screen will display the list of areas of interest for that region.  
 
