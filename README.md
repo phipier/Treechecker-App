@@ -172,9 +172,10 @@ You may also add a bearing measure from the compass of your smartphone. For a ma
 | | |
 |---|---|
 |<img src="docs/screenshots/Admin1.png" width="2500"/>|Navigate to the Treechecker server admin page (e.g. if you set up a server using the Pythonanywhere service, your URL is: your-username.pythonanywhere.com/config). To visualize the list of observations previously uploaded to the Treechecker server, click on “Survey Data”.|
-|<img src="docs/screenshots/Admin2_surveydata.png" width="2500"/>|From the survey data page, it is possible to download the observation data by first selecting the data you would like to download and then selecting “Export selected” in the Action dropdown list.|
-|<img src="docs/screenshots/Admin3_surveydata.png" width="2500"/>|By clicking the “Go” button, it will create a file containing all the data selected and will download to your computer.|
-|<img src="docs/screenshots/Admin4_surveydata.png" width="2500"/>|By clicking on a specific observation, it will display its information details.|
+|<img src="docs/screenshots/Admin2_surveydata.png" width="2500"/>|From the survey data page, it is possible to download the observation data by first selecting the data you would like to download and then selecting “Export selected” in the Action dropdown list. By clicking the “Go” button, it will create a file containing all the data selected and will download to your computer.|
+|<img src="docs/screenshots/Admin3_surveydata.png" width="2500"/>|By clicking on a specific observation, it will display its information details. You can visualize individual observation.|
+|<img src="docs/screenshots/Admin4_surveydata.png" width="2500"/>|and pictures.|
+
 
 ## Technical documentation <a name="technical"></a>
 
