@@ -1,14 +1,14 @@
 # Treechecker App
   
-1. [Introduction](#introduction)  
-    1. [Installing the Treechecker app on Android](#install)
-    2. [Compass and GPS with an Android Device](#GPS)
+1. [Introduction](#introduction)
 2. [Configure Treechecker server](#server)
 3. [Using the Treechecker App](#login)
-    1. [Add an Area of Interest (AOI)](#aoi)
-    2. [Add observations](#addobs)
-    3. [Upload observations](#uploadobs)
-    4. [Download observations](#dldobs)
+    1. [Installing the Treechecker app on Android](#install)
+    2. [Compass and GPS with an Android Device](#GPS)
+    3. [Add an Area of Interest (AOI)](#aoi)
+    4. [Add observations](#addobs)
+    5. [Upload observations](#uploadobs)
+    6. [Download observations](#dldobs)
 
 4. [Technical documentation](#technical)  
     1. [Development environment set up](#devenv)
@@ -21,25 +21,7 @@ The Treechecker app (and server) is an Android app enabling tree survey using of
 
 To use the Treechecker you will need to set up and configure a Treechecker server. If you have not already set up your own Treechecker server then please go to chapter “How to set up a new Treechecker-server on Pythonanywhere” at [Treechecker-server](https://phipier.github.io/Treechecker-server/#installation1)
 
-### Installing the Treechecker app on Android <a name="install"></a>
-
-Download and install the last version of the Treechecker App <a href="https://drive.google.com/file/d/122KjPJBneJ4AzPUuAEDSLZ1AkFTk3LYZ/view?usp=drive_link">here</a>
-
-### Compass and GPS with an Android Device <a name="GPS"></a>
-
-* Compass calibration
-
-To be able to measure the compass heading, the device compass will need to be calibrated. You will find instructions on how to do it at the following link: https://support.google.com/maps/answer/2839911?co=GENIE.Platform%3DAndroid&hl=en  
-
-* GPS
-
-In order to use the Android device GPS efficiently, you may want to follow these recommendations:
-
-Geolocation should be set to "high precision" mode. For more information, please consult https://support.google.com/maps/answer/2839911?co=GENIE.Platform%3DAndroid&hl=en
-
-To save battery while using GPS, your device should be set to flight mode.
-
-### Configure Treechecker server <a name="server"></a>
+## Configure Treechecker server <a name="server"></a>
 Before using the Treechecker App you will need to configure the Treechecker server by adding at least one Region of Interest.	
 
 | | |
@@ -99,7 +81,25 @@ For example:
 }]
 ```
 
-### Log-in the Treechecker App <a name="login"></a>
+## Using the Treechecker App <a name="login"></a>
+
+### Installing the Treechecker app on Android <a name="install"></a>
+
+Download and install the last version of the Treechecker App <a href="https://drive.google.com/file/d/122KjPJBneJ4AzPUuAEDSLZ1AkFTk3LYZ/view?usp=drive_link">here</a>
+
+### Compass and GPS with an Android Device <a name="GPS"></a>
+
+* Compass calibration
+
+To be able to measure the compass heading, the device compass will need to be calibrated. You will find instructions on how to do it at the following link: https://support.google.com/maps/answer/2839911?co=GENIE.Platform%3DAndroid&hl=en  
+
+* GPS
+
+In order to use the Android device GPS efficiently, you may want to follow these recommendations:
+
+Geolocation should be set to "high precision" mode. For more information, please consult https://support.google.com/maps/answer/2839911?co=GENIE.Platform%3DAndroid&hl=en
+
+To save battery while using GPS, your device should be set to flight mode.
 
 | | |
 |---|---|
@@ -116,6 +116,7 @@ You will NOT be able to:
 * Update your Regions of Interest
 * Create Areas of Interest (AOI)
 * Upload your field observations to the Treechecker server
+  
 
 | | |
 |---|---|
