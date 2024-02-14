@@ -1,4 +1,3 @@
-# Treechecker App
 
 <div style="text-align: center;">
 <img src="docs/screenshots/Treechecker.png" alt="Treechecker-logo" width="200px"/>
