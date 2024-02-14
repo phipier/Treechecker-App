@@ -1,26 +1,19 @@
 # Treechecker App
+  
+1. [Introduction](#introduction)  
+    1. [Installing the Treechecker app on Android](#install)
+    2. [Comments on the use of compass and GPS with an Android Device](#GPS)
+2. [Configure Treechecker server](#server)
+3. [Log-in the Treechecker App](#login)
+    1. [Add an Area of Interest (AOI)](#aoi)
+    2. [Add observations](#addobs)
+    3. [Upload observations](#uploadobs)
+    4. [Download observations](#dldobs)
 
-1. [User's manual](#usersmanual)  
-    1. [Introduction](#introduction)  
-    2. [Installing the Treechecker app on Android](#install)
-    3. [Comments on the use of compass and GPS with an Android Device](#GPS)
-    4. [Configure Treechecker server](#server)
-    5. [Log-in the Treechecker App](#login)
-    6. [Add an Area of Interest (AOI)](#aoi)
-    7. [Add observations](#addobs)
-    8. [Upload observations](#uploadobs)
-    9. [Download observations](#dldobs)
-
-2. [Technical documentation](#technical)  
+4. [Technical documentation](#technical)  
     1. [Development environment set up](#devenv)
     2. [Build APK](#buildapk)
 
-
-
-
-
-
-## User's manual <a name="usersmanual"></a>
 
 ### Introduction <a name="introduction"></a>
 
