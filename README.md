@@ -1,6 +1,8 @@
 # Treechecker App
 
-<img src="docs/screenshots/Treechecker.png" alt="start" width="500px"/>
+<div style="text-align: center;">
+<img src="docs/screenshots/Treechecker.png" alt="Treechecker-logo" width="200px"/>
+</div>
   
 1. [Introduction](#introduction)
 2. [Configure Treechecker server](#server)
