@@ -1,4 +1,6 @@
 # Treechecker App
+
+<img src="docs/screenshots/Treechecker.png" alt="start" width="500px"/>
   
 1. [Introduction](#introduction)
 2. [Configure Treechecker server](#server)
