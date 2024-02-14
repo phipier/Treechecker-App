@@ -2,9 +2,9 @@
   
 1. [Introduction](#introduction)  
     1. [Installing the Treechecker app on Android](#install)
-    2. [Comments on the use of compass and GPS with an Android Device](#GPS)
+    2. [Compass and GPS with an Android Device](#GPS)
 2. [Configure Treechecker server](#server)
-3. [Log-in the Treechecker App](#login)
+3. [Using the Treechecker App](#login)
     1. [Add an Area of Interest (AOI)](#aoi)
     2. [Add observations](#addobs)
     3. [Upload observations](#uploadobs)
@@ -15,7 +15,7 @@
     2. [Build APK](#buildapk)
 
 
-### Introduction <a name="introduction"></a>
+## Introduction <a name="introduction"></a>
 
 The Treechecker app (and server) is an Android app enabling tree survey using offline maps. When online, the app first downloads WMS tiles (From a WMS layer of the user’s choice) on the Android device. It is then possible to visualize the layer offline while overlaying the location provided by the GPS of the Android device. When online, the app will upload the observations made on the field back to the Treechecker server.  
 
@@ -23,9 +23,9 @@ To use the Treechecker you will need to set up and configure a Treechecker serve
 
 ### Installing the Treechecker app on Android <a name="install"></a>
 
-Download and install the last version of the Treechecker App at https://cutt.ly/7rqZ5UZ
+Download and install the last version of the Treechecker App <a href="https://drive.google.com/file/d/122KjPJBneJ4AzPUuAEDSLZ1AkFTk3LYZ/view?usp=drive_link">here</a>
 
-### Comments on the use of compass and GPS with an Android Device <a name="GPS"></a>
+### Compass and GPS with an Android Device <a name="GPS"></a>
 
 * Compass calibration
 
