@@ -104,7 +104,7 @@ After the installation is complete, you can open the app directly or find it lis
 
 * Compass calibration
 
-To be able to measure the compass heading, the device compass will need to be calibrated. You will find instructions on how to do it at the following link: https://support.google.com/maps/answer/2839911?co=GENIE.Platform%3DAndroid&hl=en  
+To be able to measure the compass heading, the device compass will need to be calibrated. You will find instructions on how to do it at the following link under "Calibrate your phone or tablet": https://support.google.com/maps/answer/2839911?co=GENIE.Platform%3DAndroid&hl=en  
 
 * GPS
 
@@ -112,7 +112,9 @@ In order to use the Android device GPS efficiently, you may want to follow these
 
 Geolocation should be set to "high precision" mode. For more information, please consult https://support.google.com/maps/answer/2839911?co=GENIE.Platform%3DAndroid&hl=en
 
-To save battery while using GPS, your device should be set to flight mode.
+To save battery while using GPS, your device could be set to flight mode.
+
+### Start the Treechecker App <a name="GPS"></a>
 
 | | |
 |---|---|
@@ -130,7 +132,6 @@ You will NOT be able to:
 * Create Areas of Interest (AOI)
 * Upload your field observations to the Treechecker server
   
-
 | | |
 |---|---|
 | <img src="docs/screenshots/ROI_mainmenu.png" alt="mainmenu" width="1000px"/>|The next screen shows the list of regions of interest. |
