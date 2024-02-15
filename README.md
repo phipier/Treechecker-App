@@ -1,5 +1,5 @@
 
-<div style="text-align: center;">
+<div style="text-align: left;">
   <img src="docs/screenshots/Logo_versions-04.jpg" alt="EC-logo" style="vertical-align: middle; padding-bottom: 20px;" width="300px"/>
   <img src="docs/screenshots/Treechecker.png" alt="Treechecker-logo" style="vertical-align: middle;" width="200px"/>  
 </div>
