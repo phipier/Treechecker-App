@@ -89,11 +89,9 @@ For example:
 
 ### Installing the Treechecker app on Android <a name="install"></a>
 
-* Download the Treechecker App (APK file) <a href="https://drive.google.com/file/d/122KjPJBneJ4AzPUuAEDSLZ1AkFTk3LYZ/view?usp=drive_link">here</a> 
-Allow Installation from Unknown Sources: Since the app is not being installed from the Google Play Store, your device may prompt you to allow installation from unknown sources.
+* Download the Treechecker App (APK file) <a href="https://drive.google.com/file/d/122KjPJBneJ4AzPUuAEDSLZ1AkFTk3LYZ/view?usp=drive_link">here</a>. Allow Installation from Unknown Sources: Since the app is not being installed from the Google Play Store, your device may prompt you to allow installation from unknown sources.
 
-* Install the App: Your device may display a warning indicating that the app's developer is unknown and ask for your confirmation to proceed with the installation.
-Select 'Install' to proceed. If you see any prompts regarding risks, choose 'Install anyway' if you trust the source.
+* Install the App: Your device may display a warning indicating that the app's developer is unknown and ask for your confirmation to proceed with the installation. Select 'Install' to proceed. If you see any prompts regarding risks, choose 'Install anyway' if you trust the source.
 
 After the installation is complete, you can open the app directly or find it listed with your other applications.
 
