@@ -1,6 +1,7 @@
 
 <div style="text-align: center;">
-<img src="docs/screenshots/Treechecker.png" alt="Treechecker-logo" width="200px"/>
+  <img src="docs/screenshots/Logo_mute_version2-24.jpg" alt="EC-logo" width="200px"/>
+  <img src="docs/screenshots/Treechecker.png" alt="Treechecker-logo" width="200px"/>  
 </div>
   
 1. [Introduction](#introduction)
