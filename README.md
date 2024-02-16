@@ -187,10 +187,10 @@ You may also add a bearing measure from the compass of your smartphone. For a ma
 
 To set up a development environment for the Treechecker app, the following applications should be installed:
 
-* Java 1.8  
+* Java 
 * npm  
-* cordova 9  
-* Android studio  
+* Cordova  
+* Android Studio  
 
 * Create the Android platform
 
