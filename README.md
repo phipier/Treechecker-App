@@ -253,7 +253,7 @@ sudo apt install adb
 
 ## Development environment using a Docker container <a name="devenv"></a>
 
-Another option is to use a Docker image that inclused all previously listed softwares.
+Another option is to use a Docker image that includes all previously listed softwares.
 
 search for a cordova image
 ```
