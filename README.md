@@ -3,6 +3,8 @@
   <img src="docs/screenshots/Treechecker-label.png" alt="Treechecker-logo" style="vertical-align: middle;" width="300px"/>  
   <img src="docs/screenshots/Logo_versions-04.jpg" alt="EC-logo" style="vertical-align: middle;" width="200px"/>
 </div>
+
+
   
 1. [Introduction](#introduction)
 2. [Configure Treechecker server](#server)
