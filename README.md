@@ -14,7 +14,7 @@
     5. [Upload observations](#uploadobs)
     6. [Download observations](#dldobs)
 
-4. [Technical documentation](#technical)  
+4. [Developer documentation](#technical)  
     1. [Development environment set up](#devenv)
     2. [Build APK](#buildapk)
 
@@ -191,10 +191,10 @@ The Treechecker App is a Cordova app. To set up a development environment, the f
 * Cordova  
 * Android Studio  
 
-Here are the detailed steps on a Linux machine (Debian)
+### Manual setup <a name="devenv"></a>
+Here are the detailed steps for the setup of a development environment on a Linux machine (Debian)
 
-
-### 1. Install Node.js, npm and Cordova
+#### 1. Install Node.js, npm and Cordova
 Cordova requires Node.js and npm (Node Package Manager).
 ```
 sudo apt update
@@ -204,20 +204,20 @@ Install Cordova using npm:
 ```
 npm install -g cordova
 ```
-### 2. Install Java Development Kit (JDK)
+#### 2. Install Java Development Kit (JDK)
 Android development requires JDK. Install OpenJDK using the following command:
 ```
 sudo apt install openjdk-11-jdk
 java --version
 ```
-### 4. Install Android Studio
+#### 4. Install Android Studio
 Android Studio provides the Android SDK and emulator system you'll need for development.
 
 Download Android Studio from the official site.
 Extract the downloaded archive to a directory of your choice (e.g., /opt or your home directory).
 Run the studio.sh script from the bin directory to start the installer.
 
-### 5. Set Environment Variables
+#### 5. Set Environment Variables
 You need to set JAVA_HOME and ANDROID_SDK_ROOT environment variables:
 
 For JAVA_HOME, add this to your .bashrc or .profile file:
@@ -235,14 +235,14 @@ export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
 ```
 After adding these lines, apply the changes by running source ~/.bashrc or reopening your terminal.
 
-### 6. Install Android Platform Tools and Platforms
+#### 6. Install Android Platform Tools and Platforms
 Using the SDK Manager in Android Studio, install:
 
 Android SDK Platform-tools
 Build-tools
 Any platforms (API levels) you intend to develop for, under SDK Platforms (e.g., Android 11.0 (R)).
 
-### 7. Install ADB on Your Computer
+#### 7. Install ADB on Your Computer
 To test the app directly on a USB connected device, ADB needs to be installed. If using a AVD (Android Virtual Device) in Android Studio or another Android emulator, then it is not necessary
 
 Install ADB:
@@ -251,7 +251,7 @@ sudo apt update
 sudo apt install adb
 ```
 
-## Development environment using a Docker image <a name="devenv"></a>
+### Setup using a Docker image <a name="devenv"></a>
 
 Another option is to use a Docker image that includes all previously listed softwares.
 
