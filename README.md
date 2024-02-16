@@ -23,7 +23,7 @@
 
 The Treechecker app (and server) is an Android app enabling tree survey using offline maps. When online, the app first downloads WMS tiles (From a WMS layer of the user’s choice) on the Android device. It is then possible to visualize the layer offline while overlaying the location provided by the GPS of the Android device. When online, the app will upload the observations made on the field back to the Treechecker server.  
 
-To use the Treechecker you will need to set up and configure a Treechecker server. If you have not already set up your own Treechecker server then please go to chapter “How to set up a new Treechecker-server on Pythonanywhere” at [Treechecker-server](https://phipier.github.io/Treechecker-server/#installation1)  (For the BTSF training, a server will already be set up and ready to use.)
+To use the Treechecker app you will need to set up and configure a Treechecker server. If you have not already set up your own Treechecker server then please go to chapter “How to set up a new Treechecker-server on Pythonanywhere” at [Treechecker-server](https://phipier.github.io/Treechecker-server/#installation1)  (For the BTSF training, a server will already be set up and ready to use.)
 
 # Configure Treechecker server <a name="server"></a>
 Before using the Treechecker App you will need to configure the Treechecker server by adding at least one Region of Interest.	
@@ -185,7 +185,7 @@ You may also add a bearing measure from the compass of your smartphone. For a ma
 
 ## Development environment setup <a name="devenv"></a>
 
-The Treechecker App is a Cordova app. To set up a development environment, the following applications should be installed: 
+The Treechecker App is an Apache Cordova application. To set up a development environment, the following applications should be installed: 
 * Java 
 * npm  
 * Cordova  
