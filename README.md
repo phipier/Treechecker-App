@@ -251,7 +251,7 @@ sudo apt update
 sudo apt install adb
 ```
 
-### Setup using a Docker image <a name="devenv"></a>
+### Setup using a Docker image 
 
 Another option is to use a Docker image that includes all previously listed softwares.
 
