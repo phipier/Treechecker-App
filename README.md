@@ -181,9 +181,9 @@ You may also add a bearing measure from the compass of your smartphone. For a ma
 |<img src="docs/screenshots/Admin4_surveydata.png" width="2500"/>|and pictures.|
 
 
-# Technical documentation <a name="technical"></a>
+# Developers documentation <a name="technical"></a>
 
-## Development environment setup to modify the Treechecker App <a name="devenv"></a>
+## Development environment setup <a name="devenv"></a>
 
 The Treechecker App is a Cordova app. To set up a development environment, the following applications should be installed: 
 * Java 
@@ -251,7 +251,7 @@ sudo apt update
 sudo apt install adb
 ```
 
-## Development environment using a Docker container <a name="devenv"></a>
+## Development environment using a Docker image <a name="devenv"></a>
 
 Another option is to use a Docker image that includes all previously listed softwares.
 
