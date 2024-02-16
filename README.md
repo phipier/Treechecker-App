@@ -19,13 +19,13 @@
     2. [Build APK](#buildapk)
 
 
-## Introduction <a name="introduction"></a>
+# Introduction <a name="introduction"></a>
 
 The Treechecker app (and server) is an Android app enabling tree survey using offline maps. When online, the app first downloads WMS tiles (From a WMS layer of the user’s choice) on the Android device. It is then possible to visualize the layer offline while overlaying the location provided by the GPS of the Android device. When online, the app will upload the observations made on the field back to the Treechecker server.  
 
 To use the Treechecker you will need to set up and configure a Treechecker server. If you have not already set up your own Treechecker server then please go to chapter “How to set up a new Treechecker-server on Pythonanywhere” at [Treechecker-server](https://phipier.github.io/Treechecker-server/#installation1)
 
-## Configure Treechecker server <a name="server"></a>
+# Configure Treechecker server <a name="server"></a>
 Before using the Treechecker App you will need to configure the Treechecker server by adding at least one Region of Interest.	
 
 | | |
@@ -85,9 +85,9 @@ For example:
 }]
 ```
 
-## Using the Treechecker App <a name="login"></a>
+# Using the Treechecker App <a name="login"></a>
 
-### Installing the Treechecker app on Android <a name="install"></a>
+## Installing the Treechecker app on Android <a name="install"></a>
 
 * Download the Treechecker App (APK file) <a href="https://drive.google.com/file/d/122KjPJBneJ4AzPUuAEDSLZ1AkFTk3LYZ/view?usp=drive_link">here</a>. Allow Installation from Unknown Sources: Since the app is not being installed from the Google Play Store, your device may prompt you to allow installation from unknown sources.
 
@@ -95,20 +95,20 @@ For example:
 
 After the installation is complete, you can open the app directly or find it listed with your other applications.
 
-### Compass and GPS with an Android Device <a name="GPS"></a>
+## Compass and GPS with an Android Device <a name="GPS"></a>
 
-#### Compass calibration
+### Compass calibration
 
 To be able to measure the compass heading, the device compass will need to be calibrated. You will find instructions on how to do it at the following link under "Calibrate your phone or tablet": https://support.google.com/maps/answer/2839911?co=GENIE.Platform%3DAndroid&hl=en  
 
-#### GPS
+### GPS
 
 In order to use the Android device GPS efficiently, you may want to follow these recommendations:
 * Geolocation should be set to "high precision" mode. For more information, please consult https://support.google.com/maps/answer/2839911?co=GENIE.Platform%3DAndroid&hl=en
 
 * To save battery while using GPS, your device could be set to flight mode.
 
-### Start the Treechecker App <a name="GPS"></a>
+## Start the Treechecker App <a name="GPS"></a>
 
 | | |
 |---|---|
@@ -133,7 +133,7 @@ You will NOT be able to:
 
 Once you selected a region of interest, the next screen will display the list of areas of interest for that region.  
 
-### Add an Area of Interest (AOI) <a name="aoi"></a>
+## Add an Area of Interest (AOI) <a name="aoi"></a>
 
 To add an AOI, it is necessary to be online (WIFI or mobile data). From the AOI list, push the “+” button to access the AOI creation form.  
 
@@ -144,7 +144,7 @@ To add an AOI, it is necessary to be online (WIFI or mobile data). From the AOI 
 |<img src="docs/screenshots/AOI_form3.png" width="1000"/>|Push the button the “tick” button in the bottom right corner to save your AOI and start downloading the tiles corresponding to the area you have selected.  If the selected area is too large, you will have to reduce its size. It is possible to cancel the downloading process by clicking on the red square.|
 |<img src="docs/screenshots/AOI_list_full.png" width="1000"/>|When the downloading process has completed, the application will navigate back to the AOI list that will include the newly created AOI. For each AOI (Area of interest) in the list, there are two buttons. One to access the observations section and another one to delete the AOI. If you use the push button for an AOI that has not yet uploaded observations, there will be a warning.|
 
-### Add observations <a name="addobs"></a>
+## Add observations <a name="addobs"></a>
 
 | | |
 |---|---|
@@ -164,14 +164,14 @@ After pushing the ‘next’ arrow, the observation form will appear.
 You may also add a bearing measure from the compass of your smartphone. For a matter of accuracy, you will position your smartphone horizontally and point the top part of your smartphone towards the subject of the photo you have taken. The compass bearing will then give the angle of the observer in respect to the magnetic North. You may also add a comment for the photo.|
 |<img src="docs/screenshots/Observations_list2.png" width="300"/>|The next screen will take you back to the observation form. After validation of the observation form you will navigate back to the observation list. By pushing the map button, you will get an overall view of the observations that have been made fot that AOI so far.|
 
-### Uploading observations to the Treechecker server <a name="uploadobs"></a>
+## Uploading observations to the Treechecker server <a name="uploadobs"></a>
 
 | | |
 |---|---|
 |<img src="docs/screenshots/Observations_list_menu.png" width="500"/>|To upload observations, your device will need to be online. From the observation list, open the menu (top right corner) and push on “Upload observations". It is also possible to share survey data as a GeoJSON file.|
 |<img src="docs/screenshots/Observations_list3_uploadedobs.png" width="500"/>|After the uploading process has completed, the uploaded observations will be marked as such in the observation list.|
 
-### Downloading the field observation data <a name="dldobs"></a>
+## Downloading the field observation data <a name="dldobs"></a>
 
 | | |
 |---|---|
@@ -181,16 +181,95 @@ You may also add a bearing measure from the compass of your smartphone. For a ma
 |<img src="docs/screenshots/Admin4_surveydata.png" width="2500"/>|and pictures.|
 
 
-## Technical documentation <a name="technical"></a>
+# Technical documentation <a name="technical"></a>
 
-### Development environment setup <a name="devenv"></a>
+## Development environment setup to modify the Treechecker App <a name="devenv"></a>
 
-To set up a development environment for the Treechecker app, the following applications should be installed:
-
+The Treechecker App is a Cordova app. To set up a development environment, the following applications should be installed: 
 * Java 
 * npm  
 * Cordova  
 * Android Studio  
+
+Here are the detailed steps on a Linux machine (Debian)
+
+
+### 1. Install Node.js, npm and Cordova
+Cordova requires Node.js and npm (Node Package Manager).
+```
+sudo apt update
+sudo apt install nodejs npm
+```
+Install Cordova using npm:
+```
+npm install -g cordova
+```
+### 2. Install Java Development Kit (JDK)
+Android development requires JDK. Install OpenJDK using the following command:
+```
+sudo apt install openjdk-11-jdk
+java --version
+```
+### 4. Install Android Studio
+Android Studio provides the Android SDK and emulator system you'll need for development.
+
+Download Android Studio from the official site.
+Extract the downloaded archive to a directory of your choice (e.g., /opt or your home directory).
+Run the studio.sh script from the bin directory to start the installer.
+
+### 5. Set Environment Variables
+You need to set JAVA_HOME and ANDROID_SDK_ROOT environment variables:
+
+For JAVA_HOME, add this to your .bashrc or .profile file:
+```
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+```
+After installing Android Studio, you should set ANDROID_SDK_ROOT. This path might vary depending on where you installed Android Studio and the SDK. A common path is ~/Android/Sdk. Add this to your .bashrc or .profile file:
+```
+export ANDROID_SDK_ROOT=~/Android/Sdk
+export ANDROID_HOME=~/Android/Sdk
+export PATH=$PATH:$ANDROID_SDK_ROOT/emulator
+export PATH=$PATH:$ANDROID_SDK_ROOT/tools
+export PATH=$PATH:$ANDROID_SDK_ROOT/tools/bin
+export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
+```
+After adding these lines, apply the changes by running source ~/.bashrc or reopening your terminal.
+
+### 6. Install Android Platform Tools and Platforms
+Using the SDK Manager in Android Studio, install:
+
+Android SDK Platform-tools
+Build-tools
+Any platforms (API levels) you intend to develop for, under SDK Platforms (e.g., Android 11.0 (R)).
+
+### 7. Install ADB on Your Computer
+To test the app directly on a USB connected device, ADB needs to be installed. If using a AVD (Android Virtual Device) in Android Studio or another Android emulator, then it is not necessary
+
+Install ADB:
+```
+sudo apt update
+sudo apt install adb
+```
+
+## Development environment using a Docker container <a name="devenv"></a>
+
+Another option is to use a Docker image that inclused all previously listed softwares.
+
+search for a cordova image
+```
+docker search cordova
+```
+Possible image to use, download image
+```
+docker pull beevelop/cordova
+```
+
+Go to the Treechecker project directory and then, 
+```
+sudo docker run -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova
+```
+
+## Build APK <a name="buildapk"></a>
 
 * Create the Android platform
 
@@ -198,9 +277,7 @@ To set up a development environment for the Treechecker app, the following appli
 $cordova platform add Android
 ```
 
-## Build APK <a name="buildapk"></a>
-
-If you have changed code in the app, you will need to compile a new APK. On your development machine, go to project folder and run:
+After changing code in the app, a new APK needs to be built. On your development machine, go to project folder and run:
 
 ```
 $cordova platform remove android
@@ -212,21 +289,6 @@ $bash buildrel (for a release build)
 $bash builddebug (for a debug build)
 ```
 
-Another option is to use a Docker container
-
-search for a cordova image
-```
-docker search cordova
-```
-Possible image to use, download image
-```
-docker pull beevelop/cordova
-```
-
-Go to Cordova project directory and then, 
-```
-sudo docker run -i -v /$PWD:/workspace -w /workspace --privileged beevelop/cordova
-```
 To see what platforms are available 
 ```
 cordova platform list
