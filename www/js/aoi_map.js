@@ -31,12 +31,19 @@ function loadmap() {
     }
 
     if (window.sessionStorage.getItem("features")!=="") {
-        Features         = JSON.parse(window.sessionStorage.getItem("features"));  
+        const Features         = JSON.parse(window.sessionStorage.getItem("features"));  
+
+        if (Features && Features.name) {
+            llname_features = Features.name;
+        } else {
+            llname_features = "Features";
+        }
 
         var FeaturesStyle = {
-            "color": "#ff7800",
-            "weight": 5,
-            "opacity": 0.65
+            "color": "#ff0000",
+            "weight": 2,
+            "opacity": 1,
+            "fill": false
         };
         
         var ll_features = L.geoJSON(Features, {
@@ -46,7 +53,7 @@ function loadmap() {
         ll_features.addTo(map);
 
         if(controlLayers)
-            controlLayers.addOverlay(ll_features, "Features");
+            controlLayers.addOverlay(ll_features, llname_features);
         else
             overlays["Features"] = ll_features;
     }

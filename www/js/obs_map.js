@@ -60,6 +60,7 @@ function loadMap() {
     //initLayers();
     addOnlineWMSLayers(LayerDefinitions);
     addOfflineWMSLayers(id_AOI, LayerDefinitions);
+    addFeatures();
     
     addMyObservations(id_AOI, obs_id);
 
@@ -69,9 +70,40 @@ function loadMap() {
         });
 
         // if position coordinates exist then create marker on map 
-        if ((obs_latitude) & (obs_longitude)) {
+        if ((obs_latitude) && (obs_longitude)) {
             createMarker(L.latLng(obs_latitude, obs_longitude));
         }
+    }
+}
+
+function addFeatures() {
+    if (window.sessionStorage.getItem("features")!=="") {
+        const Features = JSON.parse(window.sessionStorage.getItem("features"));  
+
+        let llname_features = "";
+        if (Features && Features.name) {
+            llname_features = Features.name;
+        } else {
+            llname_features = "Features";
+        }
+
+        var FeaturesStyle = {
+            "color": "#ff0000",
+            "weight": 2,
+            "opacity": 1,
+            "fill": false
+        };
+        
+        var ll_features = L.geoJSON(Features, {
+            style: FeaturesStyle
+        })
+
+        ll_features.addTo(mymap);
+
+        if(controlLayers)
+            controlLayers.addOverlay(ll_features, llname_features);
+        else
+            overlays["Features"] = ll_features;
     }
 }
 
@@ -278,7 +310,7 @@ function addMyObservations(id_aoi, id_obs) {
 
             var redIcon = L.icon({
                 iconUrl: 'file:///android_asset/www/lib/images/marker-red-small.png',                           
-                iconSize:     [40, 40], // size of the icon          
+                iconSize:     [30, 30], // size of the icon          
                 iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location  
                 popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
             });

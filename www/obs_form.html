@@ -28,8 +28,7 @@
             <div style="text-align:center;">
                 <button id="selectposition" type="button" class="btn button"><i class="fa-solid fa-map-marked-alt fa-2x"></i></button>
             </div>
-            <br>
-       
+            <br>       
             <label for="Inputlatitude">Latitude</label>
             <input class="form-control" id="Inputlatitude" pattern="^-?([1-8][0-9]|[0-9])(\.\d*)?$" title="decimal degrees (-90 to 90)" placeholder="Enter latitude" required>
             <div class="invalid-feedback">
@@ -48,27 +47,27 @@
             <input type="text" class="form-control" id="InputOBSname" aria-describedby="emailHelp" placeholder="Enter name" required>
             <div class="invalid-feedback">
                 Please provide a name for this observation (letters/numbers only, no space).
-            </div>
-            <label for="InputOBScomment">Comment</label>
-            <textarea type="text" class="form-control" id="InputOBScomment" rows="3" aria-describedby="emailHelp" placeholder="Enter comment"></textarea>
-            <div class="invalid-feedback">
-                Please provide a comment for this observation.
-            </div>
+            </div>            
         </div>
         <hr>
         <div class="form-group">
             <label>Species</label>
             <select type="number" class="custom-select" id="InputSelectSpecies">
-                <option value="" disabled selected>select species</option>
+                <option value="" disabled selected>Select species</option>
             </select>
-            <label>Crown diameter</label>
-            <select class="custom-select" id="InputSelectCrown">
-                <option value="" disabled selected>select crown diameter</option>
-            </select>
-            <label>Severity</label>
+            <label>Plant Disease</label>
             <select class="custom-select" id="InputSelectStatus" required>
-                <option value="" disabled selected>select severity</option>
+                <option value="" disabled selected>Select plant disease</option>
             </select>
+            <label>Disease Severity</label>
+            <select class="custom-select" id="InputSelectCrown">
+                <option value="" disabled selected>Select disease severity</option>
+            </select>
+            <label for="InputOBScomment">Comment</label>
+            <textarea type="text" class="form-control" id="InputOBScomment" rows="3" aria-describedby="emailHelp" placeholder="Enter comment"></textarea>
+            <div class="invalid-feedback">
+                Please provide a comment for this observation.
+            </div>
         </div>
         <hr> 
         <div class="form-group">
