@@ -316,7 +316,7 @@ function getTileDownloadURLs(bbox) {
     
         for(var x=xMin; x <= xMax; ++x) {
             for(var y=yMin; y <= yMax; ++y) {
-                var tileBbox = getTileBbox(x, y, zoom).join(',')
+                var tileBboxArray = getTileBbox(x, y, zoom)
                 for(let layer of LayerDefinitions.DL_WMS) {                    
                     const urlBase = layer.url;
                     const wmsLayerName = layer.layers;
@@ -326,9 +326,13 @@ function getTileDownloadURLs(bbox) {
                     const version = layer.version;
                     const width = layer.width;
                     const height = layer.height;
-                    var wmsParams = `REQUEST=GetMap&VERSION=${version}&SERVICE=WMS&SRS=${epsg}&WIDTH=${width}&HEIGHT=${height}&LAYERS=${wmsLayerName}&STYLES=&FORMAT=${format}&TRANSPARENT=${transparent}&BBOX=${tileBbox}`;
+                    const crsParam = version === "1.3.0" ? "CRS" : "SRS";
+                    // Adjust BBOX based on version and CRS before joining into a string
+                    const adjustedBbox = adjustBboxOrder(tileBboxArray, version, epsg);
+
+                    var wmsParams = `REQUEST=GetMap&VERSION=${version}&SERVICE=WMS&${crsParam}=${epsg}&WIDTH=${width}&HEIGHT=${height}&LAYERS=${wmsLayerName}&STYLES=&FORMAT=${format}&TRANSPARENT=${transparent}&BBOX=${adjustedBbox}`;
                     var url = `${urlBase}${wmsParams}`;
-        
+                            
                     urls.push({url: url, x: x, y: y, z: zoom, layerName: wmsLayerName});
                 }
             }
@@ -336,3 +340,14 @@ function getTileDownloadURLs(bbox) {
     }
     return urls;
 };
+
+// Function to adjust BBOX ordering for version 1.3.0 with EPSG:4326
+function adjustBboxOrder(bboxArray, version, epsg) {
+    // For WMS 1.3.0 and EPSG:4326, switch the order to lat, lon, lat, lon
+    if (version === "1.3.0" && epsg === "EPSG:4326") {
+        return [bboxArray[1], bboxArray[0], bboxArray[3], bboxArray[2]].join(',');
+    } else {
+        // For other cases, return the bbox in the original order
+        return bboxArray.join(',');
+    }
+}
