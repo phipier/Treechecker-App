@@ -179,17 +179,6 @@ You may also add a bearing measure from the compass of your smartphone. For a ma
 |<img src="docs/screenshots/Admin4_surveydata.png" width="2500"/>|and pictures.|
 
 
-to run android
-```
-cordova run android
-```
-to debug application, open chrome and go to chrome://inspect/#devices
-
-To remove and add plugins
-```
-cordova plugin rm cordova-plugin-camera 
-cordova plugin add cordova-plugin-camera 
-```
 To create release APK
 ```
 bash buildrel
