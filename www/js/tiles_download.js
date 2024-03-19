@@ -305,19 +305,22 @@ const getTileBbox = (x, y, zoom) => {
 
 function getTileDownloadURLs(bbox) {
     var LayerDefinitions = JSON.parse(window.sessionStorage.getItem("wms_url"));
-    var minZoom = 2;
-    var maxZoom = 19;
     var urls = [];
-    for(var zoom = minZoom; zoom <= maxZoom; ++zoom) {        
-        var xMin = lon2tile(bbox.xmin, zoom);
-        var xMax = lon2tile(bbox.xmax, zoom);
-        var yMin = lat2tile(bbox.ymin, zoom);
-        var yMax = lat2tile(bbox.ymax, zoom);
     
-        for(var x=xMin; x <= xMax; ++x) {
-            for(var y=yMin; y <= yMax; ++y) {
-                var tileBboxArray = getTileBbox(x, y, zoom)
-                for(let layer of LayerDefinitions.DL_WMS) {                    
+    for (let layer of LayerDefinitions.DL_WMS) {
+        var minZoom = layer.minZoom || 2; // Use layer specific minZoom if available, otherwise default to 2
+        var maxZoom = layer.maxNativeZoom || 19; // Use layer specific maxZoom if available, otherwise default to 19
+
+        for (var zoom = minZoom; zoom <= maxZoom; ++zoom) {
+            var xMin = lon2tile(bbox.xmin, zoom);
+            var xMax = lon2tile(bbox.xmax, zoom);
+            var yMin = lat2tile(bbox.ymin, zoom);
+            var yMax = lat2tile(bbox.ymax, zoom);
+
+            for (var x = xMin; x <= xMax; ++x) {
+                for (var y = yMin; y <= yMax; ++y) {
+                    var tileBboxArray = getTileBbox(x, y, zoom);
+                    
                     const urlBase = layer.url;
                     const wmsLayerName = layer.layers;
                     const format = layer.format;
@@ -338,8 +341,10 @@ function getTileDownloadURLs(bbox) {
             }
         }
     }
+
     return urls;
 };
+
 
 // Function to adjust BBOX ordering for version 1.3.0 with EPSG:4326
 function adjustBboxOrder(bboxArray, version, epsg) {
