@@ -178,8 +178,3 @@ You may also add a bearing measure from the compass of your smartphone. For a ma
 |<img src="docs/screenshots/Admin3_surveydata.png" width="2500"/>|By clicking on a specific observation, it will display its information details. You can visualize individual observation.|
 |<img src="docs/screenshots/Admin4_surveydata.png" width="2500"/>|and pictures.|
 
-
-To create release APK
-```
-bash buildrel
-```
