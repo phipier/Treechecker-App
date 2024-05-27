@@ -10,7 +10,7 @@
   "author": "Forest D1 Team",
   "license": "Apache-2.0",
   "dependencies": {
-    "cordova-browser": "^6.0.0",
+    "cordova-browser": "^7.0.0",
     "es6-promise-plugin": "^4.2.2"
   },
   "cordova": {
