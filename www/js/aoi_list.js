@@ -18,9 +18,10 @@ var listAOI = {
                     var html = '<ul class="list-group">';  
                     for(var x = 0; x < res.rows.length; x++) {
                         var id_aoi = res.rows.item(x).id;
+                        var aoiName = res.rows.item(x).name;
                         html += '<li class="list-group-item">' 
-                        + '<h5>' + res.rows.item(x).name + '</h5>'
-                        + '<a id="data_idaoi_'+id_aoi+'" class="btn button button-navbar m-2"><i class="fa-solid fa-clipboard-list fa-2x white"></i></a>'
+                        + '<h5>' + aoiName + '</h5>'
+                        + '<a id="data_idaoi_'+id_aoi+'" data-name='+aoiName+' class="btn button button-navbar m-2"><i class="fa-solid fa-clipboard-list fa-2x white"></i></a>'
                         /*+ '<a id="edit_idaoi_'+id_aoi+'" class="btn button edit_aoi">edit aoi</a>'*/
                         + '<a id="dele_idaoi_'+id_aoi+'" class="btn button button-navbar m-2"><i class="fa-solid fa-trash fa-2x white"></i></a>'
                         + '</li>';
@@ -32,6 +33,8 @@ var listAOI = {
                         e.preventDefault(); 
                         var id_aoi = this.id.substring(11);
                         window.sessionStorage.setItem("id_aoi", id_aoi);
+                        var aoiName = $(this).data('name');     
+                        window.sessionStorage.setItem("aoi_name", aoiName);
                         window.location = 'obs_list.html';
                         return false; 
                     });

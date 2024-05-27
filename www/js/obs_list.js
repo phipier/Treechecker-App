@@ -12,7 +12,13 @@ var listObs = {
 
         clearWSitems_obs();        
         
-        var id_aoi = window.sessionStorage.getItem("id_aoi");        
+        var id_aoi = window.sessionStorage.getItem("id_aoi"); 
+        var aoiName = window.sessionStorage.getItem("aoi_name");   
+        
+        // Insert the AOI name into the title
+        if (aoiName) {
+            document.getElementById("aoiNameTitle").textContent = "AOI: " + aoiName;
+        }
 
         db.transaction(function (tx) {
                 //var query = 'SELECT * FROM surveydata where id_aoi = '+id_aoi+';';
